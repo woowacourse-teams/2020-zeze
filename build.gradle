@@ -1,4 +1,6 @@
 plugins {
+    id 'checkstyle'
+    id 'org.ec4j.editorconfig' version '0.0.3'
     id 'org.springframework.boot' version '2.3.1.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'org.asciidoctor.convert' version '1.5.8'
@@ -8,6 +10,9 @@ plugins {
 group = 'dev.minguinho'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 configurations {
     compileOnly {
@@ -45,3 +50,16 @@ asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
 }
+
+editorconfig {
+    excludes = ['build', 'client', '.zeze-checkstyle.xml']
+}
+
+checkstyle {
+    maxWarnings = 0 // 규칙이 어긋나는 코드가 하나라도 있을 경우 빌드 fail을 내고 싶다면 이 선언을 추가한다.
+    configFile = file("${rootDir}/.zeze-checkstyle.xml")
+    toolVersion ="8.34"  // checkstyle 버전 8.24 이상 선언
+}
+
+check.dependsOn editorconfigCheck
+
