@@ -1,21 +1,24 @@
-import React from "react";
+import React, {Suspense} from "react";
 import {BrowserRouter, Switch, Route} from "react-router-dom";
+import Spinner from "./components/common/Spinner";
 
-import Home from "./components/home";
-import Me from "./components/me";
-import Editor from "./components/editor";
-import Archive from "./components/archive";
-import Error from "./components/error";
+const Home = React.lazy(() => import("./components/home"));
+const Me = React.lazy(() => import("./components/me"));
+const Editor = React.lazy(() => import("./components/editor"));
+const Archive = React.lazy(() => import("./components/archive"));
+const Error = React.lazy(() => import("./components/error"));
 
 const App: React.FC = () => (
   <BrowserRouter>
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route path="/me" component={Me} />
-      <Route path="/editor" component={Editor} />
-      <Route path="/archive" component={Archive} />
-      <Route component={Error} />
-    </Switch>
+    <Suspense fallback={<Spinner/>}>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/me" component={Me}/>
+        <Route path="/editor" component={Editor}/>
+        <Route path="/archive" component={Archive}/>
+        <Route component={Error}/>
+      </Switch>
+    </Suspense>
   </BrowserRouter>
 );
 
