@@ -13,8 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-
-import dev.minguinho.zeze.aws.S3Uploader;
+import dev.minguinho.zeze.domain.aws.S3Uploader;
 
 @ExtendWith(MockitoExtension.class)
 class PresentationServiceTest {

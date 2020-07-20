@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.aws;
+package dev.minguinho.zeze.domain.aws;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -43,15 +42,15 @@ class S3UploaderTest {
         File file = new File(String.format("%s/%s", filePath, fileName));
         MultipartFile multipartFile = new MockMultipartFile("test-image.png", fileName,
             MediaType.IMAGE_PNG_VALUE, new FileInputStream(file));
-        String basicURL = String.format("https://%s.s3.ap-northeast-2.amazonaws.com/%s", bucket, directory);
+        String basicUrl = String.format("https://%s.s3.ap-northeast-2.amazonaws.com/%s", bucket, directory);
         String actual = s3Uploader.upload(multipartFile);
 
         assertAll(
-            () -> assertThat(actual).startsWith(basicURL),
+            () -> assertThat(actual).startsWith(basicUrl),
             () -> assertThat(actual).contains(fileName)
         );
 
-        amazonS3.deleteObject(bucket, actual.substring(basicURL.length() - directory.length()));
+        amazonS3.deleteObject(bucket, actual.substring(basicUrl.length() - directory.length()));
     }
 
     @Test
