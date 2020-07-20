@@ -81,6 +81,10 @@ task yarnBuild(type: YarnTask) {
     args = ['run', "build"]
 }
 
+task deleteStatic(type: Delete) {
+    delete("${projectDir}/src/main/resources/static/")
+}
+
 task copyBuild(type: Copy) {
     from("${rootDir}/client/build/")
     into("${projectDir}/src/main/resources/static/")
@@ -90,7 +94,9 @@ task copyBuild(type: Copy) {
 task buildClient {
     dependsOn 'yarnInstall'
     dependsOn 'yarnBuild'
+    dependsOn 'deleteStatic'
     dependsOn 'copyBuild'
     tasks.findByName('yarnBuild').mustRunAfter 'yarnInstall'
-    tasks.findByName('copyBuild').mustRunAfter 'yarnBuild'
+    tasks.findByName('deleteStatic').mustRunAfter 'yarnBuild'
+    tasks.findByName('copyBuild').mustRunAfter 'deleteStatic'
 }
