@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.controller.dto;
+package dev.minguinho.zeze.domain.file.api.dto;
 
 import java.util.List;
 

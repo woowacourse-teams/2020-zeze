@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.exception;
+package dev.minguinho.zeze.domain.file.exception;
 
 public class FileNotConvertedException extends RuntimeException {
     public FileNotConvertedException(String fileName) {

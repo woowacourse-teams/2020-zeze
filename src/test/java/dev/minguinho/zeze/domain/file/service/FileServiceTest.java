@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.service;
+package dev.minguinho.zeze.domain.file.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -13,18 +13,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import dev.minguinho.zeze.domain.aws.S3Uploader;
+import dev.minguinho.zeze.domain.file.model.S3Uploader;
 
 @ExtendWith(MockitoExtension.class)
-class PresentationServiceTest {
-    private PresentationService presentationService;
+class FileServiceTest {
+    private FileService fileService;
 
     @Mock
     private S3Uploader s3Uploader;
 
     @BeforeEach
     void setUp() {
-        presentationService = new PresentationService(s3Uploader);
+        fileService = new FileService(s3Uploader);
     }
 
     @Test
@@ -34,7 +34,7 @@ class PresentationServiceTest {
         String expected = "url";
         when(s3Uploader.upload(multipartFile)).thenReturn(expected);
 
-        assertThat(presentationService.upload(Collections.singletonList(multipartFile)).getUrls().get(0)).isEqualTo(
+        assertThat(fileService.upload(Collections.singletonList(multipartFile)).getUrls().get(0)).isEqualTo(
             expected);
     }
 }

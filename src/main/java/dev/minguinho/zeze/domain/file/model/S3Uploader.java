@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.domain.aws;
+package dev.minguinho.zeze.domain.file.model;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import dev.minguinho.zeze.exception.FileNotConvertedException;
+import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
 
 @Component
 public class S3Uploader {

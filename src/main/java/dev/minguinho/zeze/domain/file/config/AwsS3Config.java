@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.config;
+package dev.minguinho.zeze.domain.file.config;
 
 import static com.amazonaws.regions.Regions.*;
 

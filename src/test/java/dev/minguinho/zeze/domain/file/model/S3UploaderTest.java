@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.domain.aws;
+package dev.minguinho.zeze.domain.file.model;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import dev.minguinho.zeze.exception.FileNotConvertedException;
+import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
 
 class S3UploaderTest {
     private String bucket;
