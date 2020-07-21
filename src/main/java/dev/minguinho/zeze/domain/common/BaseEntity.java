@@ -16,7 +16,6 @@ import lombok.Getter;
 @MappedSuperclass
 @Getter
 public class BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,5 +27,4 @@ public class BaseEntity {
     @UpdateTimestamp
     @Column(columnDefinition = "datetime(6)")
     private ZonedDateTime updatedAt;
-
 }
