@@ -19,7 +19,8 @@ public class PresentationController {
 
     @PostMapping("/files")
     public ResponseEntity<DefaultResponseEntity<FileUrlResponses>> uploadFile(
-        @ModelAttribute FileUploadRequestDto fileUploadRequestDto) {
+        @ModelAttribute FileUploadRequestDto fileUploadRequestDto
+    ) {
         FileUrlResponses fileUrlResponses = presentationService.upload(fileUploadRequestDto.getFiles());
         return ResponseEntity.ok(DefaultResponseEntity.from(fileUrlResponses));
     }

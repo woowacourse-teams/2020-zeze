@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Error {
+    GLOBAL_EXCEPTION(0, "시스템 에러"),
     FILE_NOT_CONVERTED(1001, "파일 변환 실패");
 
     private final Integer code;

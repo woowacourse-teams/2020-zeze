@@ -8,7 +8,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 @Configuration
-public class BeanConfig {
+public class AwsS3Config {
     @Bean
     public AmazonS3 amazonS3() {
         return AmazonS3ClientBuilder.standard()

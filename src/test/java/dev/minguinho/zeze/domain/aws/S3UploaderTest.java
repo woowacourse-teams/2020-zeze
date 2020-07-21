@@ -55,7 +55,7 @@ class S3UploaderTest {
 
     @Test
     @DisplayName("파일 변환이 안되는 경우")
-    void name() {
+    void uploadWithInvalidMultipartFile() {
         MultipartFile multipartFile = new MockMultipartFile("test-image.png", (byte[])null);
 
         assertThatThrownBy(() -> s3Uploader.upload(multipartFile))

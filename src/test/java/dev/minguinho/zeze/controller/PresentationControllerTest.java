@@ -1,6 +1,7 @@
 package dev.minguinho.zeze.controller;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -12,8 +13,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,13 +27,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+import dev.minguinho.zeze.domain.aws.S3Uploader;
+import dev.minguinho.zeze.exception.FileNotConvertedException;
+
+@SpringBootTest
 @ExtendWith(SpringExtension.class)
 class PresentationControllerTest {
     private MockMvc mvc;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    @MockBean
+    private S3Uploader s3Uploader;
 
     @BeforeEach
     void setUp(WebApplicationContext applicationContext) {
@@ -46,6 +54,8 @@ class PresentationControllerTest {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("files", fileName,
             MediaType.IMAGE_PNG_VALUE, new FileInputStream(file));
 
+        when(s3Uploader.upload(mockMultipartFile)).thenReturn("https://markdown-ppt-test.s3.ap-northeast-2.amazonaws.com/");
+
         mvc.perform(multipart("/api/files")
             .file(mockMultipartFile)
             .file(mockMultipartFile)
@@ -53,7 +63,24 @@ class PresentationControllerTest {
         )
             .andExpect(status().isOk())
             .andExpect(
-                content().string(containsString(String.format("https://%s.s3.ap-northeast-2.amazonaws.com/", bucket))))
+                content().string(containsString(String.format("https://%s.s3.ap-northeast-2.amazonaws.com/", "markdown-ppt-test"))))
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("파일 업로드에 실패하는 경우")
+    void uploadFileFail() throws Exception {
+        String fileName = "test-image.png";
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("files", (byte[])null);
+
+        when(s3Uploader.upload(mockMultipartFile)).thenThrow(new FileNotConvertedException(fileName));
+
+        mvc.perform(multipart("/api/files")
+            .file(mockMultipartFile)
+            .file(mockMultipartFile)
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+        )
+            .andExpect(status().isBadRequest())
             .andDo(print());
     }
 }
