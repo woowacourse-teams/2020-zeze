@@ -22,12 +22,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import dev.minguinho.zeze.domain.file.model.S3Uploader;
 import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
+import dev.minguinho.zeze.domain.file.model.S3Uploader;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class PresentationControllerTest {
+class FileControllerTest {
     private MockMvc mvc;
 
     @MockBean
@@ -76,6 +76,8 @@ class PresentationControllerTest {
             .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
         )
             .andExpect(status().isBadRequest())
+            .andExpect(
+                content().string(containsString(String.format("%s의 파일 변환에 실패했습니다.", fileName))))
             .andDo(print());
     }
 }

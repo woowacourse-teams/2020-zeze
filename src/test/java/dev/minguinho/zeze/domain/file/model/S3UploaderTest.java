@@ -60,6 +60,6 @@ class S3UploaderTest {
 
         assertThatThrownBy(() -> s3Uploader.upload(multipartFile))
             .isInstanceOf(FileNotConvertedException.class)
-            .hasMessage("의 파일변환에 실패했습니다.");
+            .hasMessage("의 파일 변환에 실패했습니다.");
     }
 }

@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class PresentationController {
+public class FileController {
     private final FileService fileService;
 
     @PostMapping("/files")
