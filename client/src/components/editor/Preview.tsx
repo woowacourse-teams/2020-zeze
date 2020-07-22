@@ -1,7 +1,7 @@
 import React from "react";
 import marked from "marked";
-import Renderer from "../../utils/markdown/renderer;"
-import youtube from "../../utils/markdown/replacers/youtube;"
+import Renderer from "../../utils/markdown/renderer";
+import youtube from "../../utils/markdown/replacers/youtube";
 
 interface IProps {
   content: string
