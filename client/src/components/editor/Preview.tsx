@@ -5,9 +5,9 @@ interface IProps {
   content: string
 }
 
-  marked.setOptions({
-    renderer: new marked.Renderer(),
-  });
+marked.setOptions({
+  renderer: new marked.Renderer(),
+});
 
 const Preview: React.FC<IProps> = ({content}) => (
   <div>
