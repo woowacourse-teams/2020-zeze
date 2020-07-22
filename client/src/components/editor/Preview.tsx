@@ -1,25 +1,18 @@
-import React, {useState} from "react";
+import React from "react";
 import marked from "marked";
 
-const Preview: React.FC = () => {
-  const [preview, setPreview] = useState<string>("");
+interface IProps {
+  content: string
+}
 
   marked.setOptions({
     renderer: new marked.Renderer(),
   });
 
-  const changeToHTML = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const content: string = event.target.value;
-
-    setPreview(marked(content));
-  };
-
-  return (
-    <div>
-      <div dangerouslySetInnerHTML={{__html: preview}}/>
-      <textarea placeholder="여기에 마크다운으로 내용을 작성해주세요." onChange={event => changeToHTML(event)}/>
-    </div>
-  );
-};
+const Preview: React.FC<IProps> = ({content}) => (
+  <div>
+    <div dangerouslySetInnerHTML={{__html: marked(content)}}/>
+  </div>
+);
 
 export default Preview;
