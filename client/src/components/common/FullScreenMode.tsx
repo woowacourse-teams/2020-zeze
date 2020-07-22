@@ -1,5 +1,6 @@
 import React, {useRef, useState} from "react";
 import fscreen from "fscreen";
+import {css, Global} from "@emotion/core";
 import {Keys} from "../../domains/constants";
 
 interface IProps {
@@ -39,17 +40,31 @@ const FullScreenMode: React.FC<IProps> = ({content, delimiter}) => {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === Keys.ARROW_RIGHT) {
+    switch (event.key) {
+    case Keys.ARROW_RIGHT:
       _slideExists(index + 1) ? _changeSlide(index + 1) : _endSlide();
-    }
-
-    if (event.key === Keys.ARROW_LEFT && _slideExists(index - 1)) {
-      _changeSlide(index - 1);
+      break;
+    case Keys.ARROW_LEFT:
+      _slideExists(index - 1) && _changeSlide(index - 1);
+      break;
+    default:
+      break;
     }
   };
 
   return (
     <>
+      <Global styles={css`
+          :-webkit-full-screen {
+            width: 100%;
+            height: 100%;
+          }
+          
+          :not(:root):fullscreen::backdrop {
+            background: #fff;
+          }
+        `}
+      />
       <div
         ref={slideReference}
         tabIndex={0}
