@@ -26,12 +26,15 @@ repositories {
 }
 
 ext {
+    okHttpVersion = '4.4.0'
     set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
@@ -39,6 +42,8 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    testImplementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${okHttpVersion}"
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
     // AWS
