@@ -7,7 +7,7 @@ interface IProps {
   content: string
 }
 
-const renderer = new Renderer().setCodeReplacer("youtube", youtube)
+const renderer = new Renderer().setCodeReplacer("youtube", youtube);
 
 marked.setOptions({
   renderer,
