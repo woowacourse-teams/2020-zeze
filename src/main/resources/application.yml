@@ -1,1 +1,10 @@
+spring:
+  h2:
+    console:
+      enabled: true
 
+  datasource:
+    hikari:
+      jdbc-url: "jdbc:h2:mem:testdb"
+      username: "sa"
+      driver-class-name: "org.h2.Driver"

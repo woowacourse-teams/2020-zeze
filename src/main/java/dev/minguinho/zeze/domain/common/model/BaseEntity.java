@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.domain.common;
+package dev.minguinho.zeze.domain.common.model;
 
 import java.time.ZonedDateTime;
 
