@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class SlideResponse {
+    private final Long id;
     private final String title;
     private final String content;
     private final String contentType;
@@ -16,7 +17,7 @@ public class SlideResponse {
     private final ZonedDateTime updatedAt;
 
     public static SlideResponse from(Slide slide) {
-        return new SlideResponse(slide.getTitle(), slide.getContent(), slide.getContentType(),
+        return new SlideResponse(slide.getId(), slide.getTitle(), slide.getContent(), slide.getContentType(),
             slide.getCreatedAt(), slide.getUpdatedAt());
     }
 }
