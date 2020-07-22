@@ -1,10 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import Preview from "./Preview";
 
-const EditMode: React.FC = () => (
-  <div>
-    <Preview/>
-  </div>
-);
+const EditMode: React.FC = () => {
+  const [text, setText] = useState<string>("");
+
+  return (
+    <div>
+      <Preview content={text}/>
+    </div>
+  );
+};
 
 export default EditMode;
