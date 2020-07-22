@@ -1,4 +1,4 @@
-import marked from "marked"
+import marked from "marked";
 
 type Language = string | undefined;
 type Replacer = (code: string) => string;

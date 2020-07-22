@@ -2,13 +2,13 @@ interface Props {
   src?: string;
   width: string;
   height: string;
-};
+}
 
 interface Youtube {
   id: string;
   width: string;
   height: string;
-};
+}
 
 const YOUTUBE_ID_REGEX = /^(?:(?:https?)?(?::\/\/)?(?:www\.)?(?:youtu\.be\/|youtube.com\/watch\?v=|youtube.com\/embed\/)?)?(\S+)$/;
 const NEW_LINE_SEPARATOR = "\n";
