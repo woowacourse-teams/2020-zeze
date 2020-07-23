@@ -1,9 +1,57 @@
 import React from "react";
+import * as S from "./assets";
 import Layout from "../common/Layout";
+import {PRIMARY_GREEN} from "../../domains/constants";
 
 const Home: React.FC = () => (
   <Layout>
-    <h1>Home</h1>
+    <S.Home>
+      <S.Section background={PRIMARY_GREEN}>
+        <S.Layout>
+          <S.Slogan>Beautiful,</S.Slogan>
+          <S.Slogan>Minimal Slides</S.Slogan>
+          <S.Slogan>With Markdown</S.Slogan>
+          <S.Button>Getting Started</S.Button>
+        </S.Layout>
+      </S.Section>
+      <S.Section background="#333">
+        <S.Layout>
+          <code style={{color: "#fff"}}>
+            --- <br/>
+            title: Hello Limetree! <br/>
+            author: Hodol <br/>
+            created_at: 2020-07-12 <br/>
+            --- <br/> <br/>
+            ## Works like charm <br/>
+            ### with minimal effort <br/> <br/>
+            - Only need to type <br/>
+            - Supports GFM Markdown <br/>
+            - Youtube, Charts, and more! <br/> <br/>
+            --- <br/> <br/>
+            ## Focus on your idea <br/> <br/>
+            > No more decorating stuff <br/>
+            > Pixel perfect beautiful slides
+          </code>
+        </S.Layout>
+      </S.Section>
+      <S.Section background={PRIMARY_GREEN}>
+        <S.Layout>
+          <div style={{
+            width: "100%",
+            minHeight: "20rem",
+            backgroundColor: "#fff",
+            fontWeight: "bold",
+            fontSize: 20,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow: "1px 1px 1px #aaa",
+          }}>
+            Slide example goes here
+          </div>
+        </S.Layout>
+      </S.Section>
+    </S.Home>
   </Layout>
 );
 
