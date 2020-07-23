@@ -19,7 +19,6 @@ export const Layout = styled.main`
 export const Slogan = styled.h2`
   margin: 0;
   color: #fff;
-  
   font-size: 4rem;
   
   @media (max-width: ${MOBILE_MAX_WIDTH}px) {
@@ -35,6 +34,7 @@ export const Section = styled("div")<SectionProps>`
   background-color: ${({background}: SectionProps) => background};
   padding: 15px;
   margin: 0 auto;
+  
   @media (max-width: ${MOBILE_MAX_WIDTH}px) {
     max-width: 400px;
   }

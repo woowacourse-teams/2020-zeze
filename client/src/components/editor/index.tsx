@@ -11,7 +11,7 @@ const Editor: React.FC = () => {
   const [input, setInput] = useState<string>(sampleMarkdown.content);
 
   return (
-    <Layout footer={false}>
+    <Layout footer={null}>
       <S.Editor>
         {/* Temporary textarea */}
         <textarea style={{
