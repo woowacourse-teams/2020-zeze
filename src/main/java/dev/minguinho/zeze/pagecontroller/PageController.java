@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.controller;
+package dev.minguinho.zeze.pagecontroller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
