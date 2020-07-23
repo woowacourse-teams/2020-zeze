@@ -2,21 +2,13 @@ import React, {useState} from "react";
 import Layout from "../common/Layout";
 import * as S from "./assets";
 import Preview from "./Preview";
+import {marked, splitter} from "../../utils/markdown/renderer";
+
+// Temporary fixture
+import {sampleMarkdown} from "../../utils/fixtures";
 
 const Editor: React.FC = () => {
-  const [input, setInput] = useState<string>(`---
-title: Hello LimeTree!
-author: Hodol
-created_at: 2020-07-12
----
-
-## hello world!
-### this is subtitle
-
---- 
-
-## another page
-`);
+  const [input, setInput] = useState<string>(sampleMarkdown.content);
 
   return (
     <Layout footer={false}>
@@ -34,7 +26,14 @@ created_at: 2020-07-12
         value={input}
         onChange={e => setInput(e.target.value)}
         />
-        <Preview content={input}/>
+        <S.Preview>
+          <Preview contents={
+            splitter({
+              content: marked(input),
+              delimiter: sampleMarkdown.delimiter,
+            })
+          }/>
+        </S.Preview>
       </S.Editor>
     </Layout>
   );

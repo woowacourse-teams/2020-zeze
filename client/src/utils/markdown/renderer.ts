@@ -1,7 +1,6 @@
 import marked from "marked";
-
-type Language = string | undefined;
-type Replacer = (code: string) => string;
+import youtube from "./replacers/youtube";
+import {Language, Markdown, Replacer} from "../../domains/types";
 
 class Renderer extends marked.Renderer {
   private codeReplacers: Map<Language, Replacer> = new Map();
@@ -16,4 +15,15 @@ class Renderer extends marked.Renderer {
   }
 }
 
-export default Renderer;
+const renderer = new Renderer().setCodeReplacer("youtube", youtube);
+
+marked.setOptions({
+  renderer,
+  gfm: true,
+});
+
+const splitter = ({content, delimiter}: Markdown) => content
+  .split(delimiter)
+  .filter(slide => slide.length !== 0);
+
+export {marked, splitter};

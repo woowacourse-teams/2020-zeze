@@ -15,18 +15,19 @@ const NEW_LINE_SEPARATOR = "\n";
 const KEY_VALUE_SEPARATOR = "=";
 
 const DEFAULT_PROPS: Props = {
-  width: "510",
-  height: "315",
+  width: "100%",
+  height: "auto",
 };
 
-const template = ({ id, width, height }: Youtube): string =>
+const template = ({id, width, height}: Youtube): string =>
   `<iframe width="${width}" height="${height}" src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
 
 export default (code: string): string => {
-  const { src, width, height } = code
+  const {src, width, height} = code
     .split(NEW_LINE_SEPARATOR)
-    .map((line) => {
+    .map(line => {
       const [key, ...value] = line.split(KEY_VALUE_SEPARATOR);
+
       return [key, value.join(KEY_VALUE_SEPARATOR)];
     })
     .reduce(
@@ -34,10 +35,10 @@ export default (code: string): string => {
         ...previous,
         [key]: value,
       }),
-      DEFAULT_PROPS
+      DEFAULT_PROPS,
     );
 
   const id = src?.match(YOUTUBE_ID_REGEX)?.[1];
 
-  return id ? template({ id, width, height }) : "";
+  return id ? template({id, width, height}) : "";
 };

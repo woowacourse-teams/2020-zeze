@@ -15,4 +15,13 @@ export const Editor = styled.main`
 export const Preview = styled.div`
   flex: 1;
   padding: 30px;
+  overflow: auto;
+`;
+
+export const PreviewSlide = styled.div`
+  width: 100%;
+  margin: 20px 0;
+  border: 1px solid #555;
+  padding: 15px;
+  box-sizing: border-box;
 `;

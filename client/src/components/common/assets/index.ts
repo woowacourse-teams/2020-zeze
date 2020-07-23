@@ -68,3 +68,9 @@ export const Footer = styled.footer`
     color: #fff;
   }
 `;
+
+export const FullScreen = styled.div`
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+`;
