@@ -1,9 +1,12 @@
 import React from "react";
+import * as S from "./assets";
 
 const Footer: React.FC = () => (
-  <div>
-    <h3>Footer</h3>
-  </div>
+  <S.Footer>
+    <div>
+    © 2020 Minguinho
+    </div>
+  </S.Footer>
 );
 
 export default Footer;

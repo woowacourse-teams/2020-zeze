@@ -2,11 +2,15 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 
-const Layout: React.FC = ({children}) => (
+interface IProps {
+  header?: boolean;
+  footer?: boolean;
+}
+const Layout: React.FC<IProps> = ({children, header = true, footer = true}) => (
   <div>
     <Header/>
     {children}
-    <Footer/>
+    {footer ? <Footer/> : null}
   </div>
 );
 
