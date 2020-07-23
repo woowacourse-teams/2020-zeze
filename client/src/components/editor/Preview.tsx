@@ -1,5 +1,6 @@
 import React from "react";
 import marked from "marked";
+import * as S from "./assets";
 
 interface IProps {
   content: string
@@ -10,9 +11,9 @@ marked.setOptions({
 });
 
 const Preview: React.FC<IProps> = ({content}) => (
-  <div>
+  <S.Preview>
     <div dangerouslySetInnerHTML={{__html: marked(content)}}/>
-  </div>
+  </S.Preview>
 );
 
 export default Preview;
