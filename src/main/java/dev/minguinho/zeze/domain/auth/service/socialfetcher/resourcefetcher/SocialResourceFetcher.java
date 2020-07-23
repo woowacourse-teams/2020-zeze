@@ -1,12 +1,12 @@
-package dev.minguinho.zeze.domain.auth.service.resourcefetcher;
+package dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher;
 
 import java.util.Optional;
 
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import dev.minguinho.zeze.domain.auth.api.dto.request.SocialResourceRequestDto;
-import dev.minguinho.zeze.domain.auth.api.dto.request.SocialResourceResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponseDto;
 import reactor.core.publisher.Mono;
 
 public interface SocialResourceFetcher {
@@ -17,15 +17,19 @@ public interface SocialResourceFetcher {
             .orElseThrow(() -> new IllegalArgumentException(
                 "ResponseBody does not have the field: " + idFieldName
             ));
-
         String email = Optional.ofNullable(body.get("email"))
             .map(JsonNode::asText)
             .orElse("");
+        String name = Optional.ofNullable(body.get("name"))
+            .map(JsonNode::asText)
+            .orElse("");
+
         return SocialResourceResponseDto.builder()
             .socialId(socialId)
             .email(email)
+            .name(name)
             .build();
     }
 
-    Mono<SocialResourceResponseDto> fetchUserResource(SocialResourceRequestDto socialResourceRequestDto);
+    Mono<SocialResourceResponseDto> fetch(SocialResourceRequestDto socialResourceRequestDto);
 }
