@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: github
+    include: github, jwt
 
   h2:
     console:

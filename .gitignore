@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 **/src/main/resources/static
 **/src/main/resources/application-github.yml
+**/src/main/resources/application-jwt.yml
 
 ### STS ###
 .apt_generated
