@@ -1,6 +1,7 @@
 package dev.minguinho.zeze.domain.common.model;
 
 import java.time.ZonedDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,9 +10,12 @@ import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @MappedSuperclass
+@EqualsAndHashCode(of = "id")
 @Getter
 public class BaseEntity {
     @Id

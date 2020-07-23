@@ -44,6 +44,7 @@ dependencies {
     // AWS
     implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.820'
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testCompile group: 'io.findify', name: 's3mock_2.12', version: '0.2.5'
 }
 
 test {

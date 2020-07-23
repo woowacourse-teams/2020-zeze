@@ -3,63 +3,89 @@ package dev.minguinho.zeze.domain.file.model;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.lang.reflect.Field;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import com.amazonaws.regions.Regions;
+
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
+import io.findify.s3mock.S3Mock;
 
 class S3UploaderTest {
+    private static S3Mock s3Mock;
+    private S3Uploader s3Uploader;
     private String bucket;
     private String directory;
-    private AmazonS3 amazonS3;
-    private S3Uploader s3Uploader;
+
+    @BeforeAll
+    static void beforeAll() {
+        s3Mock = new S3Mock.Builder()
+            .withPort(8001)
+            .withInMemoryBackend()
+            .build();
+        s3Mock.start();
+    }
 
     @BeforeEach
-    void setUp() {
-        this.bucket = "markdown-ppt-test";
+    void setUp() throws Exception {
+        this.bucket = "markdwon-ppt-test";
         this.directory = "static";
-        this.amazonS3 = AmazonS3ClientBuilder.standard()
-            .withRegion(Regions.AP_NORTHEAST_2)
+
+        AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
+            "http://localhost:8001", "ap-northeast-2");
+        AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard()
+            .withPathStyleAccessEnabled(true)
+            .withEndpointConfiguration(endpoint)
             .build();
-        this.s3Uploader = new S3Uploader(bucket, directory, amazonS3);
+        amazonS3.createBucket(bucket);
+
+        this.s3Uploader = new S3Uploader(amazonS3);
+
+        Field bucketField = S3Uploader.class.getDeclaredField("bucket");
+        bucketField.setAccessible(true);
+        bucketField.set(s3Uploader, bucket);
+        Field directoryField = S3Uploader.class.getDeclaredField("directory");
+        directoryField.setAccessible(true);
+        directoryField.set(s3Uploader, directory);
     }
 
     @Test
     @DisplayName("S3에 파일 업로드")
-    void upload() throws IOException {
-        String filePath = "src/test/resources";
+    void upload() {
         String fileName = "test-image.png";
-        File file = new File(String.format("%s/%s", filePath, fileName));
-        MultipartFile multipartFile = new MockMultipartFile("test-image.png", fileName,
-            MediaType.IMAGE_PNG_VALUE, new FileInputStream(file));
-        String basicUrl = String.format("https://%s.s3.ap-northeast-2.amazonaws.com/%s", bucket, directory);
+        MultipartFile multipartFile = new MockMultipartFile("files", fileName,
+            MediaType.IMAGE_PNG_VALUE, "test-data".getBytes());
         String actual = s3Uploader.upload(multipartFile);
+        String basicUrl = String.format("http://localhost:8001/%s/%s", bucket,
+            directory);
 
         assertAll(
             () -> assertThat(actual).startsWith(basicUrl),
             () -> assertThat(actual).contains(fileName)
         );
-
-        amazonS3.deleteObject(bucket, actual.substring(basicUrl.length() - directory.length()));
     }
 
     @Test
     @DisplayName("파일 변환이 안되는 경우")
     void uploadWithInvalidMultipartFile() {
-        MultipartFile multipartFile = new MockMultipartFile("test-image.png", (byte[])null);
+        MultipartFile multipartFile = new MockMultipartFile("files", (byte[])null);
 
         assertThatThrownBy(() -> s3Uploader.upload(multipartFile))
             .isInstanceOf(FileNotConvertedException.class)
             .hasMessage("의 파일 변환에 실패했습니다.");
+    }
+
+    @AfterAll
+    static void afterAll() {
+        s3Mock.stop();
     }
 }
