@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 **/src/main/resources/static
+**/src/main/resources/application-github.yml
 
 ### STS ###
 .apt_generated
