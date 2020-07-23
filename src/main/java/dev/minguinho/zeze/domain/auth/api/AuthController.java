@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.minguinho.zeze.domain.auth.api.dto.request.GithubSignInDto;
+import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
 import dev.minguinho.zeze.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 
@@ -15,8 +16,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/api/signin/github")
-    public ResponseEntity<Void> signIn(@RequestBody GithubSignInDto signInDto) {
-        authService.signIn(signInDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AuthenticationDto> signIn(@RequestBody GithubSignInDto signInDto) {
+        AuthenticationDto authenticationDto = authService.signIn(signInDto);
+        return ResponseEntity.ok(authenticationDto);
     }
 }

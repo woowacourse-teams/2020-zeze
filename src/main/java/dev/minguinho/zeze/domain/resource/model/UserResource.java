@@ -5,10 +5,13 @@ import javax.persistence.Entity;
 
 import dev.minguinho.zeze.domain.common.model.BaseEntity;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
@@ -17,15 +20,6 @@ public class UserResource extends BaseEntity {
     private Long userId;
     private String email;
     private String name;
+    private String image;
 
-    @Builder
-    private UserResource(
-        Long userId,
-        String email,
-        String name
-    ) {
-        this.userId = userId;
-        this.email = email;
-        this.name = name;
-    }
 }

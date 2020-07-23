@@ -1,7 +1,6 @@
 package dev.minguinho.zeze.domain.auth.service;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
-import dev.minguinho.zeze.domain.auth.api.dto.response.UserResourceResponse;
+import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
+import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.model.User;
 import dev.minguinho.zeze.domain.auth.model.UserRepository;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.SocialAccessTokenFetcher;
@@ -35,6 +35,8 @@ class AuthServiceTest {
     @Mock
     private UserResourceRepository userResourceRepository;
     @Mock
+    private TokenService tokenService;
+    @Mock
     private User user;
     @Mock
     private UserResource userResource;
@@ -43,7 +45,8 @@ class AuthServiceTest {
 
     @BeforeEach
     void setUp() {
-        authService = new AuthService(accessTokenFetcher, resourceFetcher, userRepository, userResourceRepository);
+        authService = new AuthService(accessTokenFetcher, resourceFetcher, userRepository, userResourceRepository,
+            tokenService);
     }
 
     @DisplayName("AuthService 로그인 테스트")
@@ -53,22 +56,21 @@ class AuthServiceTest {
             .accessToken("accessToken")
             .build();
         given(accessTokenFetcher.fetch(any())).willReturn(Mono.just(accessTokenResponseDto));
+        given(accessTokenRequestDto.getProvider()).willReturn(Social.Provider.GITHUB);
         SocialResourceResponseDto socialResourceResponseDto = SocialResourceResponseDto.builder()
             .socialId("soialId")
             .email("email")
             .name("name")
             .build();
+        AuthenticationDto authenticationDto = AuthenticationDto.builder()
+            .accessToken("accessToken")
+            .build();
         given(resourceFetcher.fetch(any())).willReturn(Mono.just(socialResourceResponseDto));
         given(userRepository.save(any())).willReturn(user);
         given(user.getId()).willReturn(1L);
-        given(userResourceRepository.save(any())).willReturn(userResource);
-        given(userResource.getName()).willReturn("name");
-        given(userResource.getEmail()).willReturn("email");
+        given(tokenService.getTokenOf(any(User.class))).willReturn(authenticationDto);
 
-        UserResourceResponse userResourceResponse = authService.signIn(accessTokenRequestDto);
-        assertAll(
-            () -> assertThat(userResourceResponse.getEmail()).isEqualTo("email"),
-            () -> assertThat(userResourceResponse.getName()).isEqualTo("name")
-        );
+        AuthenticationDto response = authService.signIn(accessTokenRequestDto);
+        assertThat(response.getAccessToken()).isEqualTo("accessToken");
     }
 }

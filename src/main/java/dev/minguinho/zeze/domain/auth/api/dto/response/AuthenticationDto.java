@@ -8,8 +8,6 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class UserResourceResponse {
-    private final String name;
-    private final String email;
-    private final String image;
+public class AuthenticationDto {
+    private String accessToken;
 }
