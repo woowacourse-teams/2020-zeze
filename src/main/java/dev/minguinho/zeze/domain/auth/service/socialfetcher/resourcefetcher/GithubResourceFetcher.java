@@ -1,12 +1,12 @@
-package dev.minguinho.zeze.domain.auth.service.resourcefetcher;
+package dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import dev.minguinho.zeze.domain.auth.api.dto.request.SocialResourceRequestDto;
-import dev.minguinho.zeze.domain.auth.api.dto.request.SocialResourceResponseDto;
 import dev.minguinho.zeze.domain.auth.model.Social;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponseDto;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -18,7 +18,7 @@ public class GithubResourceFetcher implements SocialResourceFetcher {
         this.webClient = webClientBuilder.baseUrl(BASE_URL).build();
     }
 
-    public Mono<SocialResourceResponseDto> fetchUserResource(SocialResourceRequestDto socialResourceRequestDto) {
+    public Mono<SocialResourceResponseDto> fetch(SocialResourceRequestDto socialResourceRequestDto) {
         if (socialResourceRequestDto.getProvider() != Social.Provider.GITHUB) {
             throw new IllegalStateException(
                 "Only GITHUB is supported. Input : " + socialResourceRequestDto.getProvider().toString()
@@ -26,6 +26,7 @@ public class GithubResourceFetcher implements SocialResourceFetcher {
         }
 
         return webClient.get()
+            .uri("/user")
             .header("Authorization", "token " + socialResourceRequestDto.getProviderAccessToken())
             .retrieve()
             .bodyToMono(JsonNode.class)

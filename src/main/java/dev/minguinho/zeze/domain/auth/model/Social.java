@@ -7,12 +7,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
     uniqueConstraints = {
         @UniqueConstraint(
@@ -37,6 +38,6 @@ public class Social {
 
     public enum Provider {
         GITHUB,
-        GOOGLE;
+        NONE;
     }
 }

@@ -21,5 +21,4 @@ public class User extends BaseEntity {
     private User(Social social) {
         this.social = social;
     }
-
 }

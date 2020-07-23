@@ -15,17 +15,17 @@ import lombok.NoArgsConstructor;
 public class UserResource extends BaseEntity {
     @Column(unique = true)
     private Long userId;
-    private String name;
     private String email;
+    private String name;
 
     @Builder
     private UserResource(
         Long userId,
-        String name,
-        String email
+        String email,
+        String name
     ) {
         this.userId = userId;
-        this.name = name;
         this.email = email;
+        this.name = name;
     }
 }
