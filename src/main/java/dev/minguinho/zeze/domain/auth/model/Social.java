@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,8 +37,15 @@ public class Social {
         this.socialId = socialId;
     }
 
+    @AllArgsConstructor
+    @Getter
     public enum Provider {
-        GITHUB,
-        NONE;
+        GITHUB("id", "name", "email", "avatar_url"),
+        NONE(null, null, null, null);
+
+        private String idFieldName;
+        private String nameFieldName;
+        private String emailFieldName;
+        private String imageFieldName;
     }
 }

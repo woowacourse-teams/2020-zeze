@@ -30,6 +30,6 @@ public class GithubResourceFetcher implements SocialResourceFetcher {
             .header("Authorization", "token " + socialResourceRequestDto.getProviderAccessToken())
             .retrieve()
             .bodyToMono(JsonNode.class)
-            .map(body -> SocialResourceFetcher.createResource(body, "id"));
+            .map(body -> SocialResourceFetcher.createResource(body, socialResourceRequestDto.getProvider()));
     }
 }
