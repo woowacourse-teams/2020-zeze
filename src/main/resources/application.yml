@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: aws, github
+    include: aws, github, jwt
 
   h2:
     console:

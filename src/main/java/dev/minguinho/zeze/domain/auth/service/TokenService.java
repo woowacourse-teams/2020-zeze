@@ -3,13 +3,19 @@ package dev.minguinho.zeze.domain.auth.service;
 import org.springframework.stereotype.Service;
 
 import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
+import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 import dev.minguinho.zeze.domain.auth.model.User;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Service
 public class TokenService {
+    private final JwtTokenProvider jwtTokenProvider;
+
     public AuthenticationDto getTokenOf(User user) {
+        String token = jwtTokenProvider.createToken(user.getId().toString());
         return AuthenticationDto.builder()
-            .accessToken("abc")
+            .accessToken(token)
             .build();
     }
 }

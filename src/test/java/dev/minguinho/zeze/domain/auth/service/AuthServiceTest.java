@@ -19,8 +19,6 @@ import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.S
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponseDto;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.SocialResourceFetcher;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponseDto;
-import dev.minguinho.zeze.domain.resource.model.UserResource;
-import dev.minguinho.zeze.domain.resource.model.UserResourceRepository;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,20 +31,17 @@ class AuthServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private UserResourceRepository userResourceRepository;
+    private UserService userService;
     @Mock
     private TokenService tokenService;
     @Mock
     private User user;
     @Mock
-    private UserResource userResource;
-    @Mock
     private SocialAccessTokenRequestDto accessTokenRequestDto;
 
     @BeforeEach
     void setUp() {
-        authService = new AuthService(accessTokenFetcher, resourceFetcher, userRepository, userResourceRepository,
-            tokenService);
+        authService = new AuthService(accessTokenFetcher, resourceFetcher, userService, tokenService);
     }
 
     @DisplayName("AuthService 로그인 테스트")
@@ -61,13 +56,13 @@ class AuthServiceTest {
             .socialId("soialId")
             .email("email")
             .name("name")
+            .image("image")
             .build();
+        given(resourceFetcher.fetch(any())).willReturn(Mono.just(socialResourceResponseDto));
+        given(userService.save(any(), any())).willReturn(user);
         AuthenticationDto authenticationDto = AuthenticationDto.builder()
             .accessToken("accessToken")
             .build();
-        given(resourceFetcher.fetch(any())).willReturn(Mono.just(socialResourceResponseDto));
-        given(userRepository.save(any())).willReturn(user);
-        given(user.getId()).willReturn(1L);
         given(tokenService.getTokenOf(any(User.class))).willReturn(authenticationDto);
 
         AuthenticationDto response = authService.signIn(accessTokenRequestDto);
