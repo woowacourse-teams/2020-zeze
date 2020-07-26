@@ -4,13 +4,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import dev.minguinho.zeze.domain.slide.model.Slide;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class SlideResponses {
-    private final List<SlideResponse> values;
+    private List<SlideResponse> values;
 
     public static SlideResponses from(List<Slide> presentations) {
         List<SlideResponse> presentationResponses = presentations.stream()
