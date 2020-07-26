@@ -59,5 +59,14 @@ export const slide = {
   },
 };
 
+export const slides = {
+  getAll(): Promise<AxiosResponse<Array<Props>>> {
+    return axios({
+        method: "GET",
+        url: `localhost:8080/api/search`,
+      }
+    )
+  },
+};
 
 
