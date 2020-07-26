@@ -50,4 +50,24 @@ class SlideRepositoryTest {
             () -> assertThat(persistPresentations.get(1).getTitle()).isEqualTo(secondTitle)
         );
     }
+
+    @Test
+    @DisplayName("슬라이드 내용 변경")
+    void update() {
+        String title = "제목";
+        String content = "내용";
+        String contentType = "타입";
+        Slide slide = new Slide(title, content, contentType);
+        Slide persist = slideRepository.save(slide);
+
+        String newTitle = "새 제목";
+        persist.update(newTitle, null, null);
+        Slide newSlide = slideRepository.save(persist);
+
+        assertAll(
+            () -> assertThat(newSlide.getTitle()).isEqualTo(newTitle),
+            () -> assertThat(newSlide.getContent()).isEqualTo(content),
+            () -> assertThat(newSlide.getContentType()).isEqualTo(contentType)
+        );
+    }
 }

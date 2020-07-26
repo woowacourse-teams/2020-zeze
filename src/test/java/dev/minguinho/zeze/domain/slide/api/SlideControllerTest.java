@@ -83,4 +83,24 @@ class SlideControllerTest {
             .andExpect(content().string(containsString(secondTitle)))
             .andDo(print());
     }
+
+    @Test
+    @DisplayName("슬라이드 업데이트 요청")
+    void updateSlide() throws Exception {
+        String title = "제목";
+        String content = "내용";
+        String contentType = "타입";
+        SlideRequest slideRequest = new SlideRequest(title, content, contentType);
+
+        String body = objectMapper.writeValueAsString(slideRequest);
+
+        mvc.perform(patch("/api/slides/1")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(body)
+        )
+            .andExpect(status().isNoContent())
+            .andDo(print());
+
+        verify(slideService, times(1)).updateSlide(eq(1L), any(SlideRequest.class));
+    }
 }

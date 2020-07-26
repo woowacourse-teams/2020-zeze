@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequest;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponses;
+import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
 
@@ -63,5 +65,37 @@ class SlideServiceTest {
             () -> assertThat(slideResponses.getValues().get(0).getTitle()).isEqualTo(firstTitle),
             () -> assertThat(slideResponses.getValues().get(1).getTitle()).isEqualTo(secondTitle)
         );
+    }
+
+    @Test
+    @DisplayName("슬라이드 업데이트")
+    void updateSlide() {
+        String title = "제목";
+        String content = "내용";
+        String contentType = "타입";
+        Slide slide = new Slide(title, content, contentType);
+        when(slideRepository.findById(1L)).thenReturn(Optional.of(slide));
+        String newTitle = "새 제목";
+        when(slideRepository.save(any(Slide.class))).thenReturn(new Slide(newTitle, content, contentType));
+
+        SlideRequest slideRequest = new SlideRequest(newTitle, null, null);
+        slideService.updateSlide(1L, slideRequest);
+
+        verify(slideRepository, times(1)).save(any(Slide.class));
+        assertAll(
+            () -> assertThat(slide.getTitle()).isEqualTo(newTitle),
+            () -> assertThat(slide.getContent()).isEqualTo(content),
+            () -> assertThat(slide.getContentType()).isEqualTo(contentType)
+        );
+    }
+
+    @Test
+    @DisplayName("슬라이드가 존재하지 않을 경우")
+    void updateWithInvalidSlide() {
+        when(slideRepository.findById(1L)).thenThrow(new SlideNotFoundException(1L));
+
+        assertThatThrownBy(() -> slideService.updateSlide(1L, null))
+            .isInstanceOf(SlideNotFoundException.class)
+            .hasMessage("Slide Id : 1 해당 슬라이드는 존재하지 않습니다.");
     }
 }
