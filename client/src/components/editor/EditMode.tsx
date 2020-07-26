@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Preview from "./Preview";
 import Editor from "../common/editor";
+import { sampleYoutubeMarkdown } from "../../utils/markdown/fixtures";
 
 const EditMode: React.FC = () => {
-  const [text, setText] = useState<string>("");
+  const [text, setText] = useState<string>(sampleYoutubeMarkdown);
 
   const uploadFile = (file: File) => new Promise<string>(resolve => {
     setTimeout(() => {
