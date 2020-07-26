@@ -1,4 +1,4 @@
-import Code from "./code"
+import Code from "./Code";
 
 export {
     Code
