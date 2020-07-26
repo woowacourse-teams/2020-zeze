@@ -103,4 +103,14 @@ class SlideControllerTest {
 
         verify(slideService, times(1)).updateSlide(eq(1L), any(SlideRequest.class));
     }
+
+    @Test
+    @DisplayName("슬라이드 삭제 요청")
+    void deleteSlide() throws Exception {
+        mvc.perform(delete("/api/slides/1"))
+            .andExpect(status().isNoContent())
+            .andDo(print());
+
+        verify(slideService, times(1)).deleteSlide(1L);
+    }
 }

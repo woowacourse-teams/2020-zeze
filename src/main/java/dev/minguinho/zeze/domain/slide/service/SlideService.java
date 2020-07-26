@@ -35,4 +35,9 @@ public class SlideService {
         persist.update(slideRequest.getTitle(), slideRequest.getContent(), slideRequest.getContentType());
         slideRepository.save(persist);
     }
+
+    @Transactional
+    public void deleteSlide(Long slideId) {
+        slideRepository.deleteById(slideId);
+    }
 }

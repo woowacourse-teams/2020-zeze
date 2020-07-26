@@ -98,4 +98,12 @@ class SlideServiceTest {
             .isInstanceOf(SlideNotFoundException.class)
             .hasMessage("Slide Id : 1 해당 슬라이드는 존재하지 않습니다.");
     }
+
+    @Test
+    @DisplayName("슬라이드 삭제")
+    void deleteSlide() {
+        slideService.deleteSlide(1L);
+
+        verify(slideRepository, times(1)).deleteById(1L);
+    }
 }
