@@ -1,12 +1,12 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import {Code} from "./renderers";
+import { Code } from "./renderers";
 
 interface IProps {
-    value?: string
+  value?: string
 }
 
-const Markdown: React.FC<IProps> = ({value}) => <ReactMarkdown source={value} renderers={{
+const Markdown: React.FC<IProps> = ({ value }) => <ReactMarkdown source={value} renderers={{
   code: Code,
 }} />;
 
