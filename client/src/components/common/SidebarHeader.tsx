@@ -9,7 +9,7 @@ interface IProps {
 const SidebarHeader: React.FC<IProps> = ({src, title}) => (
   <S.SidebarHeader>
     <div>
-      <img src={src || S.user} alt={title} /><span>{title}</span>
+      <img src={src || S.user} alt={title}/><span>{title}</span>
     </div>
     <button>
       <img src={S.more} alt="more"/>

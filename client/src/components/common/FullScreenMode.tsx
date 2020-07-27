@@ -8,6 +8,7 @@ import {Keys} from "../../domains/constants";
 interface IProps {
   contents: string[]
 }
+
 const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const [index, setIndex] = useState<number>(0);
   const [slides] = useState<string[]>(contents);

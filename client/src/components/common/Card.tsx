@@ -13,7 +13,7 @@ interface IProps {
 const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => (
   <Link to={`/editor/${id}`}>
     <S.Card>
-      <header />
+      <header/>
       <main>
         <div className="title">{title}</div>
         <div className="subtitle">{subtitle}</div>

@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import * as S from "./assets";
 import Layout from "../common/Layout";
-import {MAX_WIDTH, PRIMARY_GREEN, SECONDARY_GREEN} from "../../domains/constants";
+import {MAX_WIDTH, PRIMARY_GREEN} from "../../domains/constants";
 
 const Home: React.FC = () => (
   <Layout>
@@ -51,7 +51,7 @@ const Home: React.FC = () => (
           alignItems: "center",
           boxShadow: "1px 1px 1px #aaa",
         }}>
-            Slide example goes here
+          Slide example goes here
         </div>
       </S.Section>
     </S.Home>

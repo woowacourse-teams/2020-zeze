@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import * as S from "./assets";
 import Preview from "./Preview";
 import {marked, splitter} from "../../utils/markdown/renderer";
-
 // Temporary fixture
 import {sampleMarkdown} from "../../utils/fixtures";
 import SidebarLayout from "../common/SidebarLayout";

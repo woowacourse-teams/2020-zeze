@@ -15,10 +15,10 @@ const SidebarLayout: React.FC<IProps> = ({children, fluid = false}) => (
         <SidebarHeader src={undefined} title="Hodol"/>
         {/* <SidebarMenu to="/me" src={S.recent} title="Recent"/>*/}
         <NavLink to="/me" activeClassName="current">
-          <SidebarMenu src={S.slide} title="All Slides" />
+          <SidebarMenu src={S.slide} title="All Slides"/>
         </NavLink>
         <NavLink to="/archive" activeClassName="current">
-          <SidebarMenu src={S.archive} title="Archive" />
+          <SidebarMenu src={S.archive} title="Archive"/>
         </NavLink>
       </div>
       <Link to="/editor">

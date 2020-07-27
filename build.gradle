@@ -40,6 +40,11 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    // AWS
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.820'
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testCompile group: 'io.findify', name: 's3mock_2.12', version: '0.2.5'
 }
 
 test {
@@ -59,7 +64,7 @@ editorconfig {
 checkstyle {
     maxWarnings = 0 // 규칙이 어긋나는 코드가 하나라도 있을 경우 빌드 fail을 내고 싶다면 이 선언을 추가한다.
     configFile = file("${rootDir}/.zeze-checkstyle.xml")
-    toolVersion ="8.34"  // checkstyle 버전 8.24 이상 선언
+    toolVersion = "8.34"  // checkstyle 버전 8.24 이상 선언
 }
 
 check.dependsOn editorconfigCheck
