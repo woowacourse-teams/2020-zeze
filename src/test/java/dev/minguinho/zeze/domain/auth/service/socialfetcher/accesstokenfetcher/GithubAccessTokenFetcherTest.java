@@ -44,7 +44,7 @@ class GithubAccessTokenFetcherTest {
     @BeforeEach
     void setUp() {
         WebClient.Builder builder = WebClient.builder();
-        githubAccessTokenFetcher = new GithubAccessTokenFetcher(builder);
+        githubAccessTokenFetcher = new GithubAccessTokenFetcher(builder, "clientId", "clientSecret");
 
         String baseUrl = String.format("http://localhost:%s",
             server.getPort());

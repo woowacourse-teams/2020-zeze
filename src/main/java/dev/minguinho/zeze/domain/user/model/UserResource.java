@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.domain.resource.model;
+package dev.minguinho.zeze.domain.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +20,5 @@ public class UserResource extends BaseEntity {
     private Long userId;
     private String email;
     private String name;
-    private String image;
-
+    private String profileImage;
 }

@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponse;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -15,7 +15,7 @@ public class SocialResourceFetcherImpl implements SocialResourceFetcher {
     private final SocialResourceFetcher githubResourceFetcher;
 
     @Override
-    public Mono<SocialResourceResponseDto> fetch(
+    public Mono<SocialResourceResponse> fetch(
         SocialResourceRequestDto socialResourceRequestDto) {
         switch (socialResourceRequestDto.getProvider()) {
             case GITHUB:

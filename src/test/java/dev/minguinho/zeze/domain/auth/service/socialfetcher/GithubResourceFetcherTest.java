@@ -20,10 +20,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.GithubResourceFetcher;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 class GithubResourceFetcherTest {
@@ -60,7 +59,8 @@ class GithubResourceFetcherTest {
         String jsonResponse = "{\n" +
             "  \"id\": \"socialId\",\n" +
             "  \"email\": \"foo@bar.com\",\n" +
-            "  \"name\": \"foo\"\n" +
+            "  \"name\": \"foo\",\n" +
+            "  \"avatar_url\": \"image\"\n" +
             "}";
         server.enqueue(new MockResponse()
             .setBody(jsonResponse)
@@ -68,13 +68,14 @@ class GithubResourceFetcherTest {
         given(socialResourceRequestDto.getProvider()).willReturn(Social.Provider.GITHUB);
         given(socialResourceRequestDto.getProviderAccessToken()).willReturn("providerAccessToken");
 
-        SocialResourceResponseDto socialResponse =
+        SocialResourceResponse socialResponse =
             githubResourceFetcher.fetch(socialResourceRequestDto).block();
 
         assertAll(
             () -> assertThat(socialResponse.getSocialId()).isEqualTo("socialId"),
             () -> assertThat(socialResponse.getEmail()).isEqualTo("foo@bar.com"),
-            () -> assertThat(socialResponse.getName()).isEqualTo("foo")
+            () -> assertThat(socialResponse.getName()).isEqualTo("foo"),
+            () -> assertThat(socialResponse.getProfileImage()).isEqualTo("image")
         );
     }
 
@@ -83,22 +84,5 @@ class GithubResourceFetcherTest {
         given(socialResourceRequestDto.getProvider()).willReturn(Social.Provider.NONE);
         assertThatThrownBy(() -> githubResourceFetcher.fetch(socialResourceRequestDto))
             .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    void fetchUserResource_InvalidIdField_Exception() {
-        String jsonResponse = "{\n" +
-            "  \"socialId\": \"socialId\",\n" +
-            "  \"email\": \"foo@bar.com\"\n" +
-            "}";
-        server.enqueue(new MockResponse()
-            .setBody(jsonResponse)
-            .addHeader("Content-Type", APPLICATION_JSON.toString()));
-        given(socialResourceRequestDto.getProvider()).willReturn(Social.Provider.GITHUB);
-        given(socialResourceRequestDto.getProviderAccessToken()).willReturn("providerAccessToken");
-        Mono<SocialResourceResponseDto> monoResponse =
-            githubResourceFetcher.fetch(socialResourceRequestDto);
-        assertThatThrownBy(monoResponse::block)
-            .isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.domain.resource.model;
+package dev.minguinho.zeze.domain.user.model;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
