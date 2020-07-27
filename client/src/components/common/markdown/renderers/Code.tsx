@@ -1,5 +1,5 @@
 import React from "react";
-import Youtube from "../extensions/Youtube";
+import Language, { Youtube } from "../extensions";
 
 interface IProps {
   language: string | undefined,
@@ -7,8 +7,9 @@ interface IProps {
 }
 
 const Code: React.FC<IProps> = ({ language, value }) => {
-  if (language === "youtube") {
-    return <Youtube code={value} />;
+  switch (language) {
+    case Language.YOUTUBE:
+      return <Youtube code={value} />;
   }
 
   return (
