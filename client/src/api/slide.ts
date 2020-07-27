@@ -11,60 +11,36 @@ interface Props {
   }
 }
 
+const slideInstance = axios.create({
+  baseURL: "localhost:8080/api/slides",
+  headers: {authorization: localStorage.getItem("token")},
+});
+
 export const slide = {
-  get({id}: Props): Promise<AxiosResponse<Props>> {
-    return axios(
-      {
-        method: "GET",
-        url: `localhost:8080/api/slides?id=${id}`,
-        headers: {authorization: localStorage.getItem("token")},
-      },
-    );
+  get({ id }: Props): Promise<AxiosResponse<Props>> {
+    return slideInstance.get(`?id=${id}`);
   },
   getAll(): Promise<AxiosResponse<Array<Props>>> {
-    return axios({
-      method: "GET",
-      url: `localhost:8080/api/slides`,
-      headers: {authorization: localStorage.getItem("token")},
-    },
-    );
+    return slideInstance.get("/");
   },
-  create({data}: Props): Promise<AxiosResponse<Props>> {
-    return axios(
-      {
-        method: "POST",
-        url: "localhost:8080/api/slides",
-        headers: {authorization: localStorage.getItem("token")},
-        data,
-      });
+  create({ data }: Props): Promise<AxiosResponse<Props>> {
+    return slideInstance.post("/", data);
   },
-  update({id, data}: Props): Promise<AxiosResponse<Props>> {
-    return axios(
-      {
-        method: "PUT",
-        url: `localhost:8080/api/slides?id=${id}`,
-        headers: {authorization: localStorage.getItem("token")},
-        data,
-      });
+  update({ id, data }: Props): Promise<AxiosResponse<Props>> {
+    return slideInstance.put(`?id=${id}`, data);
   },
-  delete({id}: Props): Promise<AxiosResponse<Props>> {
-    return axios(
-      {
-        method: "DELETE",
-        url: `localhost:8080/api/slides?id=${id}`,
-        headers: {authorization: localStorage.getItem("token")},
-      },
-    );
+  delete({ id }: Props): Promise<AxiosResponse<Props>> {
+    return slideInstance.delete(`?id=${id}`);
   },
 };
 
+const slidesInstance = axios.create({
+  baseURL: "localhost:8080/api/search",
+});
+
 export const slides = {
   getAll(): Promise<AxiosResponse<Array<Props>>> {
-    return axios({
-      method: "GET",
-      url: `localhost:8080/api/search`,
-    },
-    );
+    return slidesInstance.get("/");
   },
 };
 
