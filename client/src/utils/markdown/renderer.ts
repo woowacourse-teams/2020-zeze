@@ -22,7 +22,7 @@ marked.setOptions({
   gfm: true,
 });
 
-const splitter = ({content, delimiter}: Markdown) => content
+const splitter = ({content, delimiter}: Markdown): string[] => content
   .split(delimiter)
   .filter(slide => slide.length !== 0);
 
