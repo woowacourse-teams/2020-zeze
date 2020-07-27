@@ -19,7 +19,7 @@ export const Layout = styled.main`
 export const Slogan = styled.h2`
   margin: 0;
   color: #fff;
-  font-size: 4rem;
+  font-size: 6rem;
   
   @media (max-width: ${MOBILE_MAX_WIDTH}px) {
     font-size: 2.5rem;
@@ -32,21 +32,30 @@ interface SectionProps {
 
 export const Section = styled("div")<SectionProps>`
   background-color: ${({background}: SectionProps) => background};
-  padding: 15px;
+  padding: 60px 15px;
   margin: 0 auto;
   
   @media (max-width: ${MOBILE_MAX_WIDTH}px) {
-    max-width: 400px;
+    padding: 30px 15px;
   }
 `;
 
 export const Button = styled.div`
   display: inline-block;
   border: 2px solid white;
-  border-radius: 3px;
-  padding: 1rem;
-  margin-top: 2rem;
+  border-radius: 50px;
+  padding: 1rem 1.5rem;
+  margin: 2rem 0 1.5rem;
   color: #fff;
   font-weight: 600;
   font-size: 1.4rem;
+  
+  &:hover {
+    cursor: pointer;
+  }
+  
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+    margin: 1rem 0 0.75rem;
+    font-size: 1.1rem;
+  }
 `;
