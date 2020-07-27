@@ -1,21 +1,28 @@
 package dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.model.User;
-import dev.minguinho.zeze.domain.resource.model.UserResource;
+import dev.minguinho.zeze.domain.user.model.UserResource;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @Getter
-public class SocialResourceResponseDto {
+public class GithubResourceResponseDto implements SocialResourceResponse {
+    @JsonProperty(value = "id")
     private String socialId;
+    @JsonProperty("email")
     private String email;
+    @JsonProperty("name")
     private String name;
-    private String image;
+    @JsonProperty("avatar_url")
+    private String profileImage;
 
     public User createUser(Social.Provider provider) {
         return User.builder()
@@ -32,7 +39,7 @@ public class SocialResourceResponseDto {
             .userId(userId)
             .email(email)
             .name(name)
-            .image(image)
+            .profileImage(profileImage)
             .build();
     }
 }

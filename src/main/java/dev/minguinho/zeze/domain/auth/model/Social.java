@@ -6,9 +6,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,23 +31,19 @@ public class Social {
     private Provider provider;
 
     @Column(name = "social_id", length = 255)
+    @NotNull
     private String socialId;
 
     @Builder
     private Social(Provider provider, String socialId) {
+        Assert.notNull(provider, "provider should not be null");
+        Assert.hasLength(socialId, "socialId should have length");
         this.provider = provider;
         this.socialId = socialId;
     }
 
-    @AllArgsConstructor
-    @Getter
     public enum Provider {
-        GITHUB("id", "name", "email", "avatar_url"),
-        NONE(null, null, null, null);
-
-        private String idFieldName;
-        private String nameFieldName;
-        private String emailFieldName;
-        private String imageFieldName;
+        GITHUB,
+        NONE;
     }
 }

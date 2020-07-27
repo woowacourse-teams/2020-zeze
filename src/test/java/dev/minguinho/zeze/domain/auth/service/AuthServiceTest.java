@@ -1,5 +1,6 @@
 package dev.minguinho.zeze.domain.auth.service;
 
+import static dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.GithubResourceResponseDtoTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -18,7 +19,7 @@ import dev.minguinho.zeze.domain.auth.model.UserRepository;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.SocialAccessTokenFetcher;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponseDto;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.SocialResourceFetcher;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.GithubResourceResponseDto;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,14 +53,9 @@ class AuthServiceTest {
             .build();
         given(accessTokenFetcher.fetch(any())).willReturn(Mono.just(accessTokenResponseDto));
         given(accessTokenRequestDto.getProvider()).willReturn(Social.Provider.GITHUB);
-        SocialResourceResponseDto socialResourceResponseDto = SocialResourceResponseDto.builder()
-            .socialId("soialId")
-            .email("email")
-            .name("name")
-            .image("image")
-            .build();
-        given(resourceFetcher.fetch(any())).willReturn(Mono.just(socialResourceResponseDto));
-        given(userService.save(any(), any())).willReturn(user);
+        GithubResourceResponseDto githubResourceResponseDto = getGithubResourceFixture();
+        given(resourceFetcher.fetch(any())).willReturn(Mono.just(githubResourceResponseDto));
+        given(userService.findOrElseSave(any(), any())).willReturn(user);
         AuthenticationDto authenticationDto = AuthenticationDto.builder()
             .accessToken("accessToken")
             .build();

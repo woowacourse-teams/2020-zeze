@@ -1,8 +1,11 @@
 package dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,15 +18,20 @@ import reactor.core.publisher.Mono;
 @Service
 public class GithubAccessTokenFetcher implements SocialAccessTokenFetcher {
     private static final String BASE_URL = "https://github.com/";
+    private static final String ACCESS_TOKEN_FIELD_NAME = "access_token";
+
     private final WebClient webClient;
+    private final String clientId;
+    private final String clientSecret;
 
-    @Value("${github.client.id}")
-    private String clientId;
-    @Value("${github.client.secret}")
-    private String clientSecret;
-
-    public GithubAccessTokenFetcher(WebClient.Builder webClientBuilder) {
+    public GithubAccessTokenFetcher(
+        WebClient.Builder webClientBuilder,
+        @Value("${github.client.id}") String clientId,
+        @Value("${github.client.secret}") String clientSecret
+    ) {
         this.webClient = webClientBuilder.baseUrl(BASE_URL).build();
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
     }
 
     @Override
@@ -46,6 +54,19 @@ public class GithubAccessTokenFetcher implements SocialAccessTokenFetcher {
             .bodyValue(githubAccessTokenRequestDto)
             .retrieve()
             .bodyToMono(JsonNode.class)
-            .map(json -> SocialAccessTokenFetcher.createAccessToken(json, "access_token"));
+            .map(this::createAccessToken);
+    }
+
+    private SocialAccessTokenResponseDto createAccessToken(JsonNode body) {
+        String accessToken = Optional.ofNullable(body.get(ACCESS_TOKEN_FIELD_NAME))
+            .map(JsonNode::asText)
+            .filter(token -> !StringUtils.isEmpty(token))
+            .orElseThrow(() -> new IllegalArgumentException(
+                "ResponseBody does not have the field: " + ACCESS_TOKEN_FIELD_NAME
+            ));
+
+        return SocialAccessTokenResponseDto.builder()
+            .accessToken(accessToken)
+            .build();
     }
 }

@@ -9,10 +9,10 @@ import lombok.Getter;
 
 @Getter
 public class GithubResourceRequestDto implements SocialResourceRequestDto {
-    private @NotNull
-    final Social.Provider provider = Social.Provider.GITHUB;
-    private @NotBlank
-    final String providerAccessToken;
+    @NotNull
+    private final Social.Provider provider = Social.Provider.GITHUB;
+    @NotBlank
+    private final String providerAccessToken;
 
     @Builder
     private GithubResourceRequestDto(String providerAccessToken) {

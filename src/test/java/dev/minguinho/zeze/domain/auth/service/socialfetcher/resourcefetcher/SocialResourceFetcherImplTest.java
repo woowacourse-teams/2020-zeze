@@ -1,5 +1,6 @@
 package dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher;
 
+import static dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.GithubResourceResponseDtoTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -13,7 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.GithubResourceResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponse;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,20 +34,17 @@ class SocialResourceFetcherImplTest {
     @DisplayName("유저 정보 가져 오기")
     @Test
     void fetchResource_ValidInput_ValidOutput() {
-        SocialResourceResponseDto socialResourceResponseDto = SocialResourceResponseDto.builder()
-            .socialId("socialId")
-            .email("email")
-            .name("name")
-            .build();
-        given(githubResourceFetcher.fetch(socialResourceRequestDto)).willReturn(Mono.just(socialResourceResponseDto));
+        GithubResourceResponseDto githubResourceResponseDto = getGithubResourceFixture();
+        given(githubResourceFetcher.fetch(socialResourceRequestDto)).willReturn(Mono.just(githubResourceResponseDto));
         given(socialResourceRequestDto.getProvider()).willReturn(Social.Provider.GITHUB);
 
-        SocialResourceResponseDto response = socialResourceFetcher.fetch(socialResourceRequestDto).block();
+        SocialResourceResponse response = socialResourceFetcher.fetch(socialResourceRequestDto).block();
 
         assertAll(
             () -> assertThat(response.getSocialId()).isEqualTo("socialId"),
             () -> assertThat(response.getEmail()).isEqualTo("email"),
-            () -> assertThat(response.getName()).isEqualTo("name")
+            () -> assertThat(response.getName()).isEqualTo("name"),
+            () -> assertThat(response.getProfileImage()).isEqualTo("image")
         );
     }
 

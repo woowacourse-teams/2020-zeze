@@ -24,7 +24,7 @@ public class AuthService {
             .map(response -> response.createResourceRequest(githubAccessTokenRequest.getProvider()))
             .block();
         User user = resourceFetcher.fetch(socialResourceRequestDto)
-            .map(response -> userService.save(response, githubAccessTokenRequest.getProvider()))
+            .map(response -> userService.findOrElseSave(response, githubAccessTokenRequest.getProvider()))
             .block();
         return tokenService.getTokenOf(user);
     }
