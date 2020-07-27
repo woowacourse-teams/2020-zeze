@@ -6,8 +6,8 @@ interface IProps {
   value?: string
 }
 
-const Markdown: React.FC<IProps> = ({ value }) => <ReactMarkdown source={value} renderers={{
-  code: Code
-}} />;
+const Markdown: React.FC<IProps> = ({ value }) => (
+  <ReactMarkdown source={value} renderers={{ code: Code }} />
+);
 
 export default Markdown;
