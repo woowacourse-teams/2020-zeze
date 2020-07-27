@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class SocialAccessTokenResponseDto {
+public class SocialAccessTokenResponseDto implements SocialAccessTokenResponse {
     private final @NotBlank String accessToken;
 
     @Builder
@@ -26,5 +26,12 @@ public class SocialAccessTokenResponseDto {
             default:
                 throw new IllegalStateException("잘못된 형식의 Social입니다. Input: " + provider);
         }
+    }
+
+    @Override
+    public SocialResourceRequestDto createResourceRequest() {
+        return GithubResourceRequestDto.builder()
+            .providerAccessToken(accessToken)
+            .build();
     }
 }
