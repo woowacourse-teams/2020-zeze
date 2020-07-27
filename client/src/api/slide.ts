@@ -17,7 +17,7 @@ export const slide = {
       {
         method: "GET",
         url: `localhost:8080/api/slides?id=${id}`,
-        headers: {authorization: localStorage.token},
+        headers: {authorization: localStorage.getItem("token")},
       },
     );
   },
@@ -25,17 +25,16 @@ export const slide = {
     return axios({
       method: "GET",
       url: `localhost:8080/api/slides`,
-      headers: {authorization: localStorage.token},
+      headers: {authorization: localStorage.getItem("token")},
     },
     );
   },
   create({data}: Props): Promise<AxiosResponse<Props>> {
-    console.log(data);
     return axios(
       {
         method: "POST",
         url: "localhost:8080/api/slides",
-        headers: {authorization: localStorage.token},
+        headers: {authorization: localStorage.getItem("token")},
         data,
       });
   },
@@ -44,7 +43,7 @@ export const slide = {
       {
         method: "PUT",
         url: `localhost:8080/api/slides?id=${id}`,
-        headers: {authorization: localStorage.token},
+        headers: {authorization: localStorage.getItem("token")},
         data,
       });
   },
@@ -53,7 +52,7 @@ export const slide = {
       {
         method: "DELETE",
         url: `localhost:8080/api/slides?id=${id}`,
-        headers: {authorization: localStorage.token},
+        headers: {authorization: localStorage.getItem("token")},
       },
     );
   },
