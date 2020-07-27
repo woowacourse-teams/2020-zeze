@@ -1,11 +1,7 @@
+import React from "react";
+
 interface Props {
   src?: string;
-  width: string;
-  height: string;
-}
-
-interface Youtube {
-  id: string;
   width: string;
   height: string;
 }
@@ -16,13 +12,14 @@ const KEY_VALUE_SEPARATOR = "=";
 
 const DEFAULT_PROPS: Props = {
   width: "100%",
-  height: "auto",
+  height: "315",
 };
 
-const template = ({id, width, height}: Youtube): string =>
-  `<iframe width="${width}" height="${height}" src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+interface IProps {
+  code: string,
+}
 
-export default (code: string): string => {
+const Youtube: React.FC<IProps> = ({code = ""}) => {
   const {src, width, height} = code
     .split(NEW_LINE_SEPARATOR)
     .map(line => {
@@ -40,5 +37,10 @@ export default (code: string): string => {
 
   const id = src?.match(YOUTUBE_ID_REGEX)?.[1];
 
-  return id ? template({id, width, height}) : "";
+  return id ?
+    <iframe title={id} width={width} height={height} src={`https://www.youtube.com/embed/${id}`} frameBorder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen></iframe> : null;
 };
+
+export default Youtube;

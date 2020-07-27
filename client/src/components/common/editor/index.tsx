@@ -58,7 +58,8 @@ const Editor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop}) => {
     return () => {
       codemirror.toTextArea();
     };
-  }, [defaultValue, onChange, onDrop]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <StyledTextArea ref={textareaRef}/>;
 };

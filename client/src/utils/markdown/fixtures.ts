@@ -1,33 +1,31 @@
 export const sampleYoutubeMarkdown = `
-\`\`\`youtube
-src=tJM0yIbg8iQ
-\`\`\`
+---
+title: Hello world!
+subtitle: introducing limetree
+author: hodol
+date: 2020-07-12
+---
 
-\`\`\`youtube
-src=https://www.youtube.com/watch?v=tJM0yIbg8iQ
-\`\`\`
-
-\`\`\`youtube
-src=https://youtu.be/tJM0yIbg8iQ
-\`\`\`
-
-\`\`\`youtube
-src=https://www.youtube.com/embed/tJM0yIbg8iQ
-\`\`\`
+## first page
 
 \`\`\`youtube
 src=tJM0yIbg8iQ
-width=300
-height=200
 \`\`\`
 
-\`\`\`youtube
-src=tJM0yIbg8iQ
-width=300
-\`\`\`
+---
 
-\`\`\`youtube
-src=tJM0yIbg8iQ
-height=200
-\`\`\`
+## this is page two
+### this can be a subtitle
+
+- list
+- like
+- this
+
+---
+
+## this is page three
+
+1. one
+1. two
+1. three 
 `;

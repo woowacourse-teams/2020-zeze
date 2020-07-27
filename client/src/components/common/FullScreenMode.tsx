@@ -1,8 +1,9 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import fscreen from "fscreen";
 import {css, Global} from "@emotion/core";
 import * as S from "./assets";
 import {Keys} from "../../domains/constants";
+import Markdown from "./markdown";
 
 
 interface IProps {
@@ -11,8 +12,13 @@ interface IProps {
 
 const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const [index, setIndex] = useState<number>(0);
-  const [slides] = useState<string[]>(contents);
-  const [slide, setSlide] = useState<string>(slides[0]);
+  const [slides, setSlides] = useState<string[]>(contents);
+  const [slide, setSlide] = useState<string>(contents[0]);
+
+  useEffect(() => {
+    setSlides(contents);
+    setSlide(contents[0]);
+  }, [contents]);
 
   const slideReference = useRef<HTMLDivElement>(null);
 
@@ -66,9 +72,8 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
       <S.FullScreen
         ref={slideReference}
         tabIndex={0}
-        dangerouslySetInnerHTML={{__html: slide}}
         onKeyDown={handleKeyDown}
-      />
+      ><Markdown value={slide}/></S.FullScreen>
       <S.FullScreenButton onClick={toggleFullScreen}/>
     </>
   );

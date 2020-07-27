@@ -1,5 +1,6 @@
 import React from "react";
 import * as S from "./assets";
+import Markdown from "../common/markdown";
 
 interface IProps {
   contents?: string[]
@@ -8,8 +9,9 @@ interface IProps {
 const Preview: React.FC<IProps> = ({contents}) => (
   <S.Preview>
     {contents?.map(content => (
-      <S.PreviewSlide>
-        <div dangerouslySetInnerHTML={{__html: content}}/>
+      // TODO: Should be fixed with real keys
+      <S.PreviewSlide key={Math.random()}>
+        <Markdown value={content}/>
       </S.PreviewSlide>
     ))}
   </S.Preview>
