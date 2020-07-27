@@ -68,7 +68,7 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         dangerouslySetInnerHTML={{__html: slide}}
         onKeyDown={handleKeyDown}
       />
-      <button onClick={toggleFullScreen}>Start presentation!</button>
+      <S.FullScreenButton onClick={toggleFullScreen}/>
     </>
   );
 };
