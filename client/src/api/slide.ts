@@ -18,7 +18,7 @@ const slideInstance = axios.create({
 
 export const slide = {
   get({ id }: Props): Promise<AxiosResponse<Props>> {
-    return slideInstance.get(`?id=${id}`);
+    return slideInstance.get(`${id}`);
   },
   getAll(): Promise<AxiosResponse<Array<Props>>> {
     return slideInstance.get("/");
@@ -27,10 +27,10 @@ export const slide = {
     return slideInstance.post("/", data);
   },
   update({ id, data }: Props): Promise<AxiosResponse<Props>> {
-    return slideInstance.put(`?id=${id}`, data);
+    return slideInstance.put(`${id}`, data);
   },
   delete({ id }: Props): Promise<AxiosResponse<Props>> {
-    return slideInstance.delete(`?id=${id}`);
+    return slideInstance.delete(`${id}`);
   },
 };
 
