@@ -1,7 +1,8 @@
 import React from "react";
+import {Link} from "react-router-dom";
 import * as S from "./assets";
 import Layout from "../common/Layout";
-import {PRIMARY_GREEN} from "../../domains/constants";
+import {MAX_WIDTH, PRIMARY_GREEN, SECONDARY_GREEN} from "../../domains/constants";
 
 const Home: React.FC = () => (
   <Layout>
@@ -9,9 +10,11 @@ const Home: React.FC = () => (
       <S.Section background={PRIMARY_GREEN}>
         <S.Layout>
           <S.Slogan>Beautiful,</S.Slogan>
-          <S.Slogan>Minimal Slides</S.Slogan>
+          <S.Slogan>Minimal <span style={{color: "#00FF7F"}}>Slides</span></S.Slogan>
           <S.Slogan>With Markdown</S.Slogan>
-          <S.Button>Getting Started</S.Button>
+          <Link to="/me">
+            <S.Button>Get Started for Free →</S.Button>
+          </Link>
         </S.Layout>
       </S.Section>
       <S.Section background="#333">
@@ -35,21 +38,21 @@ const Home: React.FC = () => (
         </S.Layout>
       </S.Section>
       <S.Section background={PRIMARY_GREEN}>
-        <S.Layout>
-          <div style={{
-            width: "100%",
-            minHeight: "20rem",
-            backgroundColor: "#fff",
-            fontWeight: "bold",
-            fontSize: 20,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            boxShadow: "1px 1px 1px #aaa",
-          }}>
+        <div style={{
+          width: "100%",
+          maxWidth: MAX_WIDTH,
+          margin: "0 auto",
+          minHeight: "30rem",
+          backgroundColor: "#fff",
+          fontWeight: "bold",
+          fontSize: 20,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          boxShadow: "1px 1px 1px #aaa",
+        }}>
             Slide example goes here
-          </div>
-        </S.Layout>
+        </div>
       </S.Section>
     </S.Home>
   </Layout>
