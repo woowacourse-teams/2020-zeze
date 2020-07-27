@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 **/src/main/resources/static
 src/main/resources/application-aws.yml
+.DS_Store
 
 ### STS ###
 .apt_generated
