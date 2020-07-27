@@ -1,6 +1,7 @@
 package dev.minguinho.zeze.domain.slide.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Slide extends BaseEntity {
     private String title;
+    @Lob
     private String content;
     private String contentType;
 
