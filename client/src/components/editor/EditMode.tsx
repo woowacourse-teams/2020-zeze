@@ -9,7 +9,10 @@ const EditMode: React.FC = () => {
   const [contents, setContents] = useState<string[]>(text.split("---"));
 
   useEffect(() => {
-    setContents(text.split("---").filter(content => content.trim().length !== 0));
+    setContents(text
+      .split("---")
+      .filter(content => content.trim().length !== 0),
+    );
   }, [text]);
 
   const uploadFile = (file: File) => new Promise<string>(resolve => {
@@ -24,7 +27,7 @@ const EditMode: React.FC = () => {
         <Editor defaultValue={text} onChange={setText} onDrop={uploadFile}/>
         <FullScreenMode contents={contents}/>
       </div>
-      <Preview contents={contents}/>
+      <Preview content={text}/>
     </>
   );
 };
