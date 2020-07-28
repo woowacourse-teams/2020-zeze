@@ -5,12 +5,13 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import reactor.core.publisher.Mono;
+
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.request.GithubAccessTokenRequestDto;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.GithubAccessTokenResponseDto;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
-import reactor.core.publisher.Mono;
 
 @Service
 public class GithubAccessTokenFetcher implements SocialAccessTokenFetcher {

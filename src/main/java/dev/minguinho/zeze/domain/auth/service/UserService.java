@@ -2,12 +2,13 @@ package dev.minguinho.zeze.domain.auth.service;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.model.User;
 import dev.minguinho.zeze.domain.auth.model.UserRepository;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponse;
 import dev.minguinho.zeze.domain.user.model.UserResourceRepository;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service

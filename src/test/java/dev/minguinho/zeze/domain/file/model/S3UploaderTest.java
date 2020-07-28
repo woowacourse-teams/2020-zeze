@@ -17,8 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
+
 import io.findify.s3mock.S3Mock;
+
+import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
 
 class S3UploaderTest {
     private static S3Mock s3Mock;
@@ -33,6 +35,11 @@ class S3UploaderTest {
             .withInMemoryBackend()
             .build();
         s3Mock.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        s3Mock.stop();
     }
 
     @BeforeEach
@@ -82,10 +89,5 @@ class S3UploaderTest {
         assertThatThrownBy(() -> s3Uploader.upload(multipartFile))
             .isInstanceOf(FileNotConvertedException.class)
             .hasMessage("의 파일 변환에 실패했습니다.");
-    }
-
-    @AfterAll
-    static void afterAll() {
-        s3Mock.stop();
     }
 }

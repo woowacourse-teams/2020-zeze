@@ -2,6 +2,8 @@ package dev.minguinho.zeze.domain.auth.service;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
 import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
 import dev.minguinho.zeze.domain.auth.model.User;
@@ -9,7 +11,6 @@ import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.S
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.SocialResourceFetcher;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service

@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.RequiredArgsConstructor;
+
 import dev.minguinho.zeze.domain.file.api.dto.FileUrlResponses;
 import dev.minguinho.zeze.domain.file.service.FileService;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor

@@ -16,11 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 
 @ExtendWith(MockitoExtension.class)
 class GithubAccessTokenFetcherTest {
@@ -54,9 +55,9 @@ class GithubAccessTokenFetcherTest {
 
     @Test
     void fetchAccessToken_ValidInput_ValidOutput() {
-        String jsonResponse = "{\n" +
-            "  \"access_token\": \"accessToken\"\n" +
-            "}";
+        String jsonResponse = "{\n"
+            + "  \"access_token\": \"accessToken\"\n"
+            + "}";
         server.enqueue(new MockResponse()
             .setBody(jsonResponse)
             .addHeader("Content-Type", APPLICATION_JSON.toString()));

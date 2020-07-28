@@ -3,12 +3,13 @@ package dev.minguinho.zeze.domain.user.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import dev.minguinho.zeze.domain.common.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import dev.minguinho.zeze.domain.common.model.BaseEntity;
 
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

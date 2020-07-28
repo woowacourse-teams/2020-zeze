@@ -14,13 +14,11 @@
       <emptyLine />
       <package name="net" withSubpackages="true" static="false" />
       <emptyLine />
+      <package name="com" withSubpackages="true" static="false" />
+      <emptyLine />
       <package name="" withSubpackages="true" static="false" />
       <emptyLine />
-      <package name="com.nhncorp" withSubpackages="true" static="false" />
-      <emptyLine />
-      <package name="com.navercorp" withSubpackages="true" static="false" />
-      <emptyLine />
-      <package name="com.naver" withSubpackages="true" static="false" />
+      <package name="dev.minguinho.zeze" withSubpackages="true" static="false" />
       <emptyLine />
     </value>
   </option>

@@ -1,14 +1,16 @@
 package dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.minguinho.zeze.domain.auth.model.Social;
-import dev.minguinho.zeze.domain.auth.model.User;
-import dev.minguinho.zeze.domain.user.model.UserResource;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import dev.minguinho.zeze.domain.auth.model.Social;
+import dev.minguinho.zeze.domain.auth.model.User;
+import dev.minguinho.zeze.domain.user.model.UserResource;
 
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

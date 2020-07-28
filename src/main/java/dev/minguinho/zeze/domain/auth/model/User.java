@@ -3,11 +3,12 @@ package dev.minguinho.zeze.domain.auth.model;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
-import dev.minguinho.zeze.domain.common.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import dev.minguinho.zeze.domain.common.model.BaseEntity;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

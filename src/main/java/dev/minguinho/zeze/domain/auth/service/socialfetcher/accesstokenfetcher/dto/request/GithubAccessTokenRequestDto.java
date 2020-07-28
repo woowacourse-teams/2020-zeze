@@ -1,6 +1,7 @@
 package dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Builder;
 import lombok.Getter;
 

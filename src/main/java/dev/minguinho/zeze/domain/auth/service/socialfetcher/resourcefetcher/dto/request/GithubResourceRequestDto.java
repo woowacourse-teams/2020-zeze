@@ -3,9 +3,10 @@ package dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import dev.minguinho.zeze.domain.auth.model.Social;
 import lombok.Builder;
 import lombok.Getter;
+
+import dev.minguinho.zeze.domain.auth.model.Social;
 
 @Getter
 public class GithubResourceRequestDto implements SocialResourceRequestDto {

@@ -2,10 +2,11 @@ package dev.minguinho.zeze.domain.auth.service;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
 import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 import dev.minguinho.zeze.domain.auth.model.User;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service

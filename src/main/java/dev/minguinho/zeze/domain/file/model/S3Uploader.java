@@ -13,17 +13,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
+
 import lombok.RequiredArgsConstructor;
+
+import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
 
 @Component
 @RequiredArgsConstructor
 public class S3Uploader {
+    private final AmazonS3 amazonS3;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     @Value("${cloud.aws.s3.directory}")
     private String directory;
-    private final AmazonS3 amazonS3;
 
     public String upload(MultipartFile multipartFile) {
         File file = convert(multipartFile);
