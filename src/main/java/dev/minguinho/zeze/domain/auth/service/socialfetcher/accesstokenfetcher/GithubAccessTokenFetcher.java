@@ -1,24 +1,20 @@
 package dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.request.GithubAccessTokenRequestDto;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.GithubAccessTokenResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 import reactor.core.publisher.Mono;
 
 @Service
 public class GithubAccessTokenFetcher implements SocialAccessTokenFetcher {
     private static final String BASE_URL = "https://github.com/";
-    private static final String ACCESS_TOKEN_FIELD_NAME = "access_token";
 
     private final WebClient webClient;
     private final String clientId;
@@ -35,7 +31,7 @@ public class GithubAccessTokenFetcher implements SocialAccessTokenFetcher {
     }
 
     @Override
-    public Mono<SocialAccessTokenResponseDto> fetch(SocialAccessTokenRequestDto socialAccessTokenRequestDto) {
+    public Mono<SocialAccessTokenResponse> fetch(SocialAccessTokenRequestDto socialAccessTokenRequestDto) {
         if (socialAccessTokenRequestDto.getProvider() != Social.Provider.GITHUB) {
             throw new IllegalStateException(
                 "Only GITHUB is supported. Input : " + socialAccessTokenRequestDto.getProvider().toString()
@@ -53,20 +49,7 @@ public class GithubAccessTokenFetcher implements SocialAccessTokenFetcher {
             .accept(MediaType.APPLICATION_JSON)
             .bodyValue(githubAccessTokenRequestDto)
             .retrieve()
-            .bodyToMono(JsonNode.class)
-            .map(this::createAccessToken);
-    }
-
-    private SocialAccessTokenResponseDto createAccessToken(JsonNode body) {
-        String accessToken = Optional.ofNullable(body.get(ACCESS_TOKEN_FIELD_NAME))
-            .map(JsonNode::asText)
-            .filter(token -> !StringUtils.isEmpty(token))
-            .orElseThrow(() -> new IllegalArgumentException(
-                "ResponseBody does not have the field: " + ACCESS_TOKEN_FIELD_NAME
-            ));
-
-        return SocialAccessTokenResponseDto.builder()
-            .accessToken(accessToken)
-            .build();
+            .bodyToMono(GithubAccessTokenResponseDto.class)
+            .cast(SocialAccessTokenResponse.class);
     }
 }

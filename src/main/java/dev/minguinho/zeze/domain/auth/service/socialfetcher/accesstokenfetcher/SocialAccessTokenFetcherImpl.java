@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -15,7 +15,7 @@ public class SocialAccessTokenFetcherImpl implements SocialAccessTokenFetcher {
     private final SocialAccessTokenFetcher githubAccessTokenFetcher;
 
     @Override
-    public Mono<SocialAccessTokenResponseDto> fetch(
+    public Mono<SocialAccessTokenResponse> fetch(
         SocialAccessTokenRequestDto socialAccessTokenRequestDto) {
         switch (socialAccessTokenRequestDto.getProvider()) {
             case GITHUB:

@@ -12,7 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
 import dev.minguinho.zeze.domain.auth.model.Social;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.GithubAccessTokenResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,13 +32,13 @@ class SocialAccessTokenFetcherImplTest {
     @DisplayName("access token 가져오기")
     @Test
     void fetchAccessToken_ValidInput_ValidOutput() {
-        SocialAccessTokenResponseDto accessTokenResponseDto = SocialAccessTokenResponseDto.builder()
+        GithubAccessTokenResponseDto accessTokenResponseDto = GithubAccessTokenResponseDto.builder()
             .accessToken("accessToken")
             .build();
         given(githubAccessTokenFetcher.fetch(accessTokenRequestDto)).willReturn(Mono.just(accessTokenResponseDto));
         given(accessTokenRequestDto.getProvider()).willReturn(Social.Provider.GITHUB);
 
-        SocialAccessTokenResponseDto response = socialAccessTokenFetcher.fetch(accessTokenRequestDto).block();
+        SocialAccessTokenResponse response = socialAccessTokenFetcher.fetch(accessTokenRequestDto).block();
         assertThat(response.getAccessToken()).isEqualTo("accessToken");
     }
 

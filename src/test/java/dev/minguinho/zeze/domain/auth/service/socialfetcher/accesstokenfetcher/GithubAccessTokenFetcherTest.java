@@ -18,10 +18,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
 import dev.minguinho.zeze.domain.auth.model.Social;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 class GithubAccessTokenFetcherTest {
@@ -64,7 +63,7 @@ class GithubAccessTokenFetcherTest {
         given(socialAccessTokenRequestDto.getProvider()).willReturn(Social.Provider.GITHUB);
         given(socialAccessTokenRequestDto.getCode()).willReturn("code");
 
-        SocialAccessTokenResponseDto accessTokenResponseDto =
+        SocialAccessTokenResponse accessTokenResponseDto =
             githubAccessTokenFetcher.fetch(socialAccessTokenRequestDto).block();
         assertThat(accessTokenResponseDto.getAccessToken()).isEqualTo("accessToken");
     }
@@ -74,21 +73,5 @@ class GithubAccessTokenFetcherTest {
         given(socialAccessTokenRequestDto.getProvider()).willReturn(Social.Provider.NONE);
         assertThatThrownBy(() -> githubAccessTokenFetcher.fetch(socialAccessTokenRequestDto))
             .isInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    void fetchAccessToken_InvalidFieldName_Exception() {
-        String jsonResponse = "{\n" +
-            "  \"accessToken\": \"accessToken\"\n" +
-            "}";
-        server.enqueue(new MockResponse()
-            .setBody(jsonResponse)
-            .addHeader("Content-Type", APPLICATION_JSON.toString()));
-        given(socialAccessTokenRequestDto.getProvider()).willReturn(Social.Provider.GITHUB);
-        given(socialAccessTokenRequestDto.getCode()).willReturn("code");
-
-        Mono<SocialAccessTokenResponseDto> monoResponse =
-            githubAccessTokenFetcher.fetch(socialAccessTokenRequestDto);
-        assertThatThrownBy(monoResponse::block).isInstanceOf(IllegalArgumentException.class);
     }
 }
