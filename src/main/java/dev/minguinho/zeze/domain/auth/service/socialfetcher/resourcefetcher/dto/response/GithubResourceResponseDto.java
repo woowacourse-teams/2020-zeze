@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class GithubResourceResponseDto implements SocialResourceResponse {
-    @JsonProperty(value = "id")
+    @JsonProperty("id")
     private String socialId;
     @JsonProperty("email")
     private String email;
