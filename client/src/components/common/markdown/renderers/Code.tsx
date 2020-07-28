@@ -1,15 +1,15 @@
 import React from "react";
-import Language, { Youtube } from "../extensions";
+import Language, {Youtube} from "../extensions";
 
 interface IProps {
   language: string | undefined,
   value: string
 }
 
-const Code: React.FC<IProps> = ({ language, value }) => {
+const Code: React.FC<IProps> = ({language, value}) => {
   switch (language) {
-    case Language.YOUTUBE:
-      return <Youtube code={value} />;
+  case Language.YOUTUBE:
+    return <Youtube code={value}/>;
   }
 
   return (

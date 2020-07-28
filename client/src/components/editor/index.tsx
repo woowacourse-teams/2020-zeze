@@ -1,12 +1,14 @@
 import React from "react";
-import Layout from "../common/Layout";
+import * as S from "./assets";
+import SidebarLayout from "../common/SidebarLayout";
 import EditMode from "./EditMode";
 
 const Editor: React.FC = () => (
-  <Layout>
-    <h1>Editor</h1>
-    <EditMode/>
-  </Layout>
+  <SidebarLayout fluid>
+    <S.Editor>
+      <EditMode/>
+    </S.Editor>
+  </SidebarLayout>
 );
 
 export default Editor;

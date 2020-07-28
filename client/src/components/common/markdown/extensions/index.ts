@@ -1,11 +1,11 @@
-import Youtube from "./Youtube"
+import Youtube from "./Youtube";
 
 enum Language {
-    YOUTUBE = "youtube"
-};
+  YOUTUBE = "youtube"
+}
 
 export {
-    Youtube
-}
+  Youtube,
+};
 
 export default Language;

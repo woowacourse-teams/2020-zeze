@@ -1,5 +1,5 @@
 import React, {Suspense} from "react";
-import {BrowserRouter, Switch, Route} from "react-router-dom";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Spinner from "./components/common/Spinner";
 
 const Home = React.lazy(() => import("./components/home"));

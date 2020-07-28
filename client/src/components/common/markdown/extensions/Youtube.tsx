@@ -11,7 +11,7 @@ const NEW_LINE_SEPARATOR = "\n";
 const KEY_VALUE_SEPARATOR = "=";
 
 const DEFAULT_PROPS: Props = {
-  width: "510",
+  width: "100%",
   height: "315",
 };
 
@@ -19,8 +19,8 @@ interface IProps {
   code: string,
 }
 
-const Youtube: React.FC<IProps> = ({ code = "" }) => {
-  const { src, width, height } = code
+const Youtube: React.FC<IProps> = ({code = ""}) => {
+  const {src, width, height} = code
     .split(NEW_LINE_SEPARATOR)
     .map(line => {
       const [key, ...value] = line.split(KEY_VALUE_SEPARATOR);
@@ -37,7 +37,13 @@ const Youtube: React.FC<IProps> = ({ code = "" }) => {
 
   const id = src?.match(YOUTUBE_ID_REGEX)?.[1];
 
-  return id ? <iframe title={id} width={width} height={height} src={`https://www.youtube.com/embed/${id}`} frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe> : null;
+  return id ?
+    <iframe
+      className="youtube"
+      title={id} width={width} height={height}
+      src={`https://www.youtube.com/embed/${id}`} frameBorder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen/> : null;
 };
 
 export default Youtube;

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, {useEffect, useRef} from "react";
 import styled from "@emotion/styled";
 
 import CodeMirror from "codemirror";
@@ -16,7 +16,7 @@ const StyledTextArea = styled.textarea`
   display: none;
 `;
 
-const Editor: React.FC<IProps> = ({ defaultValue = "", onChange, onDrop }) => {
+const Editor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop}) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -39,12 +39,14 @@ const Editor: React.FC<IProps> = ({ defaultValue = "", onChange, onDrop }) => {
 
       const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
 
-      files.filter(({ type }) => type.split("/")[0] === "image")
+      files.filter(({type}) => type.split("/")[0] === "image")
         .forEach(async file => {
           const marker = `![Uploading ${file.name}...]()`;
+
           editor.replaceRange(`${marker}\n`, editor.getCursor());
           const uploadUrl = await onDrop?.(file);
           const cursor = editor.getCursor();
+
           editor.setValue(editor.getValue().replace(marker, `![${file.name}](${uploadUrl})`));
           editor.setCursor(cursor);
         });
@@ -56,9 +58,10 @@ const Editor: React.FC<IProps> = ({ defaultValue = "", onChange, onDrop }) => {
     return () => {
       codemirror.toTextArea();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <StyledTextArea ref={textareaRef} />;
+  return <StyledTextArea ref={textareaRef}/>;
 };
 
 export default Editor;
