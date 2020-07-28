@@ -1,8 +1,8 @@
 import React from "react";
+import {Link, NavLink} from "react-router-dom";
 import * as S from "./assets";
 import SidebarMenu from "./SidebarMenu";
 import SidebarHeader from "./SidebarHeader";
-import {Link, NavLink} from "react-router-dom";
 
 interface IProps {
   fluid?: boolean

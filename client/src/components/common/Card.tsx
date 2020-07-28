@@ -1,6 +1,6 @@
 import React from "react";
-import * as S from "./assets";
 import {Link} from "react-router-dom";
+import * as S from "./assets";
 
 interface IProps {
   id: number,
