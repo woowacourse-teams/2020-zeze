@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final UserResourceRepository userResourceRepository;
 
@@ -28,5 +27,4 @@ public class UserService {
                 return user;
             });
     }
-
 }
