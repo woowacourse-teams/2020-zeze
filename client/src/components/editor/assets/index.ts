@@ -8,24 +8,7 @@ export const Editor = styled.main`
   > div {
     flex: 1;
     position: relative;
-  }
-  
-  // temporary
-  textarea {
-    resize: none;
-    font-size: 1.1rem;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    padding: 30px;
-    background-color: #333;
-    color: #fff;
-    font-family: monospace;
-    border: none;
-    
-    &:focus {
-      outline: none;
-    }
+    overflow: auto;
   }
   
   @media(max-width: ${MOBILE_MAX_WIDTH}px) {

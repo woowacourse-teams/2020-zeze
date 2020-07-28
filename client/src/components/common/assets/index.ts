@@ -9,6 +9,7 @@ import slide from "./slide.svg";
 import archive from "./archive.svg";
 import newSlides from "./newSlides.svg";
 import more from "./more.svg";
+import {applyTheme, Theme} from "../theme";
 
 
 export {
@@ -192,14 +193,35 @@ export const Footer = styled.footer`
   }
 `;
 
-export const FullScreen = styled.div`
+interface FullScreenProps {
+  slideTheme: Theme;
+}
+
+export const FullScreen = styled.div<FullScreenProps>`
   position: absolute;
   top: -9999px;
   left: -9999px;
+  font-size: 100%;
+  
+  > div#themed {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 1em;
+    
+    &:focus {
+      outline: 0 solid transparent;
+    }
+    
+    * {
+      margin: 0;
+    }
+    
+    ${({slideTheme}) => applyTheme(slideTheme)}
+  }
 `;
 
 export const CardsLayout = styled.div`
-
   padding-bottom: 3rem;
 
   > h2 {
@@ -306,11 +328,11 @@ interface ToastProps {
 }
 
 export const Toast = styled.div<ToastProps>`
-  background-color: ${({type}) => (type === "warn" ? "#121212" : "#FFF")};
+  background-color: ${({type}) => (type === "warn" ? "#121212" : "#fff")};
   border-radius: 5px;
   padding: 20px;
   margin: 0 0 20px;
-  color: #FFF;
+  color: #fff;
   font-weight: 600;
   
   ::before {

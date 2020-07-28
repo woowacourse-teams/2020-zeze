@@ -1,13 +1,20 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import {Code} from "./renderers";
+import {Code, Image} from "./renderers";
 
 interface IProps {
   value?: string
 }
 
 const Markdown: React.FC<IProps> = ({value}) => (
-  <ReactMarkdown source={value} renderers={{code: Code}}/>
+  <div id="themed">
+    <ReactMarkdown
+      source={value}
+      renderers={{
+        code: Code,
+        // image: Image,
+      }}/>
+  </div>
 );
 
 export default Markdown;

@@ -4,6 +4,7 @@ import {css, Global} from "@emotion/core";
 import * as S from "./assets";
 import {Keys} from "../../domains/constants";
 import Markdown from "./markdown";
+import {Theme} from "./theme";
 
 
 interface IProps {
@@ -70,8 +71,9 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         `}
       />
       <S.FullScreen
+        slideTheme={Theme.DEFAULT}
         ref={slideReference}
-        tabIndex={0}
+        tabIndex={-1}
         onKeyDown={handleKeyDown}
       ><Markdown value={slide}/></S.FullScreen>
       <S.FullScreenButton onClick={toggleFullScreen}/>

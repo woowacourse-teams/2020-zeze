@@ -1,31 +1,61 @@
-export const sampleYoutubeMarkdown = `
+export const sample = `
 ---
-title: Hello world!
-subtitle: introducing limetree
-author: hodol
-date: 2020-07-12
+title: Hello World!
+subtitle: Introduction to Limetree
+author: Hodol
+created_at: 2020-07-12
 ---
 
-## first page
+## Introducing Project Zeze
+
+### Make your own slides only with markdown
+
+#### Features
+
+- Supports default markdown features
+- Embedded Youtube, Chart
+- Minimal & Beautiful slides with minimal effort
+
+---
+
+### As always, 
+
+Markdown just works.
+
+It's just a little decoration.
+
+![image1](https://lh3.googleusercontent.com/proxy/nXO4ddd5cgfQmmPiPVTzC6dxxoX7fmjR4JP670wVbjpFaTQHF-Cjw1VIOzuaYYQ0sLKflUwdoFfRsOP6Oi4es0ZqikJUEn5p6B23jxoctidsCqEcTuZHexOtk5Kdyp_mn2VfdF-QX6gTQRGkbLlloGHV)
+![image2](https://lh3.googleusercontent.com/proxy/nXO4ddd5cgfQmmPiPVTzC6dxxoX7fmjR4JP670wVbjpFaTQHF-Cjw1VIOzuaYYQ0sLKflUwdoFfRsOP6Oi4es0ZqikJUEn5p6B23jxoctidsCqEcTuZHexOtk5Kdyp_mn2VfdF-QX6gTQRGkbLlloGHV)
+![image3](https://lh3.googleusercontent.com/proxy/nXO4ddd5cgfQmmPiPVTzC6dxxoX7fmjR4JP670wVbjpFaTQHF-Cjw1VIOzuaYYQ0sLKflUwdoFfRsOP6Oi4es0ZqikJUEn5p6B23jxoctidsCqEcTuZHexOtk5Kdyp_mn2VfdF-QX6gTQRGkbLlloGHV)
+![image4](https://lh3.googleusercontent.com/proxy/nXO4ddd5cgfQmmPiPVTzC6dxxoX7fmjR4JP670wVbjpFaTQHF-Cjw1VIOzuaYYQ0sLKflUwdoFfRsOP6Oi4es0ZqikJUEn5p6B23jxoctidsCqEcTuZHexOtk5Kdyp_mn2VfdF-QX6gTQRGkbLlloGHV) 
+
+---
+
+## Embedded Youtube?
+
+### Just like this
 
 \`\`\`youtube
-src=tJM0yIbg8iQ
+src=es1ckjHOzTI
 \`\`\`
 
 ---
 
-## this is page two
-### this can be a subtitle
+## Embedded Code?
 
-- list
-- like
-- this
+### Give it a shot
+
+\`\`\`ts
+const greeting = (name: string = "hodol") => {
+  return \`Hello, \${name}!\`;
+};
+\`\`\`
 
 ---
 
-## this is page three
+### Still in development, but...
 
-1. one
-1. two
-1. three 
+> Keep an eye on us,
+>
+> So we can be encouraged enough!
 `;

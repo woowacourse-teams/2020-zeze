@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import Preview from "./Preview";
 import Editor from "../common/editor";
-import {sampleYoutubeMarkdown} from "../../utils/markdown/fixtures";
+import {sample} from "../../utils/markdown/fixtures";
 import FullScreenMode from "../common/FullScreenMode";
 
 const EditMode: React.FC = () => {
-  const [text, setText] = useState<string>(sampleYoutubeMarkdown);
+  const [text, setText] = useState<string>(sample);
   const [contents, setContents] = useState<string[]>(text.split("---"));
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const EditMode: React.FC = () => {
 
   return (
     <>
-      <div>
+      <div className="editor">
         <Editor defaultValue={text} onChange={setText} onDrop={uploadFile}/>
         <FullScreenMode contents={contents}/>
       </div>
