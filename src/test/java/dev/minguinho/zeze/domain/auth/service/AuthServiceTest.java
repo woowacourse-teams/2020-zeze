@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import reactor.core.publisher.Mono;
+
 import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
 import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
 import dev.minguinho.zeze.domain.auth.model.Social;
@@ -21,7 +23,6 @@ import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.d
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.SocialResourceFetcher;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.GithubResourceResponseDto;
-import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {

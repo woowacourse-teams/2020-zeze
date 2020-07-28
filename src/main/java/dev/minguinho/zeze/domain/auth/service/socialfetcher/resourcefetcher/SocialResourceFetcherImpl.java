@@ -3,10 +3,11 @@ package dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponse;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
+
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponse;
 
 @RequiredArgsConstructor
 @Primary

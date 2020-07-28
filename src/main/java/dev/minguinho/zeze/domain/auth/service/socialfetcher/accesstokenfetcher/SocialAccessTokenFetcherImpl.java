@@ -3,10 +3,11 @@ package dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
+
+import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 
 @RequiredArgsConstructor
 @Primary

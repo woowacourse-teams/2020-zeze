@@ -6,7 +6,9 @@ import javax.validation.constraints.NotNull;
 import dev.minguinho.zeze.domain.auth.model.Social;
 
 public interface SocialAccessTokenRequestDto {
-    @NotNull Social.Provider getProvider();
+    @NotNull
+    Social.Provider getProvider();
 
-    @NotBlank String getCode();
+    @NotBlank
+    String getCode();
 }

@@ -3,11 +3,12 @@ package dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import reactor.core.publisher.Mono;
+
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.GithubResourceResponseDto;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponse;
-import reactor.core.publisher.Mono;
 
 @Service
 public class GithubResourceFetcher implements SocialResourceFetcher {
