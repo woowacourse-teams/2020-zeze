@@ -6,7 +6,7 @@ author: Hodol
 created_at: 2020-07-12
 ---
 
-## Introducing Project Zeze
+## Project Zeze
 
 ### Make your own slides only with markdown
 
@@ -29,6 +29,10 @@ It's just a little decoration.
 ![image3](https://lh3.googleusercontent.com/proxy/nXO4ddd5cgfQmmPiPVTzC6dxxoX7fmjR4JP670wVbjpFaTQHF-Cjw1VIOzuaYYQ0sLKflUwdoFfRsOP6Oi4es0ZqikJUEn5p6B23jxoctidsCqEcTuZHexOtk5Kdyp_mn2VfdF-QX6gTQRGkbLlloGHV)
 ![image4](https://lh3.googleusercontent.com/proxy/nXO4ddd5cgfQmmPiPVTzC6dxxoX7fmjR4JP670wVbjpFaTQHF-Cjw1VIOzuaYYQ0sLKflUwdoFfRsOP6Oi4es0ZqikJUEn5p6B23jxoctidsCqEcTuZHexOtk5Kdyp_mn2VfdF-QX6gTQRGkbLlloGHV) 
 
+---
+### Single image!
+
+![image4](https://lh3.googleusercontent.com/proxy/nXO4ddd5cgfQmmPiPVTzC6dxxoX7fmjR4JP670wVbjpFaTQHF-Cjw1VIOzuaYYQ0sLKflUwdoFfRsOP6Oi4es0ZqikJUEn5p6B23jxoctidsCqEcTuZHexOtk5Kdyp_mn2VfdF-QX6gTQRGkbLlloGHV) 
 ---
 
 ## Embedded Youtube?

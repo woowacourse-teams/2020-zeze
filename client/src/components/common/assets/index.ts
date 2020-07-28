@@ -217,6 +217,10 @@ export const FullScreen = styled.div<FullScreenProps>`
       margin: 0;
     }
     
+    @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+      font-size: 0.5em;
+    }
+    
     ${({slideTheme}) => applyTheme(slideTheme)}
   }
 `;

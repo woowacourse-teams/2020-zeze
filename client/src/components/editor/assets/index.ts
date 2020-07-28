@@ -4,6 +4,7 @@ import {MOBILE_MAX_WIDTH} from "../../../domains/constants";
 export const Editor = styled.main`
   display: flex;
   height: 100%;
+  max-height: 100vh;
   
   > div {
     flex: 1;
@@ -21,6 +22,7 @@ export const Preview = styled.div`
   background-color: #fff;
   flex: 1;
   padding: 30px;
-  overflow: auto;
+  overflow: scroll;
+  max-height: 100vh;
 `;
 

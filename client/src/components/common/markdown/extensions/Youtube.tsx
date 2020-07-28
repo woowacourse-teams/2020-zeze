@@ -38,9 +38,12 @@ const Youtube: React.FC<IProps> = ({code = ""}) => {
   const id = src?.match(YOUTUBE_ID_REGEX)?.[1];
 
   return id ?
-    <iframe className="youtube" title={id} width={width} height={height} src={`https://www.youtube.com/embed/${id}`} frameBorder="0"
+    <iframe
+      className="youtube"
+      title={id} width={width} height={height}
+      src={`https://www.youtube.com/embed/${id}`} frameBorder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen></iframe> : null;
+      allowFullScreen/> : null;
 };
 
 export default Youtube;

@@ -12,7 +12,7 @@ const Markdown: React.FC<IProps> = ({value}) => (
       source={value}
       renderers={{
         code: Code,
-        // image: Image,
+        image: Image,
       }}/>
   </div>
 );
