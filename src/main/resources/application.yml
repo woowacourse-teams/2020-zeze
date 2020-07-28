@@ -1,6 +1,16 @@
 spring:
   profiles:
-    include: aws
+    include: aws, github, jwt
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    hikari:
+      jdbc-url: "jdbc:h2:mem:testdb"
+      username: "sa"
+      driver-class-name: "org.h2.Driver"
 
 server:
   servlet:
