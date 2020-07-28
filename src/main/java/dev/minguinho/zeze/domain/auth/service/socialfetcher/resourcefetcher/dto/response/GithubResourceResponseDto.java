@@ -43,5 +43,3 @@ public class GithubResourceResponseDto implements SocialResourceResponse {
             .build();
     }
 }
-
-

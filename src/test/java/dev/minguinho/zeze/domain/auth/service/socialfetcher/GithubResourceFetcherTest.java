@@ -28,8 +28,8 @@ import okhttp3.mockwebserver.MockWebServer;
 class GithubResourceFetcherTest {
     private static MockWebServer server;
     private GithubResourceFetcher githubResourceFetcher;
-    private @Mock
-    SocialResourceRequestDto socialResourceRequestDto;
+    @Mock
+    private SocialResourceRequestDto socialResourceRequestDto;
 
     @BeforeAll
     static void beforeAll() throws IOException {
