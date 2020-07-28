@@ -17,7 +17,8 @@ import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.model.User;
 import dev.minguinho.zeze.domain.auth.model.UserRepository;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.SocialAccessTokenFetcher;
-import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.GithubAccessTokenResponseDto;
+import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.SocialResourceFetcher;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.resourcefetcher.dto.response.GithubResourceResponseDto;
 import reactor.core.publisher.Mono;
@@ -48,7 +49,7 @@ class AuthServiceTest {
     @DisplayName("AuthService 로그인 테스트")
     @Test
     void signIn_ValidInput_ValidOutput() {
-        SocialAccessTokenResponseDto accessTokenResponseDto = SocialAccessTokenResponseDto.builder()
+        SocialAccessTokenResponse accessTokenResponseDto = GithubAccessTokenResponseDto.builder()
             .accessToken("accessToken")
             .build();
         given(accessTokenFetcher.fetch(any())).willReturn(Mono.just(accessTokenResponseDto));
