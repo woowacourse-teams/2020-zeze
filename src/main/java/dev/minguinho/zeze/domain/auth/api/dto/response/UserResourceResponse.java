@@ -1,4 +1,4 @@
-package dev.minguinho.zeze.domain.user.api.dto;
+package dev.minguinho.zeze.domain.auth.api.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
