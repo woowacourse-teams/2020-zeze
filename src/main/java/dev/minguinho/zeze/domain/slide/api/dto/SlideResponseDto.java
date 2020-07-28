@@ -3,23 +3,24 @@ package dev.minguinho.zeze.domain.slide.api.dto;
 import java.time.ZonedDateTime;
 
 import dev.minguinho.zeze.domain.slide.model.Slide;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class SlideResponse {
+public class SlideResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String contentType;
+    private String accessLevel;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
-    public static SlideResponse from(Slide slide) {
-        return new SlideResponse(slide.getId(), slide.getTitle(), slide.getContent(), slide.getContentType(),
+    public static SlideResponseDto from(Slide slide) {
+        return new SlideResponseDto(slide.getId(), slide.getTitle(), slide.getContent(), slide.getAccessLevel().name(),
             slide.getCreatedAt(), slide.getUpdatedAt());
     }
 }

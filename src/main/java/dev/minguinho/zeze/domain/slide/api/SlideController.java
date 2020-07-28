@@ -1,9 +1,12 @@
 package dev.minguinho.zeze.domain.slide.api;
 
-import org.springframework.http.HttpStatus;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.minguinho.zeze.domain.slide.api.dto.SlideRequest;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponses;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
+import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.service.SlideService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,24 +29,32 @@ public class SlideController {
 
     @PostMapping("/slides")
     public ResponseEntity<Void> createSlide(
-        @RequestBody SlideRequest slideRequest
-    ) {
-        slideService.createSlide(slideRequest);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        @RequestBody SlideRequestDto slideRequestDto
+    ) throws URISyntaxException {
+        Long slideId = slideService.createSlide(slideRequestDto);
+        return ResponseEntity.created(new URI("/api/slides/" + slideId)).build();
     }
 
     @GetMapping("/slides")
-    public ResponseEntity<SlideResponses> retrieveSlides() {
-        SlideResponses slideResponses = slideService.retrieveSlides();
-        return ResponseEntity.ok(slideResponses);
+    public ResponseEntity<SlideResponseDtos> retrieveSlides(
+        @ModelAttribute SlidesRequestDto slidesRequestDto
+    ) {
+        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);
+        return ResponseEntity.ok(slideResponseDtos);
+    }
+
+    @GetMapping("/slides/{id}")
+    public ResponseEntity<SlideResponseDto> retrieveSlide(@PathVariable("id") Long slideId) {
+        SlideResponseDto slideResponseDto = slideService.retrieveSlide(slideId);
+        return ResponseEntity.ok(slideResponseDto);
     }
 
     @PatchMapping("/slides/{id}")
     public ResponseEntity<Void> updateSlide(
         @PathVariable("id") Long slideId,
-        @RequestBody SlideRequest slideRequest
+        @RequestBody SlideRequestDto slideRequestDto
     ) {
-        slideService.updateSlide(slideId, slideRequest);
+        slideService.updateSlide(slideId, slideRequestDto);
         return ResponseEntity.noContent().build();
     }
 

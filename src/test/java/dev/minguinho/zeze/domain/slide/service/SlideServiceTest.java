@@ -1,8 +1,9 @@
 package dev.minguinho.zeze.domain.slide.service;
 
+import static dev.minguinho.zeze.domain.slide.model.Slide.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,9 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import dev.minguinho.zeze.domain.slide.api.dto.SlideRequest;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponses;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
+import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
@@ -38,32 +43,49 @@ class SlideServiceTest {
     void createSlide() {
         String title = "제목";
         String content = "내용";
-        String contentType = "타입";
-        SlideRequest slideRequest = new SlideRequest(title, content, contentType);
+        String accessLevel = "PUBLIC";
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+        given(slideRepository.save(any(Slide.class))).willReturn(slideRequestDto.toEntity());
 
-        slideService.createSlide(slideRequest);
+        slideService.createSlide(slideRequestDto);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
     }
 
     @Test
-    @DisplayName("슬라이드 전체 조회")
+    @DisplayName("슬라이드 list 조회")
     void retrieveSlides() {
         String firstTitle = "제목1";
         String firstContent = "내용1";
-        String firstContentType = "타입1";
         String secondTitle = "제목2";
         String secondContent = "내용2";
-        String secondContentType = "타입2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, firstContentType),
-            new Slide(secondTitle, secondContent, secondContentType));
-        when(slideRepository.findAll()).thenReturn(slides);
+        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
+            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
+        Page<Slide> page = new TestPage(slides);
+        given(slideRepository.findAllByIdGreaterThan(eq(0L), any(Pageable.class))).willReturn(page);
 
-        SlideResponses slideResponses = slideService.retrieveSlides();
+        SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
+        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);
 
         assertAll(
-            () -> assertThat(slideResponses.getValues().get(0).getTitle()).isEqualTo(firstTitle),
-            () -> assertThat(slideResponses.getValues().get(1).getTitle()).isEqualTo(secondTitle)
+            () -> assertThat(slideResponseDtos.getValues().get(0).getTitle()).isEqualTo(firstTitle),
+            () -> assertThat(slideResponseDtos.getValues().get(1).getTitle()).isEqualTo(secondTitle)
+        );
+    }
+
+    @Test
+    @DisplayName("특정 슬라이드 조회")
+    void retrieveSlide() {
+        String title = "제목";
+        String content = "내용";
+        given(slideRepository.findById(1L)).willReturn(Optional.of(new Slide(title, content, AccessLevel.PUBLIC)));
+
+        SlideResponseDto slideResponseDto = slideService.retrieveSlide(1L);
+
+        assertAll(
+            () -> assertThat(slideResponseDto.getTitle()).isEqualTo(title),
+            () -> assertThat(slideResponseDto.getContent()).isEqualTo(content),
+            () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PUBLIC")
         );
     }
 
@@ -72,27 +94,25 @@ class SlideServiceTest {
     void updateSlide() {
         String title = "제목";
         String content = "내용";
-        String contentType = "타입";
-        Slide slide = new Slide(title, content, contentType);
-        when(slideRepository.findById(1L)).thenReturn(Optional.of(slide));
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
         String newTitle = "새 제목";
-        when(slideRepository.save(any(Slide.class))).thenReturn(new Slide(newTitle, content, contentType));
 
-        SlideRequest slideRequest = new SlideRequest(newTitle, null, null);
-        slideService.updateSlide(1L, slideRequest);
+        SlideRequestDto slideRequestDto = new SlideRequestDto(newTitle, null, null);
+        slideService.updateSlide(1L, slideRequestDto);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
         assertAll(
             () -> assertThat(slide.getTitle()).isEqualTo(newTitle),
             () -> assertThat(slide.getContent()).isEqualTo(content),
-            () -> assertThat(slide.getContentType()).isEqualTo(contentType)
+            () -> assertThat(slide.getAccessLevel()).isEqualTo(AccessLevel.PUBLIC)
         );
     }
 
     @Test
     @DisplayName("슬라이드가 존재하지 않을 경우")
     void updateWithInvalidSlide() {
-        when(slideRepository.findById(1L)).thenThrow(new SlideNotFoundException(1L));
+        given(slideRepository.findById(1L)).willThrow(new SlideNotFoundException(1L));
 
         assertThatThrownBy(() -> slideService.updateSlide(1L, null))
             .isInstanceOf(SlideNotFoundException.class)

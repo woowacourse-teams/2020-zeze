@@ -25,9 +25,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideRequest;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponse;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponses;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
 
 @SpringBootTest
@@ -59,72 +59,84 @@ public class SlideAcceptanceTest {
             dynamicTest("추가", () -> {
                 String title = "제목";
                 String content = "내용";
-                String contentType = "타입";
-                String body = contentOfRequest(title, content, contentType);
+                String accessLevel = "PUBLIC";
+                String body = contentOfRequest(title, content, accessLevel);
 
                 createSlide(body);
 
-                SlideResponses slideResponses = retrieveSlides();
-                List<SlideResponse> values = slideResponses.getValues();
+                SlideResponseDtos slideResponseDtos = retrieveSlides();
+                List<SlideResponseDto> values = slideResponseDtos.getValues();
                 assertAll(
                     () -> assertThat(values.get(0).getTitle()).isEqualTo(title),
                     () -> assertThat(values.get(0).getContent()).isEqualTo(content),
-                    () -> assertThat(values.get(0).getContentType()).isEqualTo(contentType)
+                    () -> assertThat(values.get(0).getAccessLevel()).isEqualTo(accessLevel)
                 );
             }),
             dynamicTest("조회", () -> {
                 String title = "두번째 제목";
                 String content = "두번째 내용";
-                String contentType = "두번째 타입";
-                String body = contentOfRequest(title, content, contentType);
+                String accessLevel = "PRIVATE";
+                String body = contentOfRequest(title, content, accessLevel);
 
                 createSlide(body);
 
-                SlideResponses slideResponses = retrieveSlides();
-                List<SlideResponse> values = slideResponses.getValues();
+                SlideResponseDtos slideResponseDtos = retrieveSlides();
+                List<SlideResponseDto> values = slideResponseDtos.getValues();
                 assertAll(
                     () -> assertThat(values.get(0).getTitle()).isEqualTo("제목"),
                     () -> assertThat(values.get(1).getTitle()).isEqualTo(title)
                 );
             }),
+            dynamicTest("특정 슬라이드 조회", () -> {
+                SlideResponseDtos slideResponseDtos = retrieveSlides();
+                Long id = slideResponseDtos.getValues().get(0).getId();
+
+                SlideResponseDto slideResponseDto = retrieveSlide(id);
+
+                assertAll(
+                    () -> assertThat(slideResponseDto.getTitle()).isEqualTo("제목"),
+                    () -> assertThat(slideResponseDto.getContent()).isEqualTo("내용"),
+                    () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PUBLIC")
+                );
+            }),
             dynamicTest("업데이트", () -> {
                 String title = "새 제목";
                 String body = contentOfRequest(title, null, null);
-                SlideResponses slideResponses = retrieveSlides();
-                List<SlideResponse> values = slideResponses.getValues();
+                SlideResponseDtos slideResponseDtos = retrieveSlides();
+                List<SlideResponseDto> values = slideResponseDtos.getValues();
                 Long id = values.get(0).getId();
 
                 updateSlide(id, body);
 
-                SlideResponses result = retrieveSlides();
-                List<SlideResponse> resultValues = result.getValues();
+                SlideResponseDtos result = retrieveSlides();
+                List<SlideResponseDto> resultValues = result.getValues();
                 assertAll(
                     () -> assertThat(resultValues.get(0).getTitle()).isEqualTo(title),
                     () -> assertThat(resultValues.get(0).getContent()).isEqualTo("내용"),
-                    () -> assertThat(resultValues.get(0).getContentType()).isEqualTo("타입")
+                    () -> assertThat(resultValues.get(0).getAccessLevel()).isEqualTo("PUBLIC")
                 );
             }),
             dynamicTest("삭제", () -> {
-                SlideResponses slideResponses = retrieveSlides();
-                List<SlideResponse> values = slideResponses.getValues();
+                SlideResponseDtos slideResponseDtos = retrieveSlides();
+                List<SlideResponseDto> values = slideResponseDtos.getValues();
                 Long id = values.get(0).getId();
 
                 deleteSlide(id);
 
-                SlideResponses result = retrieveSlides();
-                List<SlideResponse> resultValues = result.getValues();
+                SlideResponseDtos result = retrieveSlides();
+                List<SlideResponseDto> resultValues = result.getValues();
                 assertAll(
                     () -> assertThat(resultValues.get(0).getTitle()).isEqualTo("두번째 제목"),
                     () -> assertThat(resultValues.get(0).getContent()).isEqualTo("두번째 내용"),
-                    () -> assertThat(resultValues.get(0).getContentType()).isEqualTo("두번째 타입")
+                    () -> assertThat(resultValues.get(0).getAccessLevel()).isEqualTo("PRIVATE")
                 );
             })
         );
     }
 
     private String contentOfRequest(String title, String content, String contentType) throws JsonProcessingException {
-        SlideRequest slideRequest = new SlideRequest(title, content, contentType);
-        return objectMapper.writeValueAsString(slideRequest);
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, contentType);
+        return objectMapper.writeValueAsString(slideRequestDto);
     }
 
     private void createSlide(String body) throws Exception {
@@ -136,13 +148,25 @@ public class SlideAcceptanceTest {
             .andDo(print());
     }
 
-    private SlideResponses retrieveSlides() throws Exception {
-        String content = mvc.perform(get("/api/slides"))
+    private SlideResponseDto retrieveSlide(Long slideId) throws Exception {
+        String content = mvc.perform(get("/api/slides/" + slideId))
             .andExpect(status().isOk())
             .andDo(print())
             .andReturn().getResponse().getContentAsString();
 
-        return objectMapper.readValue(content, SlideResponses.class);
+        return objectMapper.readValue(content, SlideResponseDto.class);
+    }
+
+    private SlideResponseDtos retrieveSlides() throws Exception {
+        String content = mvc.perform(get("/api/slides")
+            .param("id", "0")
+            .param("size", "5")
+        )
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andReturn().getResponse().getContentAsString();
+
+        return objectMapper.readValue(content, SlideResponseDtos.class);
     }
 
     private void updateSlide(Long id, String body) throws Exception {

@@ -1,14 +1,14 @@
 package dev.minguinho.zeze.domain.slide.api.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class SlideRequest {
-    private String title;
-    private String content;
-    private String contentType;
+public class SlidesRequestDto {
+    private Long id;
+    private Integer size;
 }

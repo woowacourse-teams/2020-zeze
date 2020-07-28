@@ -1,5 +1,6 @@
 package dev.minguinho.zeze.domain.slide.model;
 
+import static dev.minguinho.zeze.domain.slide.model.Slide.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 
 import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
 
@@ -23,8 +25,7 @@ class SlideRepositoryTest {
     void save() {
         String title = "제목";
         String content = "내용";
-        String contentType = "타입";
-        Slide slide = new Slide(title, content, contentType);
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
 
         Slide persist = slideRepository.save(slide);
 
@@ -32,19 +33,18 @@ class SlideRepositoryTest {
     }
 
     @Test
-    @DisplayName("슬리이드 전체 조회")
-    void findAll() {
+    @DisplayName("슬리이드 list 조회")
+    void findByIdGreaterThan() {
         String firstTitle = "제목1";
         String firstContent = "내용1";
-        String firstContentType = "타입1";
         String secondTitle = "제목2";
         String secondContent = "내용2";
-        String secondContentType = "타입2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, firstContentType),
-            new Slide(secondTitle, secondContent, secondContentType));
+        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
+            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
         slideRepository.saveAll(slides);
 
-        List<Slide> persistPresentations = slideRepository.findAll();
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        List<Slide> persistPresentations = slideRepository.findAllByIdGreaterThan(0L, pageRequest).getContent();
 
         assertAll(
             () -> assertThat(persistPresentations).hasSize(2),
@@ -58,8 +58,7 @@ class SlideRepositoryTest {
     void update() {
         String title = "제목";
         String content = "내용";
-        String contentType = "타입";
-        Slide slide = new Slide(title, content, contentType);
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
         Slide persist = slideRepository.save(slide);
 
         String newTitle = "새 제목";
@@ -69,7 +68,7 @@ class SlideRepositoryTest {
         assertAll(
             () -> assertThat(newSlide.getTitle()).isEqualTo(newTitle),
             () -> assertThat(newSlide.getContent()).isEqualTo(content),
-            () -> assertThat(newSlide.getContentType()).isEqualTo(contentType)
+            () -> assertThat(newSlide.getAccessLevel()).isEqualTo(AccessLevel.PUBLIC)
         );
     }
 
@@ -78,8 +77,7 @@ class SlideRepositoryTest {
     void delete() {
         String title = "제목";
         String content = "내용";
-        String contentType = "타입";
-        Slide slide = new Slide(title, content, contentType);
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
         Slide persist = slideRepository.save(slide);
 
         slideRepository.deleteById(persist.getId());

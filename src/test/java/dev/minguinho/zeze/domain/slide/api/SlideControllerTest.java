@@ -1,7 +1,8 @@
 package dev.minguinho.zeze.domain.slide.api;
 
+import static dev.minguinho.zeze.domain.slide.model.Slide.*;
 import static org.hamcrest.core.StringContains.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -22,8 +23,10 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideRequest;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponses;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
+import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.service.SlideService;
 
@@ -49,9 +52,9 @@ class SlideControllerTest {
     void createSlide() throws Exception {
         String title = "제목";
         String content = "내용";
-        String contentType = "타입";
-        SlideRequest slideRequest = new SlideRequest(title, content, contentType);
-        String body = objectMapper.writeValueAsString(slideRequest);
+        String accessLevel = "PUBLIC";
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+        String body = objectMapper.writeValueAsString(slideRequestDto);
 
         mvc.perform(post("/api/slides")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -61,21 +64,19 @@ class SlideControllerTest {
             .andExpect(status().isCreated())
             .andDo(print());
 
-        verify(slideService, times(1)).createSlide(any(SlideRequest.class));
+        verify(slideService, times(1)).createSlide(any(SlideRequestDto.class));
     }
 
     @Test
-    @DisplayName("슬라이드 전체 조회 요청")
+    @DisplayName("슬라이드 list 요청")
     void retrieveSlides() throws Exception {
         String firstTitle = "제목1";
         String firstContent = "내용1";
-        String firstContentType = "타입1";
         String secondTitle = "제목2";
         String secondContent = "내용2";
-        String secondContentType = "타입2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, firstContentType),
-            new Slide(secondTitle, secondContent, secondContentType));
-        when(slideService.retrieveSlides()).thenReturn(SlideResponses.from(slides));
+        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
+            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
+        given(slideService.retrieveSlides(any(SlidesRequestDto.class))).willReturn(SlideResponseDtos.from(slides));
 
         mvc.perform(get("/api/slides"))
             .andExpect(status().isOk())
@@ -85,14 +86,30 @@ class SlideControllerTest {
     }
 
     @Test
+    @DisplayName("특정 슬라이드 조회")
+    void retrieveSlide() throws Exception {
+        String title = "제목";
+        String content = "내용";
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        given(slideService.retrieveSlide(1L)).willReturn(SlideResponseDto.from(slide));
+
+        mvc.perform(get("/api/slides/1"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(title)))
+            .andExpect(content().string(containsString(content)))
+            .andExpect(content().string(containsString("PUBLIC")))
+            .andDo(print());
+    }
+
+    @Test
     @DisplayName("슬라이드 업데이트 요청")
     void updateSlide() throws Exception {
         String title = "제목";
         String content = "내용";
-        String contentType = "타입";
-        SlideRequest slideRequest = new SlideRequest(title, content, contentType);
+        String accessLevel = "PUBLIC";
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
 
-        String body = objectMapper.writeValueAsString(slideRequest);
+        String body = objectMapper.writeValueAsString(slideRequestDto);
 
         mvc.perform(patch("/api/slides/1")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -101,7 +118,7 @@ class SlideControllerTest {
             .andExpect(status().isNoContent())
             .andDo(print());
 
-        verify(slideService, times(1)).updateSlide(eq(1L), any(SlideRequest.class));
+        verify(slideService, times(1)).updateSlide(eq(1L), any(SlideRequestDto.class));
     }
 
     @Test
