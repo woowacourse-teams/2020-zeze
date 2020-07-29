@@ -1,2 +1,1 @@
-export {default as TodoApi} from "./todo";
-// export {default as SlideApi} from "./slide";
+export {slide as SlideApi, slides as SlidesApi} from "./slide";

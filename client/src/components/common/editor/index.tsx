@@ -5,6 +5,7 @@ import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
+import {css, Global} from "@emotion/core";
 
 interface IProps {
   defaultValue?: string;
@@ -61,7 +62,16 @@ const Editor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <StyledTextArea ref={textareaRef}/>;
+  return (
+    <>
+      <Global styles={css`
+        .cm-s-darcula.CodeMirror {
+          font-family: "D2 coding", Consolas, Aria, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+        }
+      `}/>
+      <StyledTextArea ref={textareaRef}/>
+    </>
+  );
 };
 
 export default Editor;

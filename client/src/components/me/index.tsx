@@ -3,7 +3,7 @@ import SidebarLayout from "../common/SidebarLayout";
 import Cards from "../common/Cards";
 import Toast from "../common/Toast";
 
-const Me = () => (
+const Me: React.FC = () => (
   <SidebarLayout>
     <Toast type="warn" message="Currently in development. Sorry for your inconvenience :("/>
     <Cards title="Recent"/>
