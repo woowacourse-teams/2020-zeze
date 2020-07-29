@@ -8,7 +8,7 @@ build/
 src/main/resources/application-aws.yml
 **/src/main/resources/application-github.yml
 **/src/main/resources/application-jwt.yml
-.DS_Store
+*.DS_Store
 
 ### STS ###
 .apt_generated
