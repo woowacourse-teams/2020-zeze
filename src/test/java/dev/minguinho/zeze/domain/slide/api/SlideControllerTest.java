@@ -32,6 +32,8 @@ import dev.minguinho.zeze.domain.slide.service.SlideService;
 
 @WebMvcTest(controllers = {SlideController.class})
 class SlideControllerTest {
+    public static final String BASE_URL = "/api/slides/";
+
     private MockMvc mvc;
 
     @Autowired
@@ -56,7 +58,7 @@ class SlideControllerTest {
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
         String body = objectMapper.writeValueAsString(slideRequestDto);
 
-        mvc.perform(post("/api/slides")
+        mvc.perform(post(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .content(body)
@@ -78,7 +80,7 @@ class SlideControllerTest {
             new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
         given(slideService.retrieveSlides(any(SlidesRequestDto.class))).willReturn(SlideResponseDtos.from(slides));
 
-        mvc.perform(get("/api/slides"))
+        mvc.perform(get(BASE_URL))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString(firstTitle)))
             .andExpect(content().string(containsString(secondTitle)))
@@ -93,7 +95,7 @@ class SlideControllerTest {
         Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
         given(slideService.retrieveSlide(1L)).willReturn(SlideResponseDto.from(slide));
 
-        mvc.perform(get("/api/slides/1"))
+        mvc.perform(get(BASE_URL + "1"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString(title)))
             .andExpect(content().string(containsString(content)))
@@ -111,7 +113,7 @@ class SlideControllerTest {
 
         String body = objectMapper.writeValueAsString(slideRequestDto);
 
-        mvc.perform(patch("/api/slides/1")
+        mvc.perform(patch(BASE_URL + "1")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(body)
         )
@@ -124,7 +126,7 @@ class SlideControllerTest {
     @Test
     @DisplayName("슬라이드 삭제 요청")
     void deleteSlide() throws Exception {
-        mvc.perform(delete("/api/slides/1"))
+        mvc.perform(delete(BASE_URL + "1"))
             .andExpect(status().isNoContent())
             .andDo(print());
 

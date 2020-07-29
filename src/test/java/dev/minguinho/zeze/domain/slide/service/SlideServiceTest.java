@@ -33,6 +33,9 @@ class SlideServiceTest {
     @Mock
     private SlideRepository slideRepository;
 
+    @Mock
+    private Page page;
+
     @BeforeEach
     void setUp() {
         this.slideService = new SlideService(slideRepository);
@@ -61,8 +64,8 @@ class SlideServiceTest {
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
             new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
-        Page<Slide> page = new TestPage(slides);
         given(slideRepository.findAllByIdGreaterThan(eq(0L), any(Pageable.class))).willReturn(page);
+        given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
         SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);

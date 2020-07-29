@@ -32,6 +32,8 @@ import dev.minguinho.zeze.domain.slide.model.SlideRepository;
 
 @SpringBootTest
 public class SlideAcceptanceTest {
+    public static final String BASE_URL = "/api/slides/";
+
     private MockMvc mvc;
 
     @Autowired
@@ -140,7 +142,7 @@ public class SlideAcceptanceTest {
     }
 
     private void createSlide(String body) throws Exception {
-        mvc.perform(post("/api/slides")
+        mvc.perform(post(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(body)
         )
@@ -149,7 +151,7 @@ public class SlideAcceptanceTest {
     }
 
     private SlideResponseDto retrieveSlide(Long slideId) throws Exception {
-        String content = mvc.perform(get("/api/slides/" + slideId))
+        String content = mvc.perform(get(BASE_URL + slideId))
             .andExpect(status().isOk())
             .andDo(print())
             .andReturn().getResponse().getContentAsString();
@@ -158,7 +160,7 @@ public class SlideAcceptanceTest {
     }
 
     private SlideResponseDtos retrieveSlides() throws Exception {
-        String content = mvc.perform(get("/api/slides")
+        String content = mvc.perform(get(BASE_URL)
             .param("id", "0")
             .param("size", "5")
         )
@@ -170,7 +172,7 @@ public class SlideAcceptanceTest {
     }
 
     private void updateSlide(Long id, String body) throws Exception {
-        mvc.perform(patch("/api/slides/" + id)
+        mvc.perform(patch(BASE_URL + id)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(body)
         )
@@ -179,7 +181,7 @@ public class SlideAcceptanceTest {
     }
 
     private void deleteSlide(Long id) throws Exception {
-        mvc.perform(delete("/api/slides/" + id))
+        mvc.perform(delete(BASE_URL + id))
             .andExpect(status().isNoContent())
             .andDo(print());
     }
