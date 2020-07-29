@@ -64,7 +64,7 @@ asciidoctor {
 }
 
 editorconfig {
-    excludes = ['build', 'client', '.zeze-checkstyle.xml']
+    excludes = ['build', 'client', '.zeze-checkstyle.xml', 'src/main/resources/static/']
 }
 
 checkstyle {
