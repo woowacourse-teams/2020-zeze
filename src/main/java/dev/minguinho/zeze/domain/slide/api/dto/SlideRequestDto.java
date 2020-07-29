@@ -1,10 +1,11 @@
 package dev.minguinho.zeze.domain.slide.api.dto;
 
-import dev.minguinho.zeze.domain.slide.model.Slide;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import dev.minguinho.zeze.domain.slide.model.Slide;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

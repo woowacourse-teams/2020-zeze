@@ -6,6 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
@@ -13,7 +15,6 @@ import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

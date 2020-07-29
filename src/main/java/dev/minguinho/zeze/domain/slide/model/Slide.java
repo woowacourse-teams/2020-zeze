@@ -5,11 +5,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Lob;
 
-import dev.minguinho.zeze.domain.common.model.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import dev.minguinho.zeze.domain.common.model.BaseEntity;
 
 @Entity
 @AllArgsConstructor

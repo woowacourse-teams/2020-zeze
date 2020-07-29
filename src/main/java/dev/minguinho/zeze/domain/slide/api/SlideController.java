@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.service.SlideService;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
