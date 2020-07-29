@@ -8,6 +8,7 @@ interface Todo {
   title: string,
   completed: boolean
 }
+
 export default async (id: number): Promise<AxiosResponse<Todo>> => {
   const response = await axios.get("https://jsonplaceholder.typicode.com/todos/1");
 

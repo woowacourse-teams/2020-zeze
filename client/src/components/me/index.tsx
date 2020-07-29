@@ -1,10 +1,14 @@
 import React from "react";
-import Layout from "../common/Layout";
+import SidebarLayout from "../common/SidebarLayout";
+import Cards from "../common/Cards";
+import Toast from "../common/Toast";
 
 const Me = () => (
-  <Layout>
-    <h1>Me</h1>
-  </Layout>
+  <SidebarLayout>
+    <Toast type="warn" message="Currently in development. Sorry for your inconvenience :("/>
+    <Cards title="Recent"/>
+    <Cards title="My Drafts"/>
+  </SidebarLayout>
 );
 
 export default Me;
