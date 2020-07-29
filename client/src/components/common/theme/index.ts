@@ -54,9 +54,16 @@ export const applyTheme = (theme: Theme): SerializedStyles => {
         font-weight: 200;
       }
       
-      p {
+      > p {
         display: flex;
         line-height: 1.6;
+        font-size: 2.5em;
+        
+        &:last-of-type {
+          flex: 1;
+          justify-content: center;
+          align-items: center;
+        }
         
         > span.image {
           display: flex;
@@ -78,6 +85,7 @@ export const applyTheme = (theme: Theme): SerializedStyles => {
           }
           
           > img {
+            font-size: 0.2em;
             max-width: 100%;
             max-height: 100%;
           }
@@ -85,32 +93,49 @@ export const applyTheme = (theme: Theme): SerializedStyles => {
       }
       
       ul, ol {
-        font-size: 1em;
+        font-size: 2em;
         font-weight: 200;
         
-        > li {
+        li {
+          font-size: 1em;
           margin: 0.5em 0;
+          
+          ul {
+            font-size: 1em;
+          }
         }
       }
       
-      iframe.youtube {
+      > iframe.youtube {
         height: 15em;
         flex: 1;
       }
       
-      blockquote {
+      > blockquote {
         font-size: 1em;
         font-weight: 600;
         font-style: italic;
         padding: 6em;
+        line-height: 1.6;
         
       }
       
-      pre {
+      > pre {
         font-size: 0.6em;
         padding: 4em;
-        background-color: rgba(0,0,0, 0.2);
+        background-color: rgba(0, 0, 0, 0.2);
         white-space: pre-wrap;
+      }
+      
+      > code {
+        font-size: 0.7em;
+        padding: 0.05em 0.2em;
+        display: flex;
+        background-color: rgba(0,0,0,0.2);
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        margin: 0.1em;
       }
       
       @media (max-width: ${MOBILE_MAX_WIDTH}px) {

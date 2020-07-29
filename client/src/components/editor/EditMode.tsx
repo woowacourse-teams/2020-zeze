@@ -3,13 +3,16 @@ import Preview from "./Preview";
 import Editor from "../common/editor";
 import {sample} from "../../utils/markdown/fixtures";
 import FullScreenMode from "../common/FullScreenMode";
+import parse from "../../utils/markdown/metadata";
 
 const EditMode: React.FC = () => {
   const [text, setText] = useState<string>(sample);
   const [contents, setContents] = useState<string[]>(text.split("---"));
 
   useEffect(() => {
-    setContents(text
+    const {content: parsedContents} = parse(text);
+
+    parsedContents && setContents(parsedContents
       .split("---")
       .filter(content => content.trim().length !== 0),
     );
