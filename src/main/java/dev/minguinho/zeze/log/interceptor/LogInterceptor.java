@@ -23,17 +23,19 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     private final ObjectMapper objectMapper;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String[] content = handler.toString().split("\\.");
         log.warn("{} invoked", (content)[content.length - 1]);
-
         return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
-        Exception ex) throws Exception {
+    public void afterCompletion(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler,
+        Exception exception
+    ) throws Exception {
         ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper)request;
         ContentCachingResponseWrapper cachingResponse = (ContentCachingResponseWrapper)response;
 
@@ -43,7 +45,8 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
             .map(entry -> String.format("{\"%s\":\"%s\"}", entry.getKey(), Arrays.toString(entry.getValue())))
             .collect(Collectors.joining(","));
         log.warn("Params : {}", params);
-        log.warn("RequestBody : {} / ResponseBody : {}",
+        log.warn(
+            "RequestBody : {} / ResponseBody : {}",
             objectMapper.readTree(cachingRequest.getContentAsByteArray()),
             objectMapper.readTree(cachingResponse.getContentAsByteArray())
         );

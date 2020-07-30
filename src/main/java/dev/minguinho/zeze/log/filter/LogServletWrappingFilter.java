@@ -15,13 +15,14 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 @Component
 public class LogServletWrappingFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-        HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain filterChain
+    ) throws ServletException, IOException {
         ContentCachingRequestWrapper wrappingRequest = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper wrappingResponse = new ContentCachingResponseWrapper(response);
-
         filterChain.doFilter(wrappingRequest, wrappingResponse);
-
         wrappingResponse.copyBodyToResponse();
     }
 }
