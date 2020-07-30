@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: aws, github, jwt
+    include: aws, github, jwt, log
   jpa:
     hibernate:
       ddl-auto: create
@@ -8,6 +8,7 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+    open-in-view: false
 
   h2:
     console:
@@ -20,16 +21,10 @@ spring:
       driver-class-name: "org.h2.Driver"
 
 server:
+  tomcat:
+    accesslog:
+      enabled: true
   servlet:
     encoding:
       charset: UTF-8
       force: true
-
-logging:
-  level:
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
