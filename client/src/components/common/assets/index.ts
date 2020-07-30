@@ -202,6 +202,7 @@ export const FullScreen = styled.div<FullScreenProps>`
   top: -9999px;
   left: -9999px;
   font-size: 100%;
+  cursor: none;
   
   > div#themed {
     width: 100%;

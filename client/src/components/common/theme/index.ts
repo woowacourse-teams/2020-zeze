@@ -125,6 +125,10 @@ export const applyTheme = (theme: Theme): SerializedStyles => {
         padding: 4em;
         background-color: rgba(0, 0, 0, 0.2);
         white-space: pre-wrap;
+        
+        > code, span {
+            font-size: 1.6em;
+        }
       }
       
       > code {
