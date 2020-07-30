@@ -21,7 +21,7 @@ on:
         default: 'home'
 
 env:
-  BUCKET: slidemd-build 
+  BUCKET: kiworkshop 
 
 jobs:
   build:
@@ -38,6 +38,8 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+    - name: check input
+      run: echo $directory
     - name: Zip Artifacts
       run: zip -qq -r ./$GITHUB_SHA.zip ./build/libs/*
     - name: Configure AWS credentials
@@ -47,4 +49,4 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
     - name: Upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET/$directory/$GITHUB_SHA.zip
+      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET/build/$GITHUB_SHA.zip
