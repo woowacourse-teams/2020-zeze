@@ -35,7 +35,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: Zip Artifacts
-      run: zip -qq -r ./$GITHUB_SHA.zip ./app-main/build/libs/*
+      run: zip -qq -r ./$GITHUB_SHA.zip ./build/libs/*
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
