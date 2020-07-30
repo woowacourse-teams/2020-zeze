@@ -1,0 +1,6 @@
+[submodule "src/main/resources/logback"]
+	path = src/main/resources/logback
+	url = https://github.com/minguinho/zeze-logback.git
+[submodule "src/main/resources/config"]
+	path = src/main/resources/config
+	url = https://github.com/minguinho/zeze-secret.git
