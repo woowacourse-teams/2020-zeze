@@ -15,7 +15,8 @@ import dev.minguinho.zeze.exception.dto.ApiError;
 public class ExceptionController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobalException(Exception exception) {
-        log.error(exception.getMessage());
+        log.error("message", exception);
+
         ApiError apiError = ApiError.builder()
             .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
             .message("서버 에러")

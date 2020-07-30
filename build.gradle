@@ -40,6 +40,7 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
+    runtimeOnly 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -64,7 +65,7 @@ asciidoctor {
 }
 
 editorconfig {
-    excludes = ['build', 'client', '.zeze-checkstyle.xml', 'src/main/resources/static/']
+    excludes = ['logs', 'out', 'build', 'client', '.zeze-checkstyle.xml', 'src/main/resources/static/']
 }
 
 checkstyle {

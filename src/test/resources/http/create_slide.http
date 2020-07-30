@@ -1,0 +1,8 @@
+POST http://localhost:8080/api/slides
+Content-Type: application/json
+
+{
+  "title": "제목",
+  "content": "내용",
+  "accessLevel": "PUBLIC"
+}
