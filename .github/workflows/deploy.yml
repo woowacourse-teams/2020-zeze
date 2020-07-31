@@ -1,34 +1,19 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: Development Server Deployment
 
 on:
   push:
     branches:
       - dev
-  workflow_dispatch:
-    inputs:
-      name:
-        description: 'Person to greet'
-        required:
-        default: 'Mona the Octocat'
-      home:
-        description: 'location'
-        required: false
-      directory:
-        description: 'where to deploy'
-        required: true
-        default: 'home'
-
+      
 env:
   BUCKET: zeze-test
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
         with:
@@ -54,4 +39,4 @@ jobs:
         uses: joelwmale/webhook-action@master
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "deploy!"
+          data: "deployment successful"
