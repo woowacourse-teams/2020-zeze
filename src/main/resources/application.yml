@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: aws, github, jwt, log
+    include: aws, github, jwt, log, prod
   jpa:
     hibernate:
       ddl-auto: create
@@ -22,8 +22,7 @@ spring:
 
 server:
   tomcat:
-    accesslog:
-      enabled: true
+    basedir: .
   servlet:
     encoding:
       charset: UTF-8
