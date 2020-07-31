@@ -33,7 +33,7 @@ class SlideRepositoryTest {
     }
 
     @Test
-    @DisplayName("슬리이드 list 조회")
+    @DisplayName("슬라이드 list 조회")
     void findByIdGreaterThan() {
         String firstTitle = "제목1";
         String firstContent = "내용1";
