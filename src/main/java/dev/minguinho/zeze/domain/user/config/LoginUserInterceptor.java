@@ -13,7 +13,7 @@ import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 
 @RequiredArgsConstructor
 @Component
-public class LoginedUserInterceptor implements HandlerInterceptor {
+public class LoginUserInterceptor implements HandlerInterceptor {
     private static final String LOGIN_USER_ID = "loginUserId";
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthorizationTokenExtractor authorizationTokenExtractor;

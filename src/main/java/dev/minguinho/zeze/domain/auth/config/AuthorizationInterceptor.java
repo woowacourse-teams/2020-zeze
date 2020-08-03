@@ -35,10 +35,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return false;
         }
         Set<Authority.Role> roles = jwtTokenProvider.getAuthorities(token);
-        if (roles.contains(requiredAuthority.authority())) {
-            return true;
-        }
-        return false;
+        return roles.contains(requiredAuthority.authority());
     }
 
     private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {

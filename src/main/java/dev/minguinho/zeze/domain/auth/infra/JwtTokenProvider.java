@@ -1,5 +1,6 @@
 package dev.minguinho.zeze.domain.auth.infra;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Set;
@@ -20,8 +21,10 @@ import dev.minguinho.zeze.domain.auth.model.Authority;
 public class JwtTokenProvider {
     private static final String USER_ID_KEY = "userId";
     private static final String ROLES_KEY = "authorities";
-    private String secretKey;
-    private long validityInMilliseconds;
+    private static final String ROLE_DELIMITER = ",";
+
+    private final String secretKey;
+    private final long validityInMilliseconds;
 
     public JwtTokenProvider(
         @Value("${security.jwt.token.secret-key}") String secretKey,
@@ -32,9 +35,10 @@ public class JwtTokenProvider {
     }
 
     public String createToken(Long userId, Set<Authority> authorities) {
-        Set<Authority.Role> roles = authorities.stream()
+        String roles = authorities.stream()
             .map(Authority::getRole)
-            .collect(Collectors.toSet());
+            .map(Authority.Role::name)
+            .collect(Collectors.joining(ROLE_DELIMITER));
         Date now = new Date();
         Date validity = new Date(now.getTime()
             + validityInMilliseconds);
@@ -57,11 +61,14 @@ public class JwtTokenProvider {
     }
 
     public Set<Authority.Role> getAuthorities(String token) {
-        return Jwts.parser()
+        String roles = Jwts.parser()
             .setSigningKey(secretKey)
             .parseClaimsJws(token)
             .getBody()
-            .get(ROLES_KEY, Set.class);
+            .get(ROLES_KEY, String.class);
+        return Arrays.stream(roles.split(ROLE_DELIMITER))
+            .map(Authority.Role::valueOf)
+            .collect(Collectors.toSet());
     }
 
     public boolean validateToken(String token) {
