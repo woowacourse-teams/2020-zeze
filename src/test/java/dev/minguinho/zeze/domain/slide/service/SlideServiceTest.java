@@ -34,7 +34,7 @@ class SlideServiceTest {
     private SlideRepository slideRepository;
 
     @Mock
-    private Page page;
+    private Page<Slide> page;
 
     @BeforeEach
     void setUp() {

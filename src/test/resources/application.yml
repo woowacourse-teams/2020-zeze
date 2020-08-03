@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: aws, github, jwt, log, prod
+    include: aws, github, jwt, log
   jpa:
     hibernate:
       ddl-auto: create
@@ -21,8 +21,6 @@ spring:
       driver-class-name: "org.h2.Driver"
 
 server:
-  tomcat:
-    basedir: .
   servlet:
     encoding:
       charset: UTF-8
