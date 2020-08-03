@@ -1,12 +1,14 @@
 package dev.minguinho.zeze.domain.auth.api.dto.response;
 
+import dev.minguinho.zeze.domain.user.api.dto.UserResourceResponseDto;
+
 class UserResourceResponseTest {
-    public static UserResourceResponse getUserResourceResponseFixture() {
-        UserResourceResponse userResourceResponse = UserResourceResponse.builder()
+    public static UserResourceResponseDto getUserResourceResponseFixture() {
+        UserResourceResponseDto userResourceResponseDto = UserResourceResponseDto.builder()
             .name("foo")
             .email("foo@bar.com")
             .build();
 
-        return userResourceResponse;
+        return userResourceResponseDto;
     }
 }

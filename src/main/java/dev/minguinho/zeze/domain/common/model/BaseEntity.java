@@ -14,9 +14,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@MappedSuperclass
 @EqualsAndHashCode(of = "id")
 @Getter
+@MappedSuperclass
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

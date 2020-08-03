@@ -17,7 +17,6 @@ import dev.minguinho.zeze.domain.auth.api.dto.request.SocialAccessTokenRequestDt
 import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
 import dev.minguinho.zeze.domain.auth.model.Social;
 import dev.minguinho.zeze.domain.auth.model.User;
-import dev.minguinho.zeze.domain.auth.model.UserRepository;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.SocialAccessTokenFetcher;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.GithubAccessTokenResponseDto;
 import dev.minguinho.zeze.domain.auth.service.socialfetcher.accesstokenfetcher.dto.response.SocialAccessTokenResponse;
@@ -31,8 +30,6 @@ class AuthServiceTest {
     private SocialAccessTokenFetcher accessTokenFetcher;
     @Mock
     private SocialResourceFetcher resourceFetcher;
-    @Mock
-    private UserRepository userRepository;
     @Mock
     private UserService userService;
     @Mock
