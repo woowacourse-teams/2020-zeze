@@ -6,8 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
-import jdk.internal.joptsimple.internal.Strings;
-
 @Component
 public class AuthorizationTokenExtractor {
     public static final String AUTHORIZATION = "Authorization";
@@ -28,6 +26,6 @@ public class AuthorizationTokenExtractor {
                 return headerValue;
             }
         }
-        return Strings.EMPTY;
+        return "";
     }
 }
