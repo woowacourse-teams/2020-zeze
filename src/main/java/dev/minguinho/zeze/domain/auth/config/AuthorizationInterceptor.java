@@ -26,8 +26,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        RequiredAuthority requiredAuthority = getAnnotation((HandlerMethod)handler, RequiredAuthority.class);
-        if (Objects.isNull(requiredAuthority)) {
+        Secured secured = getAnnotation((HandlerMethod)handler, Secured.class);
+        if (Objects.isNull(secured)) {
             return true;
         }
         String token = authorizationTokenExtractor.extract(request, "bearer");
@@ -35,7 +35,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return false;
         }
         Set<Authority.Role> roles = jwtTokenProvider.getAuthorities(token);
-        return roles.contains(requiredAuthority.authority());
+        return roles.contains(secured.authority());
     }
 
     private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
