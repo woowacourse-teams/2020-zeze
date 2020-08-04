@@ -1,4 +1,4 @@
-export const sample = `
+export default `
 ---
 title: Hello World!
 subtitle: Introduction to Limetree

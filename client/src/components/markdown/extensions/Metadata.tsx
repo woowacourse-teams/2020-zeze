@@ -1,5 +1,5 @@
 import React from "react";
-import {MetaProps} from "../../../../utils/markdown/metadata";
+import {MetaProps} from "../../../utils/metadata";
 
 const Metadata: React.FC<MetaProps> = ({title, subtitle, author, createdAt}) => (
   <div>

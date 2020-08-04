@@ -1,14 +1,45 @@
 import React from "react";
-import * as S from "./assets";
+import styled from "@emotion/styled";
+import * as S from "../../assets/icons";
+import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
+
+const HeaderBlock = styled.header`
+  position: sticky;
+  height: 70px;
+  background-color: ${ZEZE_GRAY};
+  border-bottom: 0.5px solid ${ZEZE_GRAY};
+  
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+    height: 50px;
+  }
+  
+  nav {
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const LogoIcon = styled.img`
+  cursor: pointer;
+  width: 30px;
+  padding: 20px;
+  
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+    padding: 10px;
+  }
+`;
+
 
 const Header: React.FC = () => (
-  <S.Header>
+  <HeaderBlock>
     <nav>
-      {/* <div><S.HeaderIcon src={S.menu} alt="menu"/></div>*/}
-      <div><S.LogoIcon src={S.logo} alt="logo"/></div>
-      {/* <div><S.HeaderIcon src={S.user} alt="user"/></div>*/}
+      <div><LogoIcon src={S.logo} alt="logo"/></div>
     </nav>
-  </S.Header>
+  </HeaderBlock>
 );
 
 export default Header;

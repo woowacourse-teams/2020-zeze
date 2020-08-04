@@ -7,7 +7,7 @@ interface IProps {
   footer?: React.ReactElement | null;
 }
 
-const Layout: React.FC<IProps> = ({children, header = <Header/>, footer = <Footer/>}) => (
+const GlobalLayout: React.FC<IProps> = ({children, header = <Header/>, footer = <Footer/>}) => (
   <div>
     {header}
     {children}
@@ -15,4 +15,4 @@ const Layout: React.FC<IProps> = ({children, header = <Header/>, footer = <Foote
   </div>
 );
 
-export default Layout;
+export default GlobalLayout;

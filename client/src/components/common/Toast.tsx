@@ -1,5 +1,24 @@
 import React from "react";
-import * as S from "./assets";
+import styled from "@emotion/styled";
+
+interface ToastProps {
+  type: string;
+}
+
+const ToastBlock = styled.div<ToastProps>`
+  background-color: ${({type}) => (type === "warn" ? "#121212" : "#fff")};
+  border-radius: 5px;
+  padding: 20px;
+  margin: 0 0 20px;
+  color: #fff;
+  font-weight: 600;
+  
+  ::before {
+    content: "⚠️";
+    font-family: "Apple Color Emoji", serif;
+    margin-right: 15px;
+  }
+`;
 
 interface IProps {
   type: string;
@@ -7,7 +26,7 @@ interface IProps {
 }
 
 const Toast: React.FC<IProps> = ({type, message}) => (
-  <S.Toast type={type}>{message}</S.Toast>
+  <ToastBlock type={type}>{message}</ToastBlock>
 );
 
 export default Toast;

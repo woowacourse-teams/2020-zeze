@@ -1,5 +1,22 @@
 import React from "react";
-import * as S from "./assets";
+import styled from "@emotion/styled";
+
+const SidebarMenuBlock = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 7.5px 0;
+  cursor: pointer;
+  
+  &:hover {
+    opacity: 75%;
+  }
+  
+  > img {
+    width: 1rem;
+    padding-right: 10px;
+  }
+`;
 
 interface IProps {
   src: string;
@@ -7,7 +24,7 @@ interface IProps {
 }
 
 const SidebarMenu: React.FC<IProps> = ({src, title}) => (
-  <S.SidebarMenu><img src={src} alt={title}/><span>{title}</span></S.SidebarMenu>
+  <SidebarMenuBlock><img src={src} alt={title}/><span>{title}</span></SidebarMenuBlock>
 );
 
 export default SidebarMenu;

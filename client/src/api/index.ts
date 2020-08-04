@@ -1,1 +1,1 @@
-export {slide as SlideApi, slides as SlidesApi} from "./slide";
+import slideApi from "./slide";

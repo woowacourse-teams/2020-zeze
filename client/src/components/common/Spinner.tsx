@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
-import {PRIMARY_GREEN} from "../../domains/constants";
+import {ZEZE_GRAY} from "../../domains/constants";
 
 const SpinnerBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: ${PRIMARY_GREEN};
+  background-color: ${ZEZE_GRAY};
   
   .loader,
   .loader:before,
@@ -35,7 +35,7 @@ const SpinnerBox = styled.div`
   .loader:before {
     width: 5.2em;
     height: 10.2em;
-    background: ${PRIMARY_GREEN};
+    background: ${ZEZE_GRAY};
     border-radius: 10.2em 0 0 10.2em;
     top: -0.1em;
     left: -0.1em;
@@ -47,7 +47,7 @@ const SpinnerBox = styled.div`
   .loader:after {
     width: 5.2em;
     height: 10.2em;
-    background: ${PRIMARY_GREEN};
+    background: ${ZEZE_GRAY};
     border-radius: 0 10.2em 10.2em 0;
     top: -0.1em;
     left: 4.9em;
