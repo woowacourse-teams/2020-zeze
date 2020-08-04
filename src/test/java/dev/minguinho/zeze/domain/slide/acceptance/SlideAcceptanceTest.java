@@ -101,7 +101,9 @@ public class SlideAcceptanceTest {
             }),
             dynamicTest("업데이트", () -> {
                 String title = "새 제목";
-                SlideRequestDto slideRequestDto = new SlideRequestDto(title, null, null);
+                String content = "내용";
+                String accessLevel = "PUBLIC";
+                SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> values = slideResponseDtos.getValues();
                 Long id = values.get(0).getId();

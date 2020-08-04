@@ -101,7 +101,7 @@ class SlideServiceTest {
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
         String newTitle = "새 제목";
 
-        SlideRequestDto slideRequestDto = new SlideRequestDto(newTitle, null, null);
+        SlideRequestDto slideRequestDto = new SlideRequestDto(newTitle, content, "PUBLIC");
         slideService.updateSlide(1L, slideRequestDto);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
