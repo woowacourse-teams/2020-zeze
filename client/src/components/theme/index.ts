@@ -1,5 +1,5 @@
 import {css, SerializedStyles} from "@emotion/core";
-import {MOBILE_MAX_WIDTH} from "../../../domains/constants";
+import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 
 export enum Theme {
   DEFAULT = "default",

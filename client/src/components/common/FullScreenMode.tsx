@@ -1,19 +1,83 @@
 import React, {useEffect, useRef, useState} from "react";
+import styled from "@emotion/styled";
 import fscreen from "fscreen";
 import {css, Global} from "@emotion/core";
-import * as S from "./assets";
-import {Keys} from "../../domains/constants";
-import Markdown from "./markdown";
-import {Theme} from "./theme";
+import {Keys, MOBILE_MAX_WIDTH} from "../../domains/constants";
+import Markdown from "../markdown";
+import {applyTheme, Theme} from "../theme";
+import play from "../../assets/icons/play.svg";
 
+const fullScreenStyle = css`
+  :-webkit-full-screen {
+    width: 100%;
+    height: 100%;
+  }
+  
+  :not(:root):fullscreen::backdrop {
+    background: #fff;
+  }
+`;
+
+interface FullScreenProps {
+  slideTheme: Theme;
+}
+
+const FullScreenBlock = styled.div<FullScreenProps>`
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  font-size: 100%;
+  cursor: none;
+  
+  > div#themed {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 1em;
+    
+    &:focus {
+      outline: 0 solid transparent;
+    }
+    
+    * {
+      margin: 0;
+    }
+    
+    @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+      font-size: 0.5em;
+    }
+    
+    ${({slideTheme}) => applyTheme(slideTheme)}
+  }
+`;
+
+
+export const FullScreenButton = styled.button`
+  background-image: url(${play});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  width: 25px;
+  height: 25px;
+  border: none;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  z-index: 3;
+  cursor: pointer;
+  
+  &:focus {
+    outline: none;
+  }
+`;
 
 interface IProps {
   contents: string[]
 }
-
 const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const [index, setIndex] = useState<number>(0);
   const [slides, setSlides] = useState<string[]>(contents);
+
   const [slide, setSlide] = useState<string>(contents[0]);
 
   useEffect(() => {
@@ -24,18 +88,10 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const slideReference = useRef<HTMLDivElement>(null);
 
   const _slideExists = (_index: number) => slides[_index] !== undefined;
-
   const _changeSlide = (_index: number) => {
     setIndex(_index);
     setSlide(slides[_index]);
   };
-
-  // const _endSlide = () => {
-  //   if (slideReference.current) {
-  //     slideReference.current.blur();
-  //   }
-  //   fscreen.exitFullscreen();
-  // };
 
   const toggleFullScreen = () => {
     if (slideReference.current) {
@@ -43,7 +99,6 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
       slideReference.current.focus();
     }
   };
-
   const handleKeyDown = (event: React.KeyboardEvent) => {
     switch (event.key) {
     case Keys.ARROW_RIGHT:
@@ -59,24 +114,14 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
 
   return (
     <>
-      <Global styles={css`
-          :-webkit-full-screen {
-            width: 100%;
-            height: 100%;
-          }
-          
-          :not(:root):fullscreen::backdrop {
-            background: #fff;
-          }
-        `}
-      />
-      <S.FullScreen
+      <Global styles={fullScreenStyle} />
+      <FullScreenBlock
         slideTheme={Theme.DEFAULT}
         ref={slideReference}
         tabIndex={-1}
         onKeyDown={handleKeyDown}
-      ><Markdown value={slide}/></S.FullScreen>
-      <S.FullScreenButton onClick={toggleFullScreen}/>
+      ><Markdown value={slide}/></FullScreenBlock>
+      <FullScreenButton onClick={toggleFullScreen}/>
     </>
   );
 };

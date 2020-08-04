@@ -1,6 +1,6 @@
 import React from "react";
 
-interface Props {
+interface YoutubeProps {
   src?: string;
   width: string;
   height: string;
@@ -10,7 +10,7 @@ const YOUTUBE_ID_REGEX = /^(?:(?:https?)?(?::\/\/)?(?:www\.)?(?:youtu\.be\/|yout
 const NEW_LINE_SEPARATOR = "\n";
 const KEY_VALUE_SEPARATOR = "=";
 
-const DEFAULT_PROPS: Props = {
+const DEFAULT_PROPS: YoutubeProps = {
   width: "100%",
   height: "315",
 };

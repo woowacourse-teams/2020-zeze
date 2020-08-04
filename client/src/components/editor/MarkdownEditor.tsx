@@ -7,17 +7,22 @@ import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
 import {css, Global} from "@emotion/core";
 
-interface IProps {
-  defaultValue?: string;
-  onChange?: (newValue: string) => void;
-  onDrop?: (files: File) => Promise<string>;
-}
+const codeMirrorStyle = css`
+    .cm-s-darcula.CodeMirror {
+      font-family: "D2 coding", Consolas, Aria, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+    }
+  `;
 
 const StyledTextArea = styled.textarea`
   display: none;
 `;
 
-const Editor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop}) => {
+interface IProps {
+  defaultValue?: string;
+  onChange?: (newValue: string) => void;
+  onDrop?: (files: File) => Promise<string>;
+}
+const MarkdownEditor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop}) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -28,7 +33,7 @@ const Editor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop}) => {
     });
 
     codemirror.on("change", editor => {
-      onChange?.(editor.getValue());
+      onChange && onChange(editor.getValue());
     });
 
     codemirror.on("drop", async (editor, e) => {
@@ -61,17 +66,12 @@ const Editor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop}) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
     <>
-      <Global styles={css`
-        .cm-s-darcula.CodeMirror {
-          font-family: "D2 coding", Consolas, Aria, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
-        }
-      `}/>
+      <Global styles={codeMirrorStyle}/>
       <StyledTextArea ref={textareaRef}/>
     </>
   );
 };
 
-export default Editor;
+export default MarkdownEditor;

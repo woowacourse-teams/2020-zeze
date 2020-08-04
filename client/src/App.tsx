@@ -2,11 +2,11 @@ import React, {Suspense} from "react";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Spinner from "./components/common/Spinner";
 
-const Home = React.lazy(() => import("./components/home"));
-const Me = React.lazy(() => import("./components/me"));
-const Editor = React.lazy(() => import("./components/editor"));
-const Archive = React.lazy(() => import("./components/archive"));
-const Error = React.lazy(() => import("./components/error"));
+const Home = React.lazy(() => import("./pages/Home"));
+const Me = React.lazy(() => import("./pages/Me"));
+const Editor = React.lazy(() => import("./pages/Editor"));
+const Archive = React.lazy(() => import("./pages/Archive"));
+const Error = React.lazy(() => import("./pages/Error"));
 
 const App: React.FC = () => (
   <BrowserRouter>
