@@ -8,9 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 public class Authority {
     public static final Authority USER = new Authority(1L, Role.ROLE_USER);
@@ -23,17 +26,8 @@ public class Authority {
     @Column(length = 20)
     private Role role;
 
-    private Authority(Long id, Role role) {
-        this.id = id;
-        this.role = role;
-    }
-
     public Role getRole() {
         return role;
-    }
-
-    public String getAuthority() {
-        return role.name();
     }
 
     public enum Role {
