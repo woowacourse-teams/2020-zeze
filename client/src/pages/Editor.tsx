@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
+import {useParams, useHistory} from "react-router-dom";
 import styled from "@emotion/styled";
 import Preview from "../components/editor/Preview";
 import MarkdownEditor from "../components/editor/MarkdownEditor";
-import sample from "../utils/fixtures";
 import FullScreenMode from "../components/common/FullScreenMode";
 import parse from "../utils/metadata";
 import SidebarLayout from "../components/common/SidebarLayout";
 import {MOBILE_MAX_WIDTH} from "../domains/constants";
+import slideApi from "../api/slide";
+import filesApi from "../api/file";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -25,9 +27,28 @@ const EditorBlock = styled.main`
   }
 `;
 
+enum AccessLevel {
+  PRIVATE = "PRIVATE",
+  PUBLIC = "PUBLIC"
+}
+
+interface Params {
+  id?: string
+}
+
 const Editor: React.FC = () => {
-  const [text, setText] = useState<string>(sample);
+  const params = useParams<Params>();
+  const [id, setId] = useState<number | undefined>(parseInt(params?.id ?? "", 10));
+  const [text, setText] = useState<string>("");
   const [contents, setContents] = useState<string[]>(text.split("---"));
+  const [accessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
+  const [title] = useState<string>("");
+
+  const history = useHistory();
+
+  useEffect(() => {
+    slideApi.get({id}).then(({data}) => setText(data.content));
+  }, [id]);
 
   useEffect(() => {
     const {content: parsedContents} = parse(text);
@@ -39,16 +60,55 @@ const Editor: React.FC = () => {
   }, [text]);
 
   const uploadFile = (file: File) => new Promise<string>(resolve => {
-    setTimeout(() => {
-      resolve(`http://localhost/${file.name}`);
-    }, 3000);
+    filesApi.upload(file)
+      .then(response => response.data.urls[0])
+      .then(url => resolve(url));
   });
+
+  const create = () => {
+    const data = {
+      data: {
+        title,
+        content: text,
+        accessLevel,
+      },
+    };
+
+    slideApi.create(data)
+      .then(response => response.headers.location)
+      .then(location => location.substring(location.lastIndexOf("/") + 1))
+      .then(generatedId => setId(parseInt(generatedId, 10)));
+  };
+
+  const update = () => {
+    const data = {
+      id,
+      data: {
+        title,
+        content: text,
+        accessLevel,
+      },
+    };
+
+    slideApi.update(data)
+      .then(() => alert("성공"))
+      .catch(() => alert("실패"));
+  };
+
+  const save = () => (id ? update() : create());
+
+  const deleteSlide = () => {
+    id && slideApi.delete(id)
+      .then(() => history.push("/archive"));
+  };
 
   return (
     <SidebarLayout fluid>
       <EditorBlock>
         <div className="editor">
-          <MarkdownEditor defaultValue={text} onChange={setText} onDrop={uploadFile}/>
+          <button onClick={save}>save</button>
+          <button onClick={deleteSlide}>delete</button>
+          <MarkdownEditor value={text} onChange={setText} onDrop={uploadFile}/>
           <FullScreenMode contents={contents}/>
         </div>
         <Preview content={text}/>

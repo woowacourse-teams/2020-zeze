@@ -1,1 +1,0 @@
-import slideApi from "./slide";

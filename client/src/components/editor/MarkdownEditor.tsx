@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 
 import CodeMirror from "codemirror";
@@ -18,25 +18,26 @@ const StyledTextArea = styled.textarea`
 `;
 
 interface IProps {
-  defaultValue?: string;
+  value?: string;
   onChange?: (newValue: string) => void;
   onDrop?: (files: File) => Promise<string>;
 }
-const MarkdownEditor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop}) => {
+const MarkdownEditor: React.FC<IProps> = ({value = "", onChange, onDrop}) => {
+  const [codemirror, setCodemirror] = useState<CodeMirror.Editor | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    const codemirror = CodeMirror.fromTextArea(textareaRef.current!, {
+    const editorFromTextArea = CodeMirror.fromTextArea(textareaRef.current!, {
       lineNumbers: true,
       mode: "text/markdown",
       theme: "darcula",
     });
 
-    codemirror.on("change", editor => {
+    editorFromTextArea.on("change", editor => {
       onChange && onChange(editor.getValue());
     });
 
-    codemirror.on("drop", async (editor, e) => {
+    editorFromTextArea.on("drop", async (editor, e) => {
       const fileList = e.dataTransfer?.files;
 
       if (!fileList) {
@@ -46,26 +47,41 @@ const MarkdownEditor: React.FC<IProps> = ({defaultValue = "", onChange, onDrop})
       const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
 
       files.filter(({type}) => type.split("/")[0] === "image")
-        .forEach(async file => {
-          const marker = `![Uploading ${file.name}...]()`;
+        .forEach(file => {
+          const setEditor = async () => {
+            const marker = `![Uploading ${file.name}...]()`;
 
-          editor.replaceRange(`${marker}\n`, editor.getCursor());
-          const uploadUrl = await onDrop?.(file);
-          const cursor = editor.getCursor();
+            editor.replaceRange(`${marker}\n`, editor.getCursor());
+            const uploadUrl = await onDrop?.(file);
+            const cursor = editor.getCursor();
 
-          editor.setValue(editor.getValue().replace(marker, `![${file.name}](${uploadUrl})`));
-          editor.setCursor(cursor);
+            editor.setValue(editor.getValue().replace(marker, `![${file.name}](${uploadUrl})`));
+            editor.setCursor(cursor);
+          };
+
+          setEditor();
         });
     });
 
-    codemirror.setSize("100%", "100%");
-    codemirror.setValue(defaultValue);
+    editorFromTextArea.setSize("100%", "100%");
+    editorFromTextArea.setValue(value);
+
+    setCodemirror(editorFromTextArea);
 
     return () => {
-      codemirror.toTextArea();
+      editorFromTextArea.toTextArea();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!codemirror) return;
+    const cursor = codemirror.getCursor();
+
+    codemirror.setValue(value);
+    codemirror.setCursor(cursor);
+  }, [codemirror, value]);
+
   return (
     <>
       <Global styles={codeMirrorStyle}/>
