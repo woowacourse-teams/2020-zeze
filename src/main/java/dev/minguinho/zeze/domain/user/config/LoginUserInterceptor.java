@@ -1,6 +1,8 @@
 package dev.minguinho.zeze.domain.user.config;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,20 +28,23 @@ public class LoginUserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (!hasAnnotation((HandlerMethod)handler, LoginedUserId.class)) {
+        Optional<LoginUserId> loginUserIdAnnotation = getAnnotation((HandlerMethod)handler, LoginUserId.class);
+        if (!loginUserIdAnnotation.isPresent()) {
             return true;
         }
         String token = authorizationTokenExtractor.extract(request, "bearer");
         if (!jwtTokenProvider.validateToken(token)) {
             return false;
         }
-        Long loginedUserId = jwtTokenProvider.getUserId(token);
-        request.setAttribute(LOGIN_USER_ID, loginedUserId);
+        Long loginUserId = jwtTokenProvider.getUserId(token);
+        request.setAttribute(LOGIN_USER_ID, loginUserId);
         return true;
     }
 
-    private boolean hasAnnotation(HandlerMethod handlerMethod, Class annotationType) {
+    private <A extends Annotation> Optional<A> getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
         return Arrays.stream(handlerMethod.getMethodParameters())
-            .anyMatch(methodParameter -> methodParameter.hasParameterAnnotation(annotationType));
+            .filter(parameter -> parameter.hasParameterAnnotation(annotationType))
+            .map(parameter -> parameter.getParameterAnnotation(annotationType))
+            .findFirst();
     }
 }
