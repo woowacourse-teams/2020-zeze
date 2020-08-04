@@ -24,6 +24,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.minguinho.zeze.domain.auth.infra.AuthorizationTokenExtractor;
+import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
@@ -42,6 +44,12 @@ class SlideControllerTest {
 
     @MockBean
     private SlideService slideService;
+
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private AuthorizationTokenExtractor authorizationTokenExtractor;
 
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext) {
