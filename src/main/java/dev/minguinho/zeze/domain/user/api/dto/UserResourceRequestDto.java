@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 
 import dev.minguinho.zeze.domain.user.model.UserResource;
 
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class UserResourceRequestDto {
     @NotBlank
     private String name;
