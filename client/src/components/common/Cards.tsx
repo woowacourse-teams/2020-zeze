@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import Card from "./Card";
 import {MOBILE_MAX_WIDTH} from "../../domains/constants";
+import {SlideResponse} from "../../api/slide";
 
 const CardsLayout = styled.div`
   padding-bottom: 3rem;
@@ -41,21 +42,17 @@ const CardsBlock = styled.div`
 
 
 interface IProps {
-  title: string;
+  title: string,
+  slides: Array<SlideResponse>
 }
 
-const Cards: React.FC<IProps> = ({title}) => (
+const Cards: React.FC<IProps> = ({title, slides}) => (
   <CardsLayout>
     <h2>{title}</h2>
     <hr/>
     <CardsBlock>
-      <Card id={1} title="Hello World!" subtitle="Introducing Limetree" author="Hodol" createdAt="2020-07-12"/>
-      <Card id={1} title="Hello World!" subtitle="Introducing Limetree" author="Hodol" createdAt="2020-07-12"/>
-      <Card id={1} title="Hello World!" subtitle="Introducing Limetree" author="Hodol" createdAt="2020-07-12"/>
-      <Card id={1} title="Hello World!" subtitle="Introducing Limetree" author="Hodol" createdAt="2020-07-12"/>
-      <Card id={1} title="Hello World!" subtitle="Introducing Limetree" author="Hodol" createdAt="2020-07-12"/>
-      <Card id={1} title="Hello World!" subtitle="Introducing Limetree" author="Hodol" createdAt="2020-07-12"/>
-      <Card id={1} title="Hello World!" subtitle="Introducing Limetree" author="Hodol" createdAt="2020-07-12"/>
+      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author="Hodol"
+        createdAt={slide.createdAt}/>))}
     </CardsBlock>
   </CardsLayout>
 );
