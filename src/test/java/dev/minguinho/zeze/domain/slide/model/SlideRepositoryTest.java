@@ -62,7 +62,8 @@ class SlideRepositoryTest {
         Slide persist = slideRepository.save(slide);
 
         String newTitle = "새 제목";
-        persist.update(newTitle, null, null);
+        Slide request = new Slide(newTitle, content, AccessLevel.PUBLIC);
+        persist.update(request);
         Slide newSlide = slideRepository.save(persist);
 
         assertAll(

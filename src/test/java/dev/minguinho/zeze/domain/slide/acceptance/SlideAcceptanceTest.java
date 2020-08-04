@@ -3,11 +3,10 @@ package dev.minguinho.zeze.domain.slide.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
@@ -17,42 +16,40 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
 
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SlideAcceptanceTest {
     public static final String BASE_URL = "/api/slides/";
 
-    private MockMvc mvc;
+    @LocalServerPort
+    public int port;
 
     @Autowired
     private SlideRepository slideRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @BeforeEach
-    void setUp(WebApplicationContext webApplicationContext) {
-        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .addFilter(new CharacterEncodingFilter("UTF-8", true))
-            .build();
+    void setUp() {
+        RestAssured.port = port;
     }
 
     @AfterEach
     void tearDown() {
         slideRepository.deleteAll();
+    }
+
+    public static RequestSpecification given() {
+        return RestAssured.given().log().all();
     }
 
     @TestFactory
@@ -63,9 +60,9 @@ public class SlideAcceptanceTest {
                 String title = "제목";
                 String content = "내용";
                 String accessLevel = "PUBLIC";
-                String body = contentOfRequest(title, content, accessLevel);
+                SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
 
-                createSlide(body);
+                createSlide(slideRequestDto);
 
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> values = slideResponseDtos.getValues();
@@ -79,9 +76,9 @@ public class SlideAcceptanceTest {
                 String title = "두번째 제목";
                 String content = "두번째 내용";
                 String accessLevel = "PRIVATE";
-                String body = contentOfRequest(title, content, accessLevel);
+                SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
 
-                createSlide(body);
+                createSlide(slideRequestDto);
 
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> values = slideResponseDtos.getValues();
@@ -104,12 +101,14 @@ public class SlideAcceptanceTest {
             }),
             dynamicTest("업데이트", () -> {
                 String title = "새 제목";
-                String body = contentOfRequest(title, null, null);
+                String content = "내용";
+                String accessLevel = "PUBLIC";
+                SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> values = slideResponseDtos.getValues();
                 Long id = values.get(0).getId();
 
-                updateSlide(id, body);
+                updateSlide(id, slideRequestDto);
 
                 SlideResponseDtos result = retrieveSlides();
                 List<SlideResponseDto> resultValues = result.getValues();
@@ -137,53 +136,59 @@ public class SlideAcceptanceTest {
         );
     }
 
-    private String contentOfRequest(String title, String content, String contentType) throws JsonProcessingException {
-        SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, contentType);
-        return objectMapper.writeValueAsString(slideRequestDto);
-    }
-
-    private void createSlide(String body) throws Exception {
-        mvc.perform(post(BASE_URL)
+    private void createSlide(SlideRequestDto slideRequestDto) {
+        given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .content(body)
-        )
-            .andExpect(status().isCreated())
-            .andDo(print());
+            .body(slideRequestDto)
+            .when()
+            .post(BASE_URL)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.CREATED.value());
     }
 
-    private SlideResponseDto retrieveSlide(Long slideId) throws Exception {
-        String content = mvc.perform(get(BASE_URL + slideId))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andReturn().getResponse().getContentAsString();
-
-        return objectMapper.readValue(content, SlideResponseDto.class);
+    private SlideResponseDto retrieveSlide(Long slideId) {
+        return given()
+            .when()
+            .get(BASE_URL + slideId)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(SlideResponseDto.class);
     }
 
-    private SlideResponseDtos retrieveSlides() throws Exception {
-        String content = mvc.perform(get(BASE_URL)
-            .param("id", "0")
-            .param("size", "5")
-        )
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andReturn().getResponse().getContentAsString();
+    private SlideResponseDtos retrieveSlides() {
+        Map<String, String> params = new HashMap<>();
+        params.put("id", "0");
+        params.put("size", "5");
 
-        return objectMapper.readValue(content, SlideResponseDtos.class);
+        return given()
+            .params(params)
+            .when()
+            .get(BASE_URL)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(SlideResponseDtos.class);
     }
 
-    private void updateSlide(Long id, String body) throws Exception {
-        mvc.perform(patch(BASE_URL + id)
+    private void updateSlide(Long id, SlideRequestDto slideRequestDto) {
+        given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .content(body)
-        )
-            .andExpect(status().isNoContent())
-            .andDo(print());
+            .body(slideRequestDto)
+            .when()
+            .patch(BASE_URL + id)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    private void deleteSlide(Long id) throws Exception {
-        mvc.perform(delete(BASE_URL + id))
-            .andExpect(status().isNoContent())
-            .andDo(print());
+    private void deleteSlide(Long id) {
+        given()
+            .when()
+            .delete(BASE_URL + id)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

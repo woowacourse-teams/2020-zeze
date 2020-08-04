@@ -46,7 +46,7 @@ public class SlideService {
     public void updateSlide(Long slideId, SlideRequestDto slideRequestDto) {
         Slide persist = slideRepository.findById(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
-        persist.update(slideRequestDto.getTitle(), slideRequestDto.getContent(), slideRequestDto.getAccessLevel());
+        persist.update(slideRequestDto.toEntity());
         slideRepository.save(persist);
     }
 
