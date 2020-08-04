@@ -5,7 +5,7 @@ import java.lang.annotation.Target;
 
 import dev.minguinho.zeze.domain.auth.model.Authority.Role;
 
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface RequiredAuthority {
     Role authority() default Role.ROLE_USER;
 }
