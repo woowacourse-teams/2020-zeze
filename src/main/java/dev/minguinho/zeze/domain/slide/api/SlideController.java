@@ -1,7 +1,6 @@
 package dev.minguinho.zeze.domain.slide.api;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,11 +28,9 @@ public class SlideController {
     private final SlideService slideService;
 
     @PostMapping("/slides")
-    public ResponseEntity<Void> createSlide(
-        @RequestBody SlideRequestDto slideRequestDto
-    ) throws URISyntaxException {
+    public ResponseEntity<Void> createSlide(@RequestBody SlideRequestDto slideRequestDto) {
         Long slideId = slideService.createSlide(slideRequestDto);
-        return ResponseEntity.created(new URI("/api/slides/" + slideId)).build();
+        return ResponseEntity.created(URI.create("/api/slides/" + slideId)).build();
     }
 
     @GetMapping("/slides")

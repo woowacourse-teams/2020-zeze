@@ -1,7 +1,10 @@
 package dev.minguinho.zeze.domain.auth.infra;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,10 +15,16 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import dev.minguinho.zeze.domain.auth.model.Authority;
+
 @Component
 public class JwtTokenProvider {
-    private String secretKey;
-    private long validityInMilliseconds;
+    private static final String USER_ID_KEY = "userId";
+    private static final String ROLES_KEY = "authorities";
+    private static final String ROLE_DELIMITER = ",";
+
+    private final String secretKey;
+    private final long validityInMilliseconds;
 
     public JwtTokenProvider(
         @Value("${security.jwt.token.secret-key}") String secretKey,
@@ -25,34 +34,48 @@ public class JwtTokenProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createToken(String subject) {
-        Claims claims = Jwts.claims().setSubject(subject);
-
+    public String createToken(Long userId, Set<Authority> authorities) {
+        String roles = authorities.stream()
+            .map(Authority::getRole)
+            .map(Authority.Role::name)
+            .collect(Collectors.joining(ROLE_DELIMITER));
         Date now = new Date();
         Date validity = new Date(now.getTime()
             + validityInMilliseconds);
 
         return Jwts.builder()
-            .setClaims(claims)
+            .claim(USER_ID_KEY, userId)
+            .claim(ROLES_KEY, roles)
             .setIssuedAt(now)
             .setExpiration(validity)
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
     }
 
-    public String getSubject(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public Long getUserId(String token) {
+        return Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .getBody()
+            .get(USER_ID_KEY, Long.class);
+    }
+
+    public Set<Authority.Role> getAuthorities(String token) {
+        String roles = Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .getBody()
+            .get(ROLES_KEY, String.class);
+        return Arrays.stream(roles.split(ROLE_DELIMITER))
+            .map(Authority.Role::valueOf)
+            .collect(Collectors.toSet());
     }
 
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-
-            return true;
+            return claims.getBody().getExpiration().after(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

@@ -22,4 +22,10 @@ public class UserResource extends BaseEntity {
     private String email;
     private String name;
     private String profileImage;
+
+    public void update(UserResource userResource) {
+        this.email = userResource.email;
+        this.name = userResource.name;
+        this.profileImage = userResource.profileImage;
+    }
 }
