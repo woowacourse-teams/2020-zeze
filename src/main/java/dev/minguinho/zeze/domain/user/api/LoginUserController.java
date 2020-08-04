@@ -24,8 +24,10 @@ public class LoginUserController {
     }
 
     @PutMapping("/api/me")
-    public ResponseEntity<UserResourceResponseDto> updateLoginUser(@LoginUserId Long id,
-        UserResourceRequestDto userResourceRequestDto) {
+    public ResponseEntity<UserResourceResponseDto> updateLoginUser(
+        @LoginUserId Long id,
+        UserResourceRequestDto userResourceRequestDto
+    ) {
         UserResourceResponseDto response = userResourceService.updateUserResource(id, userResourceRequestDto);
         return ResponseEntity.ok(response);
     }
