@@ -23,16 +23,10 @@ public class Slide extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AccessLevel accessLevel;
 
-    public void update(String title, String content, String accessLevel) {
-        if (title != null) {
-            this.title = title;
-        }
-        if (content != null) {
-            this.content = content;
-        }
-        if (accessLevel != null) {
-            this.accessLevel = AccessLevel.valueOf(accessLevel);
-        }
+    public void update(Slide slide) {
+        this.title = slide.title;
+        this.content = slide.content;
+        this.accessLevel = slide.accessLevel;
     }
 
     public enum AccessLevel {
