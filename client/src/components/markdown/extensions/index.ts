@@ -1,5 +1,4 @@
 import Youtube from "./Youtube";
-import Metadata from "./Metadata";
 
 enum Language {
   YOUTUBE = "youtube"
@@ -7,7 +6,6 @@ enum Language {
 
 export {
   Youtube,
-  Metadata,
 };
 
 export default Language;

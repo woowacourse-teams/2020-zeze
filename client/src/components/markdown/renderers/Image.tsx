@@ -7,9 +7,7 @@ interface IProps {
   width: string;
 }
 const Image: React.FC<IProps> = ({src, alt, height, width}) => (
-  <span className="image">
-    <img src={src} alt={alt} height={height} width={width}/>
-  </span>
+  <img src={src} alt={alt} height={height} width={width}/>
 );
 
 export default Image;

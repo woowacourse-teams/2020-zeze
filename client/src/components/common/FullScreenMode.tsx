@@ -28,23 +28,43 @@ const FullScreenBlock = styled.div<FullScreenProps>`
   left: -9999px;
   font-size: 100%;
   cursor: none;
+  &:focus {
+    outline: none;
+  }
   
   > div#themed {
-    width: 100%;
     height: 100%;
+    overflow-y: scroll;
     box-sizing: border-box;
-    font-size: 1em;
+    padding: 7%;
+    font-size: 1.75rem;
+    display: flex;
+    flex-direction: column;
     
-    &:focus {
-      outline: 0 solid transparent;
+    p.images {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 100%;
+      width: 100%;
+      
+      img:only-child {
+        object-fit: contain;
+        height: 100%;
+      }
+      
+      img:not(:only-child) {
+        display: block;
+        object-fit: contain;
+        box-sizing: border-box;
+        flex: 1 0 25%;
+        padding: 10px; 
+      }
     }
     
-    * {
-      margin: 0;
-    }
-    
-    @media (max-width: ${MOBILE_MAX_WIDTH}px) {
-      font-size: 0.5em;
+    iframe.youtube {
+      flex: 1;
     }
     
     ${({slideTheme}) => applyTheme(slideTheme)}
@@ -116,7 +136,7 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
     <>
       <Global styles={fullScreenStyle} />
       <FullScreenBlock
-        slideTheme={Theme.DEFAULT}
+        slideTheme={Theme.GITHUB}
         ref={slideReference}
         tabIndex={-1}
         onKeyDown={handleKeyDown}

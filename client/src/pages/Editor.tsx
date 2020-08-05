@@ -9,6 +9,7 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import {MOBILE_MAX_WIDTH} from "../domains/constants";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
+import fixtures from "../utils/fixtures";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -47,8 +48,11 @@ const Editor: React.FC = () => {
   const history = useHistory();
 
   useEffect(() => {
-    slideApi.get({id}).then(({data}) => setText(data.content));
-  }, [id]);
+    slideApi.get({id})
+      .then(({data}) => setText(data.content))
+      .catch(() => setText(fixtures));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const {content: parsedContents} = parse(text);
