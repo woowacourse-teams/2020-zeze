@@ -3,6 +3,7 @@ package dev.minguinho.zeze.domain.slide.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.*;
+import static org.mockito.ArgumentMatchers.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,10 +26,13 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
+import dev.minguinho.zeze.domain.auth.api.dto.request.GithubSignInDtoTest;
+import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
+import dev.minguinho.zeze.domain.user.config.LoginUserIdMethodArgumentResolver;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SlideAcceptanceTest {
@@ -48,19 +54,33 @@ public class SlideAcceptanceTest {
         slideRepository.deleteAll();
     }
 
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private LoginUserIdMethodArgumentResolver loginUserIdMethodArgumentResolver;
+
     public static RequestSpecification given() {
-        return RestAssured.given().log().all();
+        return RestAssured.given()
+            .log()
+            .all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE);
     }
 
     @TestFactory
     @DisplayName("슬라이드 추가 조회 업데이트 삭제")
     Stream<DynamicTest> slide() {
+        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
         return Stream.of(
             dynamicTest("추가", () -> {
                 String title = "제목";
                 String content = "내용";
                 String accessLevel = "PUBLIC";
                 SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+                loginUser();
 
                 createSlide(slideRequestDto);
 
@@ -136,9 +156,19 @@ public class SlideAcceptanceTest {
         );
     }
 
+    private void loginUser() {
+        given()
+            .body(GithubSignInDtoTest.getGithubSignInDtoFixture())
+            .when()
+            .post("/api/signin/github")
+            .then()
+            .log().all();
+    }
+
     private void createSlide(SlideRequestDto slideRequestDto) {
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth()
+            .oauth2("token")
             .body(slideRequestDto)
             .when()
             .post(BASE_URL)
@@ -149,6 +179,8 @@ public class SlideAcceptanceTest {
 
     private SlideResponseDto retrieveSlide(Long slideId) {
         return given()
+            .auth()
+            .oauth2("token")
             .when()
             .get(BASE_URL + slideId)
             .then()
@@ -163,6 +195,8 @@ public class SlideAcceptanceTest {
         params.put("size", "5");
 
         return given()
+            .auth()
+            .oauth2("token")
             .params(params)
             .when()
             .get(BASE_URL)
@@ -174,7 +208,8 @@ public class SlideAcceptanceTest {
 
     private void updateSlide(Long id, SlideRequestDto slideRequestDto) {
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth()
+            .oauth2("token")
             .body(slideRequestDto)
             .when()
             .patch(BASE_URL + id)
@@ -185,6 +220,8 @@ public class SlideAcceptanceTest {
 
     private void deleteSlide(Long id) {
         given()
+            .auth()
+            .oauth2("token")
             .when()
             .delete(BASE_URL + id)
             .then()

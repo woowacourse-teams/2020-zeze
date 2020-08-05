@@ -50,7 +50,7 @@ class SlideServiceTest {
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
         given(slideRepository.save(any(Slide.class))).willReturn(slideRequestDto.toEntity());
 
-        slideService.createSlide(slideRequestDto);
+        slideService.createSlide(slideRequestDto, 1L);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
     }
@@ -62,13 +62,13 @@ class SlideServiceTest {
         String firstContent = "내용1";
         String secondTitle = "제목2";
         String secondContent = "내용2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
-            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
-        given(slideRepository.findAllByIdGreaterThan(eq(0L), any(Pageable.class))).willReturn(page);
+        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE, 1L));
+        given(slideRepository.findAllByUserIdAndIdGreaterThan(eq(1L), eq(0L), any(Pageable.class))).willReturn(page);
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
-        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);
+        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto, 1L);
 
         assertAll(
             () -> assertThat(slideResponseDtos.getValues().get(0).getTitle()).isEqualTo(firstTitle),

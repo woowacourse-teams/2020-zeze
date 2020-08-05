@@ -20,19 +20,20 @@ import dev.minguinho.zeze.domain.slide.model.SlideRepository;
 @RequiredArgsConstructor
 public class SlideService {
     public static final int FIRST_PAGE = 0;
+
     private final SlideRepository slideRepository;
 
     @Transactional
-    public Long createSlide(SlideRequestDto slideRequestDto) {
-        Slide slide = slideRequestDto.toEntity();
+    public Long createSlide(SlideRequestDto slideRequestDto, Long userId) {
+        Slide slide = slideRequestDto.toEntity(userId);
         Slide persist = slideRepository.save(slide);
         return persist.getId();
     }
 
-    public SlideResponseDtos retrieveSlides(SlidesRequestDto slidesRequestDto) {
+    public SlideResponseDtos retrieveSlides(SlidesRequestDto slidesRequestDto, Long userId) {
         PageRequest pageRequest = PageRequest.of(FIRST_PAGE, slidesRequestDto.getSize());
-        List<Slide> slides = slideRepository.findAllByIdGreaterThan(slidesRequestDto.getId(), pageRequest)
-            .getContent();
+        List<Slide> slides = slideRepository.findAllByUserIdAndIdGreaterThan(userId, slidesRequestDto.getId(),
+            pageRequest).getContent();
         return SlideResponseDtos.from(slides);
     }
 

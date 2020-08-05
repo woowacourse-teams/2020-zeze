@@ -25,7 +25,7 @@ class SlideRepositoryTest {
     void save() {
         String title = "제목";
         String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC, 1L);
 
         Slide persist = slideRepository.save(slide);
 
@@ -39,12 +39,13 @@ class SlideRepositoryTest {
         String firstContent = "내용1";
         String secondTitle = "제목2";
         String secondContent = "내용2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
-            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
+        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE, 1L));
         slideRepository.saveAll(slides);
 
         PageRequest pageRequest = PageRequest.of(0, 5);
-        List<Slide> persistPresentations = slideRepository.findAllByIdGreaterThan(0L, pageRequest).getContent();
+        List<Slide> persistPresentations = slideRepository.findAllByUserIdAndIdGreaterThan(1L, 0L, pageRequest)
+            .getContent();
 
         assertAll(
             () -> assertThat(persistPresentations).hasSize(2),

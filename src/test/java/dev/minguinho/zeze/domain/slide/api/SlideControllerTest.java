@@ -32,6 +32,7 @@ import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.service.SlideService;
+import dev.minguinho.zeze.domain.user.config.LoginUserIdMethodArgumentResolver;
 
 @WebMvcTest(controllers = {SlideController.class})
 class SlideControllerTest {
@@ -51,6 +52,9 @@ class SlideControllerTest {
     @MockBean
     private AuthorizationTokenExtractor authorizationTokenExtractor;
 
+    @MockBean
+    private LoginUserIdMethodArgumentResolver loginUserIdMethodArgumentResolver;
+
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext) {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -67,6 +71,10 @@ class SlideControllerTest {
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
         String body = objectMapper.writeValueAsString(slideRequestDto);
 
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
         mvc.perform(post(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -75,7 +83,7 @@ class SlideControllerTest {
             .andExpect(status().isCreated())
             .andDo(print());
 
-        verify(slideService, times(1)).createSlide(any(SlideRequestDto.class));
+        verify(slideService, times(1)).createSlide(any(SlideRequestDto.class), eq(1L));
     }
 
     @Test
@@ -87,7 +95,12 @@ class SlideControllerTest {
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
             new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
-        given(slideService.retrieveSlides(any(SlidesRequestDto.class))).willReturn(SlideResponseDtos.from(slides));
+        given(slideService.retrieveSlides(any(SlidesRequestDto.class), anyLong())).willReturn(
+            SlideResponseDtos.from(slides));
+
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
         mvc.perform(get(BASE_URL))
             .andExpect(status().isOk())

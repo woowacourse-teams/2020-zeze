@@ -5,5 +5,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SlideRepository extends JpaRepository<Slide, Long> {
-    Page<Slide> findAllByIdGreaterThan(Long id, Pageable pageable);
+    Page<Slide> findAllByUserIdAndIdGreaterThan(Long userId, Long id, Pageable pageable);
 }
