@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "ret act-dom";
 import {css, Global} from "@emotion/core";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
