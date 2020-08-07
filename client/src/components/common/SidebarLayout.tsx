@@ -5,6 +5,7 @@ import * as S from "../../assets/icons";
 import SidebarMenu from "./SidebarMenu";
 import SidebarHeader from "./SidebarHeader";
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
+import SidebarNav from "./SidebarNav";
 
 interface SidebarLayoutProps {
   fluid?: boolean
@@ -65,20 +66,7 @@ interface IProps {
 
 const SidebarLayout: React.FC<IProps> = ({children, fluid = false}) => (
   <SidebarLayoutBlock fluid={fluid}>
-    <nav>
-      <div>
-        <SidebarHeader src={undefined} title="Hodol"/>
-        <NavLink to="/me" activeClassName="current">
-          <SidebarMenu src={S.slide} title="All Slides"/>
-        </NavLink>
-        <NavLink to="/archive" activeClassName="current">
-          <SidebarMenu src={S.archive} title="Archive"/>
-        </NavLink>
-      </div>
-      <Link to="/editor">
-        <SidebarMenu src={S.newSlides} title="New Slides"/>
-      </Link>
-    </nav>
+    <SidebarNav/>
     <main>
       <div>
         {children}
