@@ -65,7 +65,7 @@ const Home: React.FC = () => (
           <Slogan>Beautiful,</Slogan>
           <Slogan>Minimal <span style={{color: "#00FF7F"}}>Slides</span></Slogan>
           <Slogan>With Markdown</Slogan>
-          <Link to="/me">
+          <Link to="/login">
             <Button>Get Started for Free →</Button>
           </Link>
         </Layout>
