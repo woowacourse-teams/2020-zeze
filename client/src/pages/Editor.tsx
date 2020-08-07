@@ -1,15 +1,25 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
+import {useRecoilState, useRecoilValue} from "recoil";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "@emotion/styled";
+
 import Preview from "../components/editor/Preview";
 import MarkdownEditor from "../components/editor/MarkdownEditor";
 import FullScreenMode from "../components/common/FullScreenMode";
-import parse from "../utils/metadata";
 import SidebarLayout from "../components/common/SidebarLayout";
-import {MOBILE_MAX_WIDTH} from "../domains/constants";
+
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import fixtures from "../utils/fixtures";
+import {MOBILE_MAX_WIDTH} from "../domains/constants";
+
+import {
+  parsedSlides,
+  slideAccessLevelState,
+  slideContentState,
+  slideIdState,
+  slideMetadata,
+} from "../store/atoms";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -28,40 +38,29 @@ const EditorBlock = styled.main`
   }
 `;
 
-enum AccessLevel {
-  PRIVATE = "PRIVATE",
-  PUBLIC = "PUBLIC"
-}
-
 interface Params {
   id?: string
 }
 
-const Editor: React.FC = () => {
+const Editor: React.FC = React.memo(() => {
   const params = useParams<Params>();
-  const [id, setId] = useState<number | undefined>(parseInt(params?.id ?? "", 10));
-  const [text, setText] = useState<string>("");
-  const [contents, setContents] = useState<string[]>(text.split("---"));
-  const [accessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
-  const [title] = useState<string>("");
-
   const history = useHistory();
 
-  useEffect(() => {
-    slideApi.get({id})
-      .then(({data}) => setText(data.content))
-      .catch(() => setText(fixtures));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [id, setId] = useRecoilState(slideIdState);
+  const [content, setContent] = useRecoilState(slideContentState);
+  const slides = useRecoilValue(parsedSlides);
+  const {title, subtitle, author, createdAt} = useRecoilValue(slideMetadata);
+  const accessLevel = useRecoilValue(slideAccessLevelState);
 
   useEffect(() => {
-    const {content: parsedContents} = parse(text);
+    setId(parseInt(params?.id ?? "", 10));
+  }, [params, setId]);
 
-    parsedContents && setContents(parsedContents
-      .split("---")
-      .filter(content => content.trim().length !== 0),
-    );
-  }, [text]);
+  useEffect(() => {
+    id && slideApi.get(id)
+      .then(({data}) => setContent(data.content))
+      .catch(() => setContent(fixtures));
+  }, [id, setContent]);
 
   const uploadFile = (file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -69,19 +68,17 @@ const Editor: React.FC = () => {
       .then(url => resolve(url));
   });
 
-  const create = () => {
-    const data = {
+  const create = async () => {
+    const response = await slideApi.create({
       data: {
         title,
-        content: text,
+        content,
         accessLevel,
       },
-    };
+    });
+    const slideId = response.headers.location.lastIndexOf("/") + 1;
 
-    slideApi.create(data)
-      .then(response => response.headers.location)
-      .then(location => location.substring(location.lastIndexOf("/") + 1))
-      .then(generatedId => setId(parseInt(generatedId, 10)));
+    setId(parseInt(slideId, 10));
   };
 
   const update = () => {
@@ -89,7 +86,7 @@ const Editor: React.FC = () => {
       id,
       data: {
         title,
-        content: text,
+        content,
         accessLevel,
       },
     };
@@ -99,7 +96,9 @@ const Editor: React.FC = () => {
       .catch(() => alert("실패"));
   };
 
-  const save = () => (id ? update() : create());
+  const save = () => {
+    id ? update() : create();
+  };
 
   const deleteSlide = () => {
     id && slideApi.delete(id)
@@ -112,13 +111,13 @@ const Editor: React.FC = () => {
         <div className="editor">
           <button onClick={save}>save</button>
           <button onClick={deleteSlide}>delete</button>
-          <MarkdownEditor value={text} onChange={setText} onDrop={uploadFile}/>
-          <FullScreenMode contents={contents}/>
+          <MarkdownEditor value={content} onChange={setContent} onDrop={uploadFile}/>
+          <FullScreenMode contents={slides}/>
         </div>
-        <Preview content={text}/>
+        <Preview content={content}/>
       </EditorBlock>
     </SidebarLayout>
   );
-};
+});
 
 export default Editor;

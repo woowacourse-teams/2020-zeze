@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 import fscreen from "fscreen";
 import {css, Global} from "@emotion/core";
-import {Keys, MOBILE_MAX_WIDTH} from "../../domains/constants";
+import {Keys} from "../../domains/constants";
 import Markdown from "../markdown";
 import {applyTheme, Theme} from "../theme";
 import play from "../../assets/icons/play.svg";
@@ -94,7 +94,7 @@ export const FullScreenButton = styled.button`
 interface IProps {
   contents: string[]
 }
-const FullScreenMode: React.FC<IProps> = ({contents}) => {
+const FullScreenMode: React.FC<IProps> = React.memo(({contents}) => {
   const [index, setIndex] = useState<number>(0);
   const [slides, setSlides] = useState<string[]>(contents);
 
@@ -144,6 +144,6 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
       <FullScreenButton onClick={toggleFullScreen}/>
     </>
   );
-};
+});
 
 export default FullScreenMode;

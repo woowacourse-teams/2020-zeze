@@ -9,3 +9,8 @@ export const Keys = {
   ARROW_RIGHT: "ArrowRight",
   ARROW_LEFT: "ArrowLeft",
 };
+
+export enum AccessLevel {
+  PRIVATE = "PRIVATE",
+  PUBLIC = "PUBLIC"
+}
