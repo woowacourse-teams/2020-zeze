@@ -36,6 +36,10 @@ public class Slide extends BaseEntity {
         this.accessLevel = slide.accessLevel;
     }
 
+    public boolean isNotOwner(Long userId) {
+        return !this.userId.equals(userId);
+    }
+
     public enum AccessLevel {
         PRIVATE,
         PUBLIC

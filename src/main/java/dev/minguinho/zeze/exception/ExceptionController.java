@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import lombok.extern.slf4j.Slf4j;
 
 import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
+import dev.minguinho.zeze.domain.slide.exception.SlideNotAuthorizedException;
+import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
 import dev.minguinho.zeze.exception.dto.ApiError;
 
 @Slf4j
@@ -32,6 +34,30 @@ public class ExceptionController {
         ApiError apiError = ApiError.builder()
             .httpStatus(HttpStatus.BAD_REQUEST)
             .message(fileNotConvertedException.getMessage())
+            .build();
+        return ResponseEntity.badRequest().body(apiError);
+    }
+
+    @ExceptionHandler(SlideNotFoundException.class)
+    public ResponseEntity<ApiError> handleSlideNotFoundException(
+        SlideNotFoundException slideNotFoundException
+    ) {
+        log.error(slideNotFoundException.getMessage());
+        ApiError apiError = ApiError.builder()
+            .httpStatus(HttpStatus.BAD_REQUEST)
+            .message(slideNotFoundException.getMessage())
+            .build();
+        return ResponseEntity.badRequest().body(apiError);
+    }
+
+    @ExceptionHandler(SlideNotAuthorizedException.class)
+    public ResponseEntity<ApiError> handleSlideNotAuthorizedException(
+        SlideNotAuthorizedException slideNotAuthorizedException
+    ) {
+        log.error(slideNotAuthorizedException.getMessage());
+        ApiError apiError = ApiError.builder()
+            .httpStatus(HttpStatus.BAD_REQUEST)
+            .message(slideNotAuthorizedException.getMessage())
             .build();
         return ResponseEntity.badRequest().body(apiError);
     }

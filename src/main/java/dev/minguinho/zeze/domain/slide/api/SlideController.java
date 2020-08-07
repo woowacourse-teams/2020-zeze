@@ -39,8 +39,16 @@ public class SlideController {
         return ResponseEntity.created(URI.create("/api/slides/" + slideId)).build();
     }
 
-    @Secured
     @GetMapping
+    public ResponseEntity<SlideResponseDtos> retrievePublicSlides(
+        @ModelAttribute SlidesRequestDto slidesRequestDto
+    ) {
+        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);
+        return ResponseEntity.ok(slideResponseDtos);
+    }
+
+    @Secured
+    @GetMapping("/me")
     public ResponseEntity<SlideResponseDtos> retrieveSlides(
         @ModelAttribute SlidesRequestDto slidesRequestDto,
         @LoginUserId Long userId
@@ -60,16 +68,20 @@ public class SlideController {
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateSlide(
         @PathVariable("id") Long slideId,
-        @RequestBody SlideRequestDto slideRequestDto
+        @RequestBody SlideRequestDto slideRequestDto,
+        @LoginUserId Long userId
     ) {
-        slideService.updateSlide(slideId, slideRequestDto);
+        slideService.updateSlide(slideId, slideRequestDto, userId);
         return ResponseEntity.noContent().build();
     }
 
     @Secured
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSlide(@PathVariable("id") Long slideId) {
-        slideService.deleteSlide(slideId);
+    public ResponseEntity<Void> deleteSlide(
+        @PathVariable("id") Long slideId,
+        @LoginUserId Long userId
+    ) {
+        slideService.deleteSlide(slideId, userId);
         return ResponseEntity.noContent().build();
     }
 }

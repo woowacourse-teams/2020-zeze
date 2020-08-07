@@ -26,7 +26,6 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
-import dev.minguinho.zeze.domain.auth.api.dto.request.GithubSignInDtoTest;
 import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
@@ -72,6 +71,7 @@ public class SlideAcceptanceTest {
     @DisplayName("슬라이드 추가 조회 업데이트 삭제")
     Stream<DynamicTest> slide() {
         BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
         return Stream.of(
@@ -80,7 +80,6 @@ public class SlideAcceptanceTest {
                 String content = "내용";
                 String accessLevel = "PUBLIC";
                 SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
-                loginUser();
 
                 createSlide(slideRequestDto);
 
@@ -92,7 +91,7 @@ public class SlideAcceptanceTest {
                     () -> assertThat(values.get(0).getAccessLevel()).isEqualTo(accessLevel)
                 );
             }),
-            dynamicTest("조회", () -> {
+            dynamicTest("전체 조회", () -> {
                 String title = "두번째 제목";
                 String content = "두번째 내용";
                 String accessLevel = "PRIVATE";
@@ -103,8 +102,17 @@ public class SlideAcceptanceTest {
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> values = slideResponseDtos.getValues();
                 assertAll(
+                    () -> assertThat(values).hasSize(1),
+                    () -> assertThat(values.get(0).getTitle()).isEqualTo("제목")
+                );
+            }),
+
+            dynamicTest("내 슬라이드 조회", () -> {
+                SlideResponseDtos slideResponseDtos = retrieveMySlides();
+                List<SlideResponseDto> values = slideResponseDtos.getValues();
+                assertAll(
                     () -> assertThat(values.get(0).getTitle()).isEqualTo("제목"),
-                    () -> assertThat(values.get(1).getTitle()).isEqualTo(title)
+                    () -> assertThat(values.get(1).getTitle()).isEqualTo("두번째 제목")
                 );
             }),
             dynamicTest("특정 슬라이드 조회", () -> {
@@ -145,7 +153,7 @@ public class SlideAcceptanceTest {
 
                 deleteSlide(id);
 
-                SlideResponseDtos result = retrieveSlides();
+                SlideResponseDtos result = retrieveMySlides();
                 List<SlideResponseDto> resultValues = result.getValues();
                 assertAll(
                     () -> assertThat(resultValues.get(0).getTitle()).isEqualTo("두번째 제목"),
@@ -156,19 +164,8 @@ public class SlideAcceptanceTest {
         );
     }
 
-    private void loginUser() {
-        given()
-            .body(GithubSignInDtoTest.getGithubSignInDtoFixture())
-            .when()
-            .post("/api/signin/github")
-            .then()
-            .log().all();
-    }
-
     private void createSlide(SlideRequestDto slideRequestDto) {
         given()
-            .auth()
-            .oauth2("token")
             .body(slideRequestDto)
             .when()
             .post(BASE_URL)
@@ -179,8 +176,6 @@ public class SlideAcceptanceTest {
 
     private SlideResponseDto retrieveSlide(Long slideId) {
         return given()
-            .auth()
-            .oauth2("token")
             .when()
             .get(BASE_URL + slideId)
             .then()
@@ -195,8 +190,6 @@ public class SlideAcceptanceTest {
         params.put("size", "5");
 
         return given()
-            .auth()
-            .oauth2("token")
             .params(params)
             .when()
             .get(BASE_URL)
@@ -206,10 +199,23 @@ public class SlideAcceptanceTest {
             .extract().as(SlideResponseDtos.class);
     }
 
+    private SlideResponseDtos retrieveMySlides() {
+        Map<String, String> params = new HashMap<>();
+        params.put("id", "0");
+        params.put("size", "5");
+
+        return given()
+            .params(params)
+            .when()
+            .get(BASE_URL + "me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(SlideResponseDtos.class);
+    }
+
     private void updateSlide(Long id, SlideRequestDto slideRequestDto) {
         given()
-            .auth()
-            .oauth2("token")
             .body(slideRequestDto)
             .when()
             .patch(BASE_URL + id)
@@ -220,8 +226,6 @@ public class SlideAcceptanceTest {
 
     private void deleteSlide(Long id) {
         given()
-            .auth()
-            .oauth2("token")
             .when()
             .delete(BASE_URL + id)
             .then()

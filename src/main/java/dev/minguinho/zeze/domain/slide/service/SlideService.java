@@ -12,6 +12,7 @@ import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
+import dev.minguinho.zeze.domain.slide.exception.SlideNotAuthorizedException;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
@@ -30,6 +31,13 @@ public class SlideService {
         return persist.getId();
     }
 
+    public SlideResponseDtos retrieveSlides(SlidesRequestDto slidesRequestDto) {
+        PageRequest pageRequest = PageRequest.of(FIRST_PAGE, slidesRequestDto.getSize());
+        List<Slide> slides = slideRepository.findAllByAccessLevel(Slide.AccessLevel.PUBLIC, pageRequest)
+            .getContent();
+        return SlideResponseDtos.from(slides);
+    }
+
     public SlideResponseDtos retrieveSlides(SlidesRequestDto slidesRequestDto, Long userId) {
         PageRequest pageRequest = PageRequest.of(FIRST_PAGE, slidesRequestDto.getSize());
         List<Slide> slides = slideRepository.findAllByUserIdAndIdGreaterThan(userId, slidesRequestDto.getId(),
@@ -44,15 +52,24 @@ public class SlideService {
     }
 
     @Transactional
-    public void updateSlide(Long slideId, SlideRequestDto slideRequestDto) {
-        Slide persist = slideRepository.findById(slideId)
-            .orElseThrow(() -> new SlideNotFoundException(slideId));
+    public void updateSlide(Long slideId, SlideRequestDto slideRequestDto, Long userId) {
+        Slide persist = findSlideIfAuthorized(slideId, userId);
         persist.update(slideRequestDto.toEntity());
         slideRepository.save(persist);
     }
 
     @Transactional
-    public void deleteSlide(Long slideId) {
-        slideRepository.deleteById(slideId);
+    public void deleteSlide(Long slideId, Long userId) {
+        Slide persist = findSlideIfAuthorized(slideId, userId);
+        slideRepository.delete(persist);
+    }
+
+    private Slide findSlideIfAuthorized(Long slideId, Long userId) {
+        Slide persist = slideRepository.findById(slideId)
+            .orElseThrow(() -> new SlideNotFoundException(slideId));
+        if (persist.isNotOwner(userId)) {
+            throw new SlideNotAuthorizedException();
+        }
+        return persist;
     }
 }
