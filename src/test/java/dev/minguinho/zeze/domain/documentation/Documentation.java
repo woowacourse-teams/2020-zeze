@@ -17,7 +17,7 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 
 @ExtendWith(RestDocumentationExtension.class)
 @Import(DocumentationConfig.class)
-@ActiveProfiles("documentation")
+@ActiveProfiles("doc")
 public class Documentation {
     @BeforeEach
     public void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {

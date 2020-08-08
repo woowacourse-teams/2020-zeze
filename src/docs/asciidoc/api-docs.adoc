@@ -15,3 +15,8 @@ endif::[]
 
 [[resources-slides]]
 == Slide
+
+[[resources-slides-create]]
+=== 슬라이드 추가
+
+operation::slides/create[snippets='http-request,http-response,request-headers,request-fields']
