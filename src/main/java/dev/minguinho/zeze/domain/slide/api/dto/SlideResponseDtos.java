@@ -14,10 +14,10 @@ import dev.minguinho.zeze.domain.slide.model.Slide;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class SlideResponseDtos {
-    private List<SlideResponseDto> values;
+    private List<SlideResponseDto> slides;
 
-    public static SlideResponseDtos from(List<Slide> presentations) {
-        List<SlideResponseDto> presentationResponses = presentations.stream()
+    public static SlideResponseDtos from(List<Slide> slides) {
+        List<SlideResponseDto> presentationResponses = slides.stream()
             .map(SlideResponseDto::from)
             .collect(Collectors.toList());
         return new SlideResponseDtos(presentationResponses);

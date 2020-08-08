@@ -9,7 +9,7 @@ const Archive: React.FC = () => {
 
   useEffect(() => {
     slideApi.getAll({id: 0, size: 5})
-      .then(res => setSlides(res.data.values));
+      .then(res => setSlides(res.data.slides));
   }, []);
 
   return (

@@ -5,19 +5,15 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 
 @ExtendWith(RestDocumentationExtension.class)
-@Import(DocumentationConfig.class)
-@ActiveProfiles("doc")
 public class Documentation {
     @BeforeEach
     public void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {

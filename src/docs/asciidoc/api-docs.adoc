@@ -19,4 +19,14 @@ endif::[]
 [[resources-slides-create]]
 === 슬라이드 추가
 
-operation::slides/create[snippets='http-request,http-response,request-headers,request-fields']
+operation::slides/create[snippets='http-request,http-response,request-headers,request-fields,response-headers']
+
+[[resources-slides-retrieve-Public]]
+=== Public 슬라이드 조회
+
+operation::slides/retrieveAllPublic[snippets='http-request,http-response,response-fields']
+
+[[resources-slides-retrieve-User]]
+=== User 슬라이드 조회
+
+operation::slides/retrieveAll[snippets='http-request,http-response,request-headers,response-fields']

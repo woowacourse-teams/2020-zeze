@@ -72,8 +72,8 @@ class SlideServiceTest {
         SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);
 
         assertAll(
-            () -> assertThat(slideResponseDtos.getValues().get(0).getTitle()).isEqualTo(firstTitle),
-            () -> assertThat(slideResponseDtos.getValues().get(1).getTitle()).isEqualTo(secondTitle)
+            () -> assertThat(slideResponseDtos.getSlides().get(0).getTitle()).isEqualTo(firstTitle),
+            () -> assertThat(slideResponseDtos.getSlides().get(1).getTitle()).isEqualTo(secondTitle)
         );
     }
 
@@ -93,8 +93,8 @@ class SlideServiceTest {
         SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto, 1L);
 
         assertAll(
-            () -> assertThat(slideResponseDtos.getValues().get(0).getTitle()).isEqualTo(firstTitle),
-            () -> assertThat(slideResponseDtos.getValues().get(1).getTitle()).isEqualTo(secondTitle)
+            () -> assertThat(slideResponseDtos.getSlides().get(0).getTitle()).isEqualTo(firstTitle),
+            () -> assertThat(slideResponseDtos.getSlides().get(1).getTitle()).isEqualTo(secondTitle)
         );
     }
 
