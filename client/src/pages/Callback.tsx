@@ -13,10 +13,10 @@ const Callback: React.FC<props> = ({location, history}: props) => {
 
   useEffect(() => {
     const getToken = async () => {
-      const code: string = location.search.toString().split("=")[1];
+      const code: string | null = new URLSearchParams(location.search.toString()).get("code");
       const accessToken: string = (await axios.post(githubBaseUrl, {
         provider: "GITHUB",
-        code,
+        code: code? code : ""
       })).data.accessToken;
 
       localStorage.setItem("accessToken", `bearer ${accessToken}`);
