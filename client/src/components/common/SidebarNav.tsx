@@ -4,7 +4,7 @@ import SidebarHeader from "./SidebarHeader";
 import SidebarMenu from "./SidebarMenu";
 import * as S from "../../assets/icons";
 
-const SidebarNav: React.FC = React.memo(() => (
+const SidebarNav: React.FC = () => (
   <nav>
     <div>
       <SidebarHeader src={undefined} title="Hodol"/>
@@ -19,6 +19,6 @@ const SidebarNav: React.FC = React.memo(() => (
       <SidebarMenu src={S.newSlides} title="New Slides"/>
     </Link>
   </nav>
-));
+);
 
-export default SidebarNav;
+export default React.memo(SidebarNav);

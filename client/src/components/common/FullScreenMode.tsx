@@ -94,7 +94,7 @@ export const FullScreenButton = styled.button`
 interface IProps {
   contents: string[]
 }
-const FullScreenMode: React.FC<IProps> = React.memo(({contents}) => {
+const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const [index, setIndex] = useState<number>(0);
   const [slides, setSlides] = useState<string[]>(contents);
 
@@ -144,6 +144,6 @@ const FullScreenMode: React.FC<IProps> = React.memo(({contents}) => {
       <FullScreenButton onClick={toggleFullScreen}/>
     </>
   );
-});
+};
 
-export default FullScreenMode;
+export default React.memo(FullScreenMode);

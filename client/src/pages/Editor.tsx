@@ -42,7 +42,7 @@ interface Params {
   id?: string
 }
 
-const Editor: React.FC = React.memo(() => {
+const Editor: React.FC = () => {
   const params = useParams<Params>();
   const history = useHistory();
 
@@ -118,6 +118,6 @@ const Editor: React.FC = React.memo(() => {
       </EditorBlock>
     </SidebarLayout>
   );
-});
+};
 
-export default Editor;
+export default React.memo(Editor);
