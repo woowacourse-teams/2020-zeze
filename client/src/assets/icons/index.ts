@@ -6,7 +6,6 @@ import slide from "./slide.svg";
 import archive from "./archive.svg";
 import newSlides from "./newSlides.svg";
 import more from "./more.svg";
-import githubLogo from "./github-logo.svg";
 
 export {
   logo,
@@ -17,6 +16,5 @@ export {
   archive,
   newSlides,
   more,
-  githubLogo,
 };
 
