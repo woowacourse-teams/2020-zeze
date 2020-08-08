@@ -33,9 +33,9 @@ const parse = (text?: string) => {
 
     firstPage = firstPage
       .concat(title ? `# ${title}\n\n` : "")
-      .concat(subtitle ? `## ${subtitle}\n\n` : "")
-      .concat(author ? `### ${author}\n\n` : "")
-      .concat(createdAt ? `#### ${createdAt}\n\n` : "")
+      .concat(subtitle ? `### ${subtitle}\n\n` : "")
+      .concat(author ? `###### ${author}\n\n` : "")
+      .concat(createdAt ? `###### ${createdAt}\n\n` : "")
       .concat("---\n\n");
   }
 
