@@ -168,4 +168,60 @@ public class SlideDocumentation extends Documentation {
                     fieldWithPath("slides[0].updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
             ).extract();
     }
+
+    @Test
+    void retrieveSlide() {
+        SlideResponseDto slideResponseDto = new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(),
+            ZonedDateTime.now());
+        BDDMockito.given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
+
+        given()
+            .log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get(BASE_URL + 1)
+            .then()
+            .log().all()
+            .apply(document("slides/retrievePublic",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                responseFields(
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("슬라이드 id"),
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("슬라이드 제목"),
+                    fieldWithPath("content").type(JsonFieldType.STRING).description("슬라이드 내용"),
+                    fieldWithPath("accessLevel").type(JsonFieldType.STRING).description("슬라이드 접근 권한"),
+                    fieldWithPath("createdAt").type(JsonFieldType.STRING).description("슬라이드 생성 날짜"),
+                    fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
+            ).extract();
+    }
+
+    @Test
+    void retrieveMySlide() {
+        SlideResponseDto slideResponseDto = new SlideResponseDto(1L, "제목", "내용", "PRIVATE", ZonedDateTime.now(),
+            ZonedDateTime.now());
+        BDDMockito.given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
+
+        given()
+            .log().all()
+            .header("Authorization", "bearer " + authenticationDto.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get(BASE_URL + 1)
+            .then()
+            .log().all()
+            .apply(document("slides/retrieve",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestHeaders(
+                    headerWithName("Authorization").description("Bearer auth credentials")
+                ),
+                responseFields(
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("슬라이드 id"),
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("슬라이드 제목"),
+                    fieldWithPath("content").type(JsonFieldType.STRING).description("슬라이드 내용"),
+                    fieldWithPath("accessLevel").type(JsonFieldType.STRING).description("슬라이드 접근 권한"),
+                    fieldWithPath("createdAt").type(JsonFieldType.STRING).description("슬라이드 생성 날짜"),
+                    fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
+            ).extract();
+    }
 }

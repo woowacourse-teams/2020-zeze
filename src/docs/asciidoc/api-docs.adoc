@@ -21,12 +21,22 @@ endif::[]
 
 operation::slides/create[snippets='http-request,http-response,request-headers,request-fields,response-headers']
 
+[[resources-slides-retrieveAll-Public]]
+=== Public 슬라이드 list 조회
+
+operation::slides/retrieveAllPublic[snippets='http-request,http-response,response-fields']
+
+[[resources-slides-retrieveAll-User]]
+=== User 슬라이드 list 조회
+
+operation::slides/retrieveAll[snippets='http-request,http-response,request-headers,response-fields']
+
 [[resources-slides-retrieve-Public]]
 === Public 슬라이드 조회
 
-operation::slides/retrieveAllPublic[snippets='http-request,http-response,response-fields']
+operation::slides/retrievePublic[snippets='http-request,http-response,response-fields']
 
 [[resources-slides-retrieve-User]]
 === User 슬라이드 조회
 
-operation::slides/retrieveAll[snippets='http-request,http-response,request-headers,response-fields']
+operation::slides/retrieve[snippets='http-request,http-response,request-headers,response-fields']
