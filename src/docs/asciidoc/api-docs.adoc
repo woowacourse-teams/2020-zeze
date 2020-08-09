@@ -45,3 +45,8 @@ operation::slides/retrieve[snippets='http-request,http-response,request-headers,
 === 슬라이드 업데이트
 
 operation::slides/update[snippets='http-request,http-response,request-headers']
+
+[[resources-slides-delete]]
+=== 슬라이드 삭제
+
+operation::slides/delete[snippets='http-request,http-response,request-headers']

@@ -256,4 +256,29 @@ public class SlideDocumentation extends Documentation {
                 )
             )).extract();
     }
+
+    @Test
+    void deleteSlide() {
+        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
+        given()
+            .log().all()
+            .config(RestAssuredMockMvcConfig.config()
+                .encoderConfig(encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false)))
+            .header("Authorization", "bearer " + authenticationDto.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .delete(BASE_URL + 1L)
+            .then()
+            .log().all()
+            .apply(document("slides/delete",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestHeaders(
+                    headerWithName("Authorization").description("Bearer auth credentials")
+                )
+            )).extract();
+    }
 }
