@@ -3,6 +3,7 @@ package dev.minguinho.zeze.domain.slide.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.*;
+import static org.mockito.ArgumentMatchers.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,10 +26,12 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
+import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
+import dev.minguinho.zeze.domain.user.config.LoginUserIdMethodArgumentResolver;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SlideAcceptanceTest {
@@ -48,13 +53,27 @@ public class SlideAcceptanceTest {
         slideRepository.deleteAll();
     }
 
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private LoginUserIdMethodArgumentResolver loginUserIdMethodArgumentResolver;
+
     public static RequestSpecification given() {
-        return RestAssured.given().log().all();
+        return RestAssured.given()
+            .log()
+            .all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE);
     }
 
     @TestFactory
     @DisplayName("슬라이드 추가 조회 업데이트 삭제")
     Stream<DynamicTest> slide() {
+        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
         return Stream.of(
             dynamicTest("추가", () -> {
                 String title = "제목";
@@ -72,7 +91,7 @@ public class SlideAcceptanceTest {
                     () -> assertThat(values.get(0).getAccessLevel()).isEqualTo(accessLevel)
                 );
             }),
-            dynamicTest("조회", () -> {
+            dynamicTest("list 조회", () -> {
                 String title = "두번째 제목";
                 String content = "두번째 내용";
                 String accessLevel = "PRIVATE";
@@ -83,8 +102,17 @@ public class SlideAcceptanceTest {
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> values = slideResponseDtos.getValues();
                 assertAll(
+                    () -> assertThat(values).hasSize(1),
+                    () -> assertThat(values.get(0).getTitle()).isEqualTo("제목")
+                );
+            }),
+
+            dynamicTest("내 슬라이드 list 조회", () -> {
+                SlideResponseDtos slideResponseDtos = retrieveMySlides();
+                List<SlideResponseDto> values = slideResponseDtos.getValues();
+                assertAll(
                     () -> assertThat(values.get(0).getTitle()).isEqualTo("제목"),
-                    () -> assertThat(values.get(1).getTitle()).isEqualTo(title)
+                    () -> assertThat(values.get(1).getTitle()).isEqualTo("두번째 제목")
                 );
             }),
             dynamicTest("특정 슬라이드 조회", () -> {
@@ -97,6 +125,18 @@ public class SlideAcceptanceTest {
                     () -> assertThat(slideResponseDto.getTitle()).isEqualTo("제목"),
                     () -> assertThat(slideResponseDto.getContent()).isEqualTo("내용"),
                     () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PUBLIC")
+                );
+            }),
+            dynamicTest("내 슬라이드 조회", () -> {
+                SlideResponseDtos slideResponseDtos = retrieveMySlides();
+                Long id = slideResponseDtos.getValues().get(1).getId();
+
+                SlideResponseDto slideResponseDto = retrieveMySlide(id);
+
+                assertAll(
+                    () -> assertThat(slideResponseDto.getTitle()).isEqualTo("두번째 제목"),
+                    () -> assertThat(slideResponseDto.getContent()).isEqualTo("두번째 내용"),
+                    () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PRIVATE")
                 );
             }),
             dynamicTest("업데이트", () -> {
@@ -125,7 +165,7 @@ public class SlideAcceptanceTest {
 
                 deleteSlide(id);
 
-                SlideResponseDtos result = retrieveSlides();
+                SlideResponseDtos result = retrieveMySlides();
                 List<SlideResponseDto> resultValues = result.getValues();
                 assertAll(
                     () -> assertThat(resultValues.get(0).getTitle()).isEqualTo("두번째 제목"),
@@ -138,23 +178,12 @@ public class SlideAcceptanceTest {
 
     private void createSlide(SlideRequestDto slideRequestDto) {
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(slideRequestDto)
             .when()
             .post(BASE_URL)
             .then()
             .log().all()
             .statusCode(HttpStatus.CREATED.value());
-    }
-
-    private SlideResponseDto retrieveSlide(Long slideId) {
-        return given()
-            .when()
-            .get(BASE_URL + slideId)
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract().as(SlideResponseDto.class);
     }
 
     private SlideResponseDtos retrieveSlides() {
@@ -172,9 +201,43 @@ public class SlideAcceptanceTest {
             .extract().as(SlideResponseDtos.class);
     }
 
+    private SlideResponseDtos retrieveMySlides() {
+        Map<String, String> params = new HashMap<>();
+        params.put("id", "0");
+        params.put("size", "5");
+
+        return given()
+            .params(params)
+            .when()
+            .get(BASE_URL + "me")
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(SlideResponseDtos.class);
+    }
+
+    private SlideResponseDto retrieveSlide(Long slideId) {
+        return given()
+            .when()
+            .get(BASE_URL + slideId)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(SlideResponseDto.class);
+    }
+
+    private SlideResponseDto retrieveMySlide(Long slideId) {
+        return given()
+            .when()
+            .get(BASE_URL + "me/" + slideId)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(SlideResponseDto.class);
+    }
+
     private void updateSlide(Long id, SlideRequestDto slideRequestDto) {
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(slideRequestDto)
             .when()
             .patch(BASE_URL + id)

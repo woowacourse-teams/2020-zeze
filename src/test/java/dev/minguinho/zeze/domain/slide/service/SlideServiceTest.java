@@ -22,6 +22,7 @@ import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
+import dev.minguinho.zeze.domain.slide.exception.SlideNotAuthorizedException;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
@@ -50,7 +51,7 @@ class SlideServiceTest {
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
         given(slideRepository.save(any(Slide.class))).willReturn(slideRequestDto.toEntity());
 
-        slideService.createSlide(slideRequestDto);
+        slideService.create(slideRequestDto, 1L);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
     }
@@ -62,13 +63,34 @@ class SlideServiceTest {
         String firstContent = "내용1";
         String secondTitle = "제목2";
         String secondContent = "내용2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
-            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
-        given(slideRepository.findAllByIdGreaterThan(eq(0L), any(Pageable.class))).willReturn(page);
+        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondContent, AccessLevel.PUBLIC, 1L));
+        given(slideRepository.findAllByAccessLevel(eq(AccessLevel.PUBLIC), any(Pageable.class))).willReturn(page);
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
         SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);
+
+        assertAll(
+            () -> assertThat(slideResponseDtos.getValues().get(0).getTitle()).isEqualTo(firstTitle),
+            () -> assertThat(slideResponseDtos.getValues().get(1).getTitle()).isEqualTo(secondTitle)
+        );
+    }
+
+    @Test
+    @DisplayName("User 슬라이드 list 조회")
+    void retrieveMySlides() {
+        String firstTitle = "제목1";
+        String firstContent = "내용1";
+        String secondTitle = "제목2";
+        String secondContent = "내용2";
+        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE, 1L));
+        given(slideRepository.findAllByUserIdAndIdGreaterThan(eq(1L), eq(0L), any(Pageable.class))).willReturn(page);
+        given(page.getContent()).willReturn(slides);
+
+        SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
+        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto, 1L);
 
         assertAll(
             () -> assertThat(slideResponseDtos.getValues().get(0).getTitle()).isEqualTo(firstTitle),
@@ -97,12 +119,12 @@ class SlideServiceTest {
     void updateSlide() {
         String title = "제목";
         String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
         String newTitle = "새 제목";
 
         SlideRequestDto slideRequestDto = new SlideRequestDto(newTitle, content, "PUBLIC");
-        slideService.updateSlide(1L, slideRequestDto);
+        slideService.update(1L, slideRequestDto, 1L);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
         assertAll(
@@ -117,16 +139,40 @@ class SlideServiceTest {
     void updateWithInvalidSlide() {
         given(slideRepository.findById(1L)).willThrow(new SlideNotFoundException(1L));
 
-        assertThatThrownBy(() -> slideService.updateSlide(1L, null))
+        assertThatThrownBy(() -> slideService.update(1L, null, 1L))
             .isInstanceOf(SlideNotFoundException.class)
             .hasMessage("Slide Id : 1 해당 슬라이드는 존재하지 않습니다.");
     }
 
     @Test
+    @DisplayName("자신의 슬라이드가 아닌 경우")
+    void updateWithUnauthorizedUser() {
+        Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
+        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
+
+        assertThatThrownBy(() -> slideService.update(1L, null, 2L))
+            .isInstanceOf(SlideNotAuthorizedException.class)
+            .hasMessage("사용자의 슬라이드가 아닙니다.");
+    }
+
+    @Test
     @DisplayName("슬라이드 삭제")
     void deleteSlide() {
-        slideService.deleteSlide(1L);
+        Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
+        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
-        verify(slideRepository, times(1)).deleteById(1L);
+        slideService.delete(1L, 1L);
+
+        verify(slideRepository, times(1)).delete(slide);
+    }
+
+    @Test
+    void deleteSlideWithUnauthorized() {
+        Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
+        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
+
+        assertThatThrownBy(() -> slideService.delete(1L, 2L))
+            .isInstanceOf(SlideNotAuthorizedException.class)
+            .hasMessage("사용자의 슬라이드가 아닙니다.");
     }
 }

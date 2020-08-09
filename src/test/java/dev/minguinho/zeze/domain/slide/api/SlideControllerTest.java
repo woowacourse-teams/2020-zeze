@@ -32,6 +32,7 @@ import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.service.SlideService;
+import dev.minguinho.zeze.domain.user.config.LoginUserIdMethodArgumentResolver;
 
 @WebMvcTest(controllers = {SlideController.class})
 class SlideControllerTest {
@@ -51,6 +52,9 @@ class SlideControllerTest {
     @MockBean
     private AuthorizationTokenExtractor authorizationTokenExtractor;
 
+    @MockBean
+    private LoginUserIdMethodArgumentResolver loginUserIdMethodArgumentResolver;
+
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext) {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -67,6 +71,10 @@ class SlideControllerTest {
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
         String body = objectMapper.writeValueAsString(slideRequestDto);
 
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
         mvc.perform(post(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -75,7 +83,7 @@ class SlideControllerTest {
             .andExpect(status().isCreated())
             .andDo(print());
 
-        verify(slideService, times(1)).createSlide(any(SlideRequestDto.class));
+        verify(slideService, times(1)).create(any(SlideRequestDto.class), eq(1L));
     }
 
     @Test
@@ -86,10 +94,38 @@ class SlideControllerTest {
         String secondTitle = "제목2";
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
-            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
-        given(slideService.retrieveSlides(any(SlidesRequestDto.class))).willReturn(SlideResponseDtos.from(slides));
+            new Slide(secondTitle, secondContent, AccessLevel.PUBLIC));
+        given(slideService.retrieveSlides(any(SlidesRequestDto.class))).willReturn(
+            SlideResponseDtos.from(slides));
+
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
         mvc.perform(get(BASE_URL))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(firstTitle)))
+            .andExpect(content().string(containsString(secondTitle)))
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("User 슬라이드 list 요청")
+    void retrieveMySlides() throws Exception {
+        String firstTitle = "제목1";
+        String firstContent = "내용1";
+        String secondTitle = "제목2";
+        String secondContent = "내용2";
+        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
+            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
+        given(slideService.retrieveSlides(any(SlidesRequestDto.class), anyLong())).willReturn(
+            SlideResponseDtos.from(slides));
+
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
+        mvc.perform(get(BASE_URL + "me"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString(firstTitle)))
             .andExpect(content().string(containsString(secondTitle)))
@@ -113,12 +149,35 @@ class SlideControllerTest {
     }
 
     @Test
+    @DisplayName("특정 User 슬라이드 조회")
+    void retrieveUserSlide() throws Exception {
+        String title = "제목";
+        String content = "내용";
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        given(slideService.retrieveSlide(1L, 1L)).willReturn(SlideResponseDto.from(slide));
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
+        mvc.perform(get(BASE_URL + "me/1"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(title)))
+            .andExpect(content().string(containsString(content)))
+            .andExpect(content().string(containsString("PUBLIC")))
+            .andDo(print());
+    }
+
+    @Test
     @DisplayName("슬라이드 업데이트 요청")
     void updateSlide() throws Exception {
         String title = "제목";
         String content = "내용";
         String accessLevel = "PUBLIC";
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
         String body = objectMapper.writeValueAsString(slideRequestDto);
 
@@ -129,16 +188,20 @@ class SlideControllerTest {
             .andExpect(status().isNoContent())
             .andDo(print());
 
-        verify(slideService, times(1)).updateSlide(eq(1L), any(SlideRequestDto.class));
+        verify(slideService, times(1)).update(eq(1L), any(SlideRequestDto.class), eq(1L));
     }
 
     @Test
     @DisplayName("슬라이드 삭제 요청")
     void deleteSlide() throws Exception {
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
         mvc.perform(delete(BASE_URL + "1"))
             .andExpect(status().isNoContent())
             .andDo(print());
 
-        verify(slideService, times(1)).deleteSlide(1L);
+        verify(slideService, times(1)).delete(eq(1L), anyLong());
     }
 }

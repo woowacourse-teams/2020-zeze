@@ -15,6 +15,10 @@ public class SlideRequestDto {
     private String content;
     private String accessLevel;
 
+    public Slide toEntity(Long userId) {
+        return new Slide(title, content, Slide.AccessLevel.valueOf(accessLevel), userId);
+    }
+
     public Slide toEntity() {
         return new Slide(title, content, Slide.AccessLevel.valueOf(accessLevel));
     }
