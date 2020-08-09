@@ -51,7 +51,7 @@ class SlideServiceTest {
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
         given(slideRepository.save(any(Slide.class))).willReturn(slideRequestDto.toEntity());
 
-        slideService.createSlide(slideRequestDto, 1L);
+        slideService.create(slideRequestDto, 1L);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
     }
@@ -124,7 +124,7 @@ class SlideServiceTest {
         String newTitle = "새 제목";
 
         SlideRequestDto slideRequestDto = new SlideRequestDto(newTitle, content, "PUBLIC");
-        slideService.updateSlide(1L, slideRequestDto, 1L);
+        slideService.update(1L, slideRequestDto, 1L);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
         assertAll(
@@ -139,7 +139,7 @@ class SlideServiceTest {
     void updateWithInvalidSlide() {
         given(slideRepository.findById(1L)).willThrow(new SlideNotFoundException(1L));
 
-        assertThatThrownBy(() -> slideService.updateSlide(1L, null, 1L))
+        assertThatThrownBy(() -> slideService.update(1L, null, 1L))
             .isInstanceOf(SlideNotFoundException.class)
             .hasMessage("Slide Id : 1 해당 슬라이드는 존재하지 않습니다.");
     }
@@ -150,7 +150,7 @@ class SlideServiceTest {
         Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
-        assertThatThrownBy(() -> slideService.updateSlide(1L, null, 2L))
+        assertThatThrownBy(() -> slideService.update(1L, null, 2L))
             .isInstanceOf(SlideNotAuthorizedException.class)
             .hasMessage("사용자의 슬라이드가 아닙니다.");
     }
@@ -161,7 +161,7 @@ class SlideServiceTest {
         Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
-        slideService.deleteSlide(1L, 1L);
+        slideService.delete(1L, 1L);
 
         verify(slideRepository, times(1)).delete(slide);
     }
@@ -171,7 +171,7 @@ class SlideServiceTest {
         Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
-        assertThatThrownBy(() -> slideService.deleteSlide(1L, 2L))
+        assertThatThrownBy(() -> slideService.delete(1L, 2L))
             .isInstanceOf(SlideNotAuthorizedException.class)
             .hasMessage("사용자의 슬라이드가 아닙니다.");
     }

@@ -83,7 +83,7 @@ class SlideControllerTest {
             .andExpect(status().isCreated())
             .andDo(print());
 
-        verify(slideService, times(1)).createSlide(any(SlideRequestDto.class), eq(1L));
+        verify(slideService, times(1)).create(any(SlideRequestDto.class), eq(1L));
     }
 
     @Test
@@ -149,6 +149,25 @@ class SlideControllerTest {
     }
 
     @Test
+    @DisplayName("특정 User 슬라이드 조회")
+    void retrieveUserSlide() throws Exception {
+        String title = "제목";
+        String content = "내용";
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        given(slideService.retrieveSlide(1L, 1L)).willReturn(SlideResponseDto.from(slide));
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
+        mvc.perform(get(BASE_URL + "me/1"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString(title)))
+            .andExpect(content().string(containsString(content)))
+            .andExpect(content().string(containsString("PUBLIC")))
+            .andDo(print());
+    }
+
+    @Test
     @DisplayName("슬라이드 업데이트 요청")
     void updateSlide() throws Exception {
         String title = "제목";
@@ -169,7 +188,7 @@ class SlideControllerTest {
             .andExpect(status().isNoContent())
             .andDo(print());
 
-        verify(slideService, times(1)).updateSlide(eq(1L), any(SlideRequestDto.class), eq(1L));
+        verify(slideService, times(1)).update(eq(1L), any(SlideRequestDto.class), eq(1L));
     }
 
     @Test
@@ -183,6 +202,6 @@ class SlideControllerTest {
             .andExpect(status().isNoContent())
             .andDo(print());
 
-        verify(slideService, times(1)).deleteSlide(eq(1L), anyLong());
+        verify(slideService, times(1)).delete(eq(1L), anyLong());
     }
 }

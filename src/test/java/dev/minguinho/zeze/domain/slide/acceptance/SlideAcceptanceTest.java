@@ -91,7 +91,7 @@ public class SlideAcceptanceTest {
                     () -> assertThat(values.get(0).getAccessLevel()).isEqualTo(accessLevel)
                 );
             }),
-            dynamicTest("전체 조회", () -> {
+            dynamicTest("list 조회", () -> {
                 String title = "두번째 제목";
                 String content = "두번째 내용";
                 String accessLevel = "PRIVATE";
@@ -107,7 +107,7 @@ public class SlideAcceptanceTest {
                 );
             }),
 
-            dynamicTest("내 슬라이드 조회", () -> {
+            dynamicTest("내 슬라이드 list 조회", () -> {
                 SlideResponseDtos slideResponseDtos = retrieveMySlides();
                 List<SlideResponseDto> values = slideResponseDtos.getValues();
                 assertAll(
@@ -125,6 +125,18 @@ public class SlideAcceptanceTest {
                     () -> assertThat(slideResponseDto.getTitle()).isEqualTo("제목"),
                     () -> assertThat(slideResponseDto.getContent()).isEqualTo("내용"),
                     () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PUBLIC")
+                );
+            }),
+            dynamicTest("내 슬라이드 조회", () -> {
+                SlideResponseDtos slideResponseDtos = retrieveMySlides();
+                Long id = slideResponseDtos.getValues().get(1).getId();
+
+                SlideResponseDto slideResponseDto = retrieveMySlide(id);
+
+                assertAll(
+                    () -> assertThat(slideResponseDto.getTitle()).isEqualTo("두번째 제목"),
+                    () -> assertThat(slideResponseDto.getContent()).isEqualTo("두번째 내용"),
+                    () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PRIVATE")
                 );
             }),
             dynamicTest("업데이트", () -> {
@@ -174,16 +186,6 @@ public class SlideAcceptanceTest {
             .statusCode(HttpStatus.CREATED.value());
     }
 
-    private SlideResponseDto retrieveSlide(Long slideId) {
-        return given()
-            .when()
-            .get(BASE_URL + slideId)
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract().as(SlideResponseDto.class);
-    }
-
     private SlideResponseDtos retrieveSlides() {
         Map<String, String> params = new HashMap<>();
         params.put("id", "0");
@@ -212,6 +214,26 @@ public class SlideAcceptanceTest {
             .log().all()
             .statusCode(HttpStatus.OK.value())
             .extract().as(SlideResponseDtos.class);
+    }
+
+    private SlideResponseDto retrieveSlide(Long slideId) {
+        return given()
+            .when()
+            .get(BASE_URL + slideId)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(SlideResponseDto.class);
+    }
+
+    private SlideResponseDto retrieveMySlide(Long slideId) {
+        return given()
+            .when()
+            .get(BASE_URL + "me/" + slideId)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.OK.value())
+            .extract().as(SlideResponseDto.class);
     }
 
     private void updateSlide(Long id, SlideRequestDto slideRequestDto) {

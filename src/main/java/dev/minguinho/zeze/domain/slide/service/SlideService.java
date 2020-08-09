@@ -25,7 +25,7 @@ public class SlideService {
     private final SlideRepository slideRepository;
 
     @Transactional
-    public Long createSlide(SlideRequestDto slideRequestDto, Long userId) {
+    public Long create(SlideRequestDto slideRequestDto, Long userId) {
         Slide slide = slideRequestDto.toEntity(userId);
         Slide persist = slideRepository.save(slide);
         return persist.getId();
@@ -48,18 +48,27 @@ public class SlideService {
     public SlideResponseDto retrieveSlide(Long slideId) {
         Slide slide = slideRepository.findById(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
+        if (!slide.isPublic()) {
+            throw new SlideNotAuthorizedException();
+        }
+
+        return SlideResponseDto.from(slide);
+    }
+
+    public SlideResponseDto retrieveSlide(Long slideId, Long userId) {
+        Slide slide = findSlideIfAuthorized(slideId, userId);
         return SlideResponseDto.from(slide);
     }
 
     @Transactional
-    public void updateSlide(Long slideId, SlideRequestDto slideRequestDto, Long userId) {
+    public void update(Long slideId, SlideRequestDto slideRequestDto, Long userId) {
         Slide persist = findSlideIfAuthorized(slideId, userId);
         persist.update(slideRequestDto.toEntity());
         slideRepository.save(persist);
     }
 
     @Transactional
-    public void deleteSlide(Long slideId, Long userId) {
+    public void delete(Long slideId, Long userId) {
         Slide persist = findSlideIfAuthorized(slideId, userId);
         slideRepository.delete(persist);
     }
@@ -67,7 +76,7 @@ public class SlideService {
     private Slide findSlideIfAuthorized(Long slideId, Long userId) {
         Slide persist = slideRepository.findById(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
-        if (persist.isNotOwner(userId)) {
+        if (!persist.isOwner(userId)) {
             throw new SlideNotAuthorizedException();
         }
         return persist;

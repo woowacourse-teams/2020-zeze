@@ -35,7 +35,7 @@ public class SlideController {
         @RequestBody SlideRequestDto slideRequestDto,
         @LoginUserId Long userId
     ) {
-        Long slideId = slideService.createSlide(slideRequestDto, userId);
+        Long slideId = slideService.create(slideRequestDto, userId);
         return ResponseEntity.created(URI.create("/api/slides/" + slideId)).build();
     }
 
@@ -57,10 +57,19 @@ public class SlideController {
         return ResponseEntity.ok(slideResponseDtos);
     }
 
-    @Secured
     @GetMapping("/{id}")
-    public ResponseEntity<SlideResponseDto> retrieveSlide(@PathVariable("id") Long slideId) {
+    public ResponseEntity<SlideResponseDto> retrievePublicSlide(@PathVariable("id") Long slideId) {
         SlideResponseDto slideResponseDto = slideService.retrieveSlide(slideId);
+        return ResponseEntity.ok(slideResponseDto);
+    }
+
+    @Secured
+    @GetMapping("/me/{id}")
+    public ResponseEntity<SlideResponseDto> retrieveSlide(
+        @PathVariable("id") Long slideId,
+        @LoginUserId Long userId
+    ) {
+        SlideResponseDto slideResponseDto = slideService.retrieveSlide(slideId, userId);
         return ResponseEntity.ok(slideResponseDto);
     }
 
@@ -71,7 +80,7 @@ public class SlideController {
         @RequestBody SlideRequestDto slideRequestDto,
         @LoginUserId Long userId
     ) {
-        slideService.updateSlide(slideId, slideRequestDto, userId);
+        slideService.update(slideId, slideRequestDto, userId);
         return ResponseEntity.noContent().build();
     }
 
@@ -81,7 +90,7 @@ public class SlideController {
         @PathVariable("id") Long slideId,
         @LoginUserId Long userId
     ) {
-        slideService.deleteSlide(slideId, userId);
+        slideService.delete(slideId, userId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -30,35 +30,32 @@ public class ExceptionController {
     public ResponseEntity<ApiError> handleFileNotConvertedException(
         FileNotConvertedException fileNotConvertedException
     ) {
-        log.error(fileNotConvertedException.getMessage());
-        ApiError apiError = ApiError.builder()
-            .httpStatus(HttpStatus.BAD_REQUEST)
-            .message(fileNotConvertedException.getMessage())
-            .build();
-        return ResponseEntity.badRequest().body(apiError);
+        return createErrorResponse(fileNotConvertedException, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(SlideNotFoundException.class)
     public ResponseEntity<ApiError> handleSlideNotFoundException(
         SlideNotFoundException slideNotFoundException
     ) {
-        log.error(slideNotFoundException.getMessage());
-        ApiError apiError = ApiError.builder()
-            .httpStatus(HttpStatus.BAD_REQUEST)
-            .message(slideNotFoundException.getMessage())
-            .build();
-        return ResponseEntity.badRequest().body(apiError);
+        return createErrorResponse(slideNotFoundException, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(SlideNotAuthorizedException.class)
     public ResponseEntity<ApiError> handleSlideNotAuthorizedException(
         SlideNotAuthorizedException slideNotAuthorizedException
     ) {
-        log.error(slideNotAuthorizedException.getMessage());
+        return createErrorResponse(slideNotAuthorizedException, HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<ApiError> createErrorResponse(
+        RuntimeException runtimeException,
+        HttpStatus httpStatus
+    ) {
+        log.error(runtimeException.getMessage());
         ApiError apiError = ApiError.builder()
-            .httpStatus(HttpStatus.BAD_REQUEST)
-            .message(slideNotAuthorizedException.getMessage())
+            .httpStatus(httpStatus)
+            .message(runtimeException.getMessage())
             .build();
-        return ResponseEntity.badRequest().body(apiError);
+        return new ResponseEntity<>(apiError, httpStatus);
     }
 }
