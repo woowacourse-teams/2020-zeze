@@ -224,4 +224,36 @@ public class SlideDocumentation extends Documentation {
                     fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
             ).extract();
     }
+
+    @Test
+    void updateSlide() {
+        SlideRequestDto updateRequestDto = new SlideRequestDto("새 제목", "새 내용", "PRIVATE");
+        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
+        given()
+            .log().all()
+            .config(RestAssuredMockMvcConfig.config()
+                .encoderConfig(encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false)))
+            .header("Authorization", "bearer " + authenticationDto.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(updateRequestDto)
+            .when()
+            .patch(BASE_URL + 1L)
+            .then()
+            .log().all()
+            .apply(document("slides/update",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestHeaders(
+                    headerWithName("Authorization").description("Bearer auth credentials")
+                ),
+                requestFields(
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("수정할 제목"),
+                    fieldWithPath("content").type(JsonFieldType.STRING).description("수정할 내용"),
+                    fieldWithPath("accessLevel").type(JsonFieldType.STRING).description("수정할 접근 레벨")
+                )
+            )).extract();
+    }
 }
