@@ -9,7 +9,7 @@ on:
     branches: dev
 
 env:
-  BUCKET: 'sildemd-build'
+  BUCKET: 'zeze-test'
   BUILD_DIR: 'static'
   LATEST: 'latest'
   BACKUP: 'backup'
@@ -63,4 +63,4 @@ jobs:
         if: steps.check_S3.outputs.exists == 'true'
         run: aws s3 mv s3://$BUCKET/${LATEST}.zip s3://$BUCKET/${BACKUP}.zip
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ${LATEST}.zip s3://$BUCKET/front/${LATEST}.zip --acl public-read-write
+        run: aws s3 cp --region ap-northeast-2 ${LATEST}.zip s3://$BUCKET/build/${LATEST}.zip --acl public-read-write
