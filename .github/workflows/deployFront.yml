@@ -5,8 +5,6 @@ name: Development Server Front Side Deployment
 
 on:
   workflow_dispatch:
-  pull_request:
-
 
 env:
   BUCKET: 'slidemd-build'
