@@ -3,6 +3,7 @@ package dev.minguinho.zeze.domain.user.api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class LoginUserController {
     @PutMapping("/api/me")
     public ResponseEntity<UserResourceResponseDto> updateLoginUser(
         @LoginUserId Long id,
-        UserResourceRequestDto userResourceRequestDto
+        @RequestBody UserResourceRequestDto userResourceRequestDto
     ) {
         UserResourceResponseDto response = userResourceService.updateUserResource(id, userResourceRequestDto);
         return ResponseEntity.ok(response);

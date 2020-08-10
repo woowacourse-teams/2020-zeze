@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,9 +40,6 @@ import dev.minguinho.zeze.domain.user.config.LoginUserIdMethodArgumentResolver;
 public class SlideDocumentation extends Documentation {
     private static final String BASE_URL = "/api/slides/";
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @MockBean
     private SlideService slideService;
 
@@ -55,6 +51,9 @@ public class SlideDocumentation extends Documentation {
 
     @MockBean
     private LoginUserIdMethodArgumentResolver loginUserIdMethodArgumentResolver;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private AuthenticationDto authenticationDto;
 
