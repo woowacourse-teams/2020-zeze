@@ -38,9 +38,7 @@ jobs:
           CI: 'false'
       - name: zip artifacts
         run: |
-          mkdir ${BUILD_DIR}
-          cp -r ./client/build/* ./${BUILD_DIR}
-          zip -r ${LATEST}.zip ./${BUILD_DIR}
+          zip -r ${LATEST}.zip ./client/build/*
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
