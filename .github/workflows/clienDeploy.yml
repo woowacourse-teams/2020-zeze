@@ -9,7 +9,7 @@ on:
     branches: dev
 
 env:
-  BUCKET: 'zeze-build'
+  BUCKET: 'sildemd-build'
   BUILD_DIR: 'static'
   LATEST: 'latest'
   BACKUP: 'backup'
