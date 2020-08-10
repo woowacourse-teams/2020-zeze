@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import filesApi from "../../api/file";
 import {useRecoilState} from "recoil";
 import {userInfoState} from "../../store/atoms";
+import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 
 const InfoBlock = styled.div`
   display: flex;
@@ -12,13 +13,49 @@ const InfoBlock = styled.div`
   color: #fff;
   
   > input {
+    width: 60%;
+    height: 2em;
+    margin: 0.5em 0 1em;
+    color: #fff;
+    background-color: #222;
+    border: none;
+    
+    @media(max-width: ${MOBILE_MAX_WIDTH}px) {
+    flex-direction: column-reverse;
+    width: 90%
+    }
   }
   
-  > button {
+  > button, label {
+    text-decoration: none;
+    display: inline-block;
+    width: 60%;
+    height: 2em;
+    margin: 0.5em 0;
+    border: 1px solid white;
+    border-radius: 50px;
+    background-color: #222;
+    color: #fff;
+    font-size: 1.1rem;
+    
+    &:hover {
+    cursor: pointer;
+    }
+    
+    @media(max-width: ${MOBILE_MAX_WIDTH}px) {
+    width: 90%
+    }
+  }
+  
+  > label {
+    text-align: center;
+    line-height: 1.9em;
+    width: 30%;
   }
   
   > img {
     width: 30%;
+    margin: 0.5em 0 0;
   }
 `;
 
@@ -57,7 +94,8 @@ const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
         <input placeholder={user.email} onChange={changeEmail}/>
         <div>PROFILE IMAGE</div>
         <img src={userInfo.profileImage} alt={undefined}/>
-        <input type="file" onChange={changeProfileImage}/>
+        <label htmlFor="profile">upload profile</label>
+        <input id="profile" type="file" style={{display:"none"}} onChange={changeProfileImage}/>
         <button onClick={event => updateInfo(userInfo)}>update</button>
       </InfoBlock>
     </CardsLayout>
