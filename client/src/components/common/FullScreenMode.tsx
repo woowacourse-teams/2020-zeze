@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 import fscreen from "fscreen";
 import {css, Global} from "@emotion/core";
-import {Keys, MOBILE_MAX_WIDTH} from "../../domains/constants";
+import {Keys} from "../../domains/constants";
 import Markdown from "../markdown";
 import {applyTheme, Theme} from "../theme";
 import play from "../../assets/icons/play.svg";
@@ -146,4 +146,4 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
   );
 };
 
-export default FullScreenMode;
+export default React.memo(FullScreenMode);

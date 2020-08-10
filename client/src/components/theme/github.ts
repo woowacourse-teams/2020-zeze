@@ -617,7 +617,7 @@ export default css`
     clear: both;
 }
 
->:first-child {
+*:first-of-type {
     margin-top: 0!important;
 }
 
@@ -654,10 +654,9 @@ export default css`
     padding: 0 1em;
     color: #6a737d;
     border-left: .25em solid #dfe2e5;
-}
-
- blockquote>:first-child {
-    margin-top: 0;
+    > *:first-of-type {
+      margin-top: 0;
+    }
 }
 
  blockquote>:last-child {
@@ -768,10 +767,9 @@ export default css`
  table tr {
     background-color: #fff;
     border-top: 1px solid #c6cbd1;
-}
-
- table tr:nth-child(2n) {
-    background-color: #f6f8fa;
+    &:nth-of-type(2n) {
+      background-color: #f6f8fa;
+    }
 }
 
  img {

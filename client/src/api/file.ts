@@ -2,7 +2,7 @@ import axios from "axios";
 
 const fileInstance = axios.create({
   baseURL: "/api/files",
-  headers: {authorization: localStorage.getItem("token")},
+  headers: {authorization: localStorage.getItem("accessToken")},
 });
 
 const filesApi = {

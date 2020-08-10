@@ -20,7 +20,7 @@ export interface SlideResponse {
   updatedAt: string
 }
 
-interface SlideResponses {
+export interface SlideResponses {
   slides: Array<SlideResponse>
 }
 
@@ -31,11 +31,11 @@ interface PageProps {
 
 const slideInstance = axios.create({
   baseURL: "/api/slides",
-  headers: {authorization: localStorage.getItem("token")},
+  headers: {authorization: localStorage.getItem("accessToken")},
 });
 
 const slideApi = {
-  get({id}: SlideRequest): Promise<AxiosResponse<SlideResponse>> {
+  get(id?: number): Promise<AxiosResponse<SlideResponse>> {
     return slideInstance.get(`${id}`);
   },
   getAll(page: PageProps): Promise<AxiosResponse<SlideResponses>> {

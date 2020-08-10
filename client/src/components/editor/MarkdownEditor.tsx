@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
-import {css, Global} from "@emotion/core";
+import { css, Global } from "@emotion/core";
 
 const codeMirrorStyle = css`
     .cm-s-darcula.CodeMirror {
@@ -18,26 +18,25 @@ const StyledTextArea = styled.textarea`
 `;
 
 interface IProps {
-  value?: string;
+  inputRef: React.MutableRefObject<CodeMirror.Editor | null>
   onChange?: (newValue: string) => void;
   onDrop?: (files: File) => Promise<string>;
 }
-const MarkdownEditor: React.FC<IProps> = ({value = "", onChange, onDrop}) => {
-  const [codemirror, setCodemirror] = useState<CodeMirror.Editor | null>(null);
+const MarkdownEditor: React.FC<IProps> = ({ inputRef, onChange, onDrop }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    const editorFromTextArea = CodeMirror.fromTextArea(textareaRef.current!, {
+    const codemirror = CodeMirror.fromTextArea(textareaRef.current!, {
       lineNumbers: true,
       mode: "text/markdown",
       theme: "darcula",
     });
 
-    editorFromTextArea.on("change", editor => {
+    codemirror.on("change", editor => {
       onChange && onChange(editor.getValue());
     });
 
-    editorFromTextArea.on("drop", async (editor, e) => {
+    codemirror.on("drop", async (editor, e) => {
       const fileList = e.dataTransfer?.files;
 
       if (!fileList) {
@@ -46,7 +45,7 @@ const MarkdownEditor: React.FC<IProps> = ({value = "", onChange, onDrop}) => {
 
       const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
 
-      files.filter(({type}) => type.split("/")[0] === "image")
+      files.filter(({ type }) => type.split("/")[0] === "image")
         .forEach(file => {
           const setEditor = async () => {
             const marker = `![Uploading ${file.name}...]()`;
@@ -63,29 +62,20 @@ const MarkdownEditor: React.FC<IProps> = ({value = "", onChange, onDrop}) => {
         });
     });
 
-    editorFromTextArea.setSize("100%", "100%");
-    editorFromTextArea.setValue(value);
+    codemirror.setSize("100%", "100%");
 
-    setCodemirror(editorFromTextArea);
+    inputRef.current = codemirror;
 
     return () => {
-      editorFromTextArea.toTextArea();
+      codemirror.toTextArea();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!codemirror) return;
-    const cursor = codemirror.getCursor();
-
-    codemirror.setValue(value);
-    codemirror.setCursor(cursor);
-  }, [codemirror, value]);
+  }, [onChange, onDrop]);
 
   return (
     <>
-      <Global styles={codeMirrorStyle}/>
-      <StyledTextArea ref={textareaRef}/>
+      <Global styles={codeMirrorStyle} />
+      <StyledTextArea ref={textareaRef} />
     </>
   );
 };

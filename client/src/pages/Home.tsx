@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
-import {Link} from "react-router-dom";
 import GlobalLayout from "../components/common/GlobalLayout";
-import {MAX_WIDTH, MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../domains/constants";
+import {GITHUB_AUTH_URL, MAX_WIDTH, MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../domains/constants";
 
 export const HomeBlock = styled.div`
   background-color: ${ZEZE_GRAY};
@@ -38,7 +37,8 @@ export const Section = styled("div")<SectionProps>`
   }
 `;
 
-export const Button = styled.div`
+export const Button = styled.a`
+  text-decoration: none;
   display: inline-block;
   border: 2px solid white;
   border-radius: 50px;
@@ -65,9 +65,7 @@ const Home: React.FC = () => (
           <Slogan>Beautiful,</Slogan>
           <Slogan>Minimal <span style={{color: "#00FF7F"}}>Slides</span></Slogan>
           <Slogan>With Markdown</Slogan>
-          <Link to="/me">
-            <Button>Get Started for Free →</Button>
-          </Link>
+          <Button href={GITHUB_AUTH_URL}>Get Started for Free →</Button>
         </Layout>
       </Section>
       <Section background="#333">
