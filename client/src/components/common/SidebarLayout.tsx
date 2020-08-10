@@ -6,6 +6,9 @@ import SidebarMenu from "./SidebarMenu";
 import SidebarHeader from "./SidebarHeader";
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
 import SidebarNav from "./SidebarNav";
+import {User} from "../../pages/Me";
+import {useRecoilState, useRecoilValue} from "recoil";
+import {getUserInfoQuery} from "../../store/atoms";
 
 interface SidebarLayoutProps {
   fluid?: boolean
@@ -61,18 +64,22 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
 `;
 
 interface IProps {
-  fluid?: boolean
+  fluid?: boolean,
 }
 
-const SidebarLayout: React.FC<IProps> = ({children, fluid = false}) => (
-  <SidebarLayoutBlock fluid={fluid}>
-    <SidebarNav/>
-    <main>
-      <div>
-        {children}
-      </div>
-    </main>
-  </SidebarLayoutBlock>
-);
+const SidebarLayout: React.FC<IProps> = ({children, fluid = false}) => {
+  const user = useRecoilValue(getUserInfoQuery);
+
+  return (
+    <SidebarLayoutBlock fluid={fluid}>
+      <SidebarNav user={user}/>
+      <main>
+        <div>
+          {children}
+        </div>
+      </main>
+    </SidebarLayoutBlock>
+  );
+}
 
 export default SidebarLayout;
