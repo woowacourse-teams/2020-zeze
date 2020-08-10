@@ -4,10 +4,8 @@
 name: Development Server Deployment
 
 on:
-  push:
-    branches:
-      - dev
-      
+  workflow_dispatch:
+
 env:
   BUCKET: zeze-test
 
@@ -35,8 +33,3 @@ jobs:
           aws-region: ap-northeast-2
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./build/libs/*.jar s3://$BUCKET/build/app.jar --acl public-read-write
-      - name: Webhook
-        uses: joelwmale/webhook-action@master
-        env:
-          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-          data: "deployment successful"
