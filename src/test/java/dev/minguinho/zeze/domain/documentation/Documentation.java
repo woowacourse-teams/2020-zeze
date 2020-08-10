@@ -27,7 +27,10 @@ public class Documentation {
     }
 
     protected static OperationRequestPreprocessor getDocumentRequest() {
-        return preprocessRequest(modifyUris().removePort(), prettyPrint());
+        return preprocessRequest(modifyUris()
+            .scheme("https")
+            .host("www.slidemd.com")
+            .removePort(), prettyPrint());
     }
 
     protected static OperationResponsePreprocessor getDocumentResponse() {
