@@ -13,6 +13,14 @@ endif::[]
 [[resources]]
 = Resources
 
+[[resources-users]]
+== User
+
+[[resources-users-get]]
+=== User 정보 조회
+
+operation::users/get[snippets='http-request,http-response,request-headers,response-fields']
+
 [[resources-slides]]
 == Slide
 

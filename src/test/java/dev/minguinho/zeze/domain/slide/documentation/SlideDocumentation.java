@@ -1,6 +1,7 @@
 package dev.minguinho.zeze.domain.slide.documentation;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -66,10 +67,10 @@ public class SlideDocumentation extends Documentation {
     @Test
     void createSlide() throws Exception {
         SlideRequestDto slideRequestDto = new SlideRequestDto("제목", "내용", "PUBLIC");
-        BDDMockito.given(slideService.create(any(), anyLong())).willReturn(1L);
-        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        given(slideService.create(any(), anyLong())).willReturn(1L);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
         String content = objectMapper.writeValueAsString(slideRequestDto);
 
         mockMvc.perform(post(BASE_URL)
@@ -103,7 +104,7 @@ public class SlideDocumentation extends Documentation {
             new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(), ZonedDateTime.now())
         );
         SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides);
-        BDDMockito.given(slideService.retrieveSlides(any())).willReturn(slideResponseDtos);
+        given(slideService.retrieveSlides(any())).willReturn(slideResponseDtos);
 
         mockMvc.perform(get(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -132,10 +133,10 @@ public class SlideDocumentation extends Documentation {
             new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(), ZonedDateTime.now())
         );
         SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides);
-        BDDMockito.given(slideService.retrieveSlides(any(), anyLong())).willReturn(slideResponseDtos);
-        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        given(slideService.retrieveSlides(any(), anyLong())).willReturn(slideResponseDtos);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
         mockMvc.perform(get(BASE_URL + "me")
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
@@ -167,7 +168,7 @@ public class SlideDocumentation extends Documentation {
     void retrieveSlide() throws Exception {
         SlideResponseDto slideResponseDto = new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(),
             ZonedDateTime.now());
-        BDDMockito.given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
+        given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
 
         mockMvc.perform(get(BASE_URL + 1)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -191,7 +192,7 @@ public class SlideDocumentation extends Documentation {
     void retrieveMySlide() throws Exception {
         SlideResponseDto slideResponseDto = new SlideResponseDto(1L, "제목", "내용", "PRIVATE", ZonedDateTime.now(),
             ZonedDateTime.now());
-        BDDMockito.given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
+        given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
 
         mockMvc.perform(get(BASE_URL + 1)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
@@ -218,9 +219,9 @@ public class SlideDocumentation extends Documentation {
     @Test
     void updateSlide() throws Exception {
         SlideRequestDto updateRequestDto = new SlideRequestDto("새 제목", "새 내용", "PRIVATE");
-        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
         String content = objectMapper.writeValueAsString(updateRequestDto);
 
         mockMvc.perform(patch(BASE_URL + 1)
@@ -245,9 +246,9 @@ public class SlideDocumentation extends Documentation {
 
     @Test
     void deleteSlide() throws Exception {
-        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
         mockMvc.perform(delete(BASE_URL + 1)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
