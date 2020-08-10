@@ -17,7 +17,8 @@ const renderers = {
 const Markdown: React.FC<IProps> = ({ value = "" }) => {
   const { content } = parse(value);
 
-  const blocks = content?.split(/(^---\n)|(^```.+```)/ms)
+  const blocks = content?.split(/(^---\n)/m)
+    .flatMap(slide => slide.split(/(^```.+```)/ms))
     .map((block, index) => ({
       key: index,
       source: block
