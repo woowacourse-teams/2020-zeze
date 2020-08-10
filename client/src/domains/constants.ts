@@ -17,3 +17,9 @@ const GithubAuth = {
 };
 
 export const GITHUB_AUTH_URL = `${GithubAuth.baseUrl}?client_id=${GithubAuth.clientId}&redirect_uri=${GithubAuth.callbackUrl}`;
+
+export enum AccessLevel {
+  PRIVATE = "PRIVATE",
+  PUBLIC = "PUBLIC"
+}
+

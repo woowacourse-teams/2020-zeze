@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import {RecoilRoot} from "recoil";
 import {css, Global} from "@emotion/core";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -23,8 +24,10 @@ const globalStyle = css`
 
 ReactDOM.render(
   <React.StrictMode>
-    <Global styles={globalStyle}/>
-    <App/>
+    <RecoilRoot>
+      <Global styles={globalStyle}/>
+      <App/>
+    </RecoilRoot>,
   </React.StrictMode>,
   document.getElementById("root"),
 );

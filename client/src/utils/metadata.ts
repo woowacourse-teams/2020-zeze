@@ -13,8 +13,8 @@ const DEFAULT_PROPS: MetaProps = {
   title: "Untitled",
 };
 
-const parse = (text?: string) => {
-  const matches = text?.match(METADATA_REGEX);
+const parse = (text: string) => {
+  const matches = text.match(METADATA_REGEX);
   const metadata = matches?.[1].split(NEW_LINE_SEPARATOR)
         .map(line => {
           const [key, ...value] = line.split(KEY_VALUE_SEPARATOR);
@@ -41,7 +41,7 @@ const parse = (text?: string) => {
 
   return {
     metadata,
-    content: text?.replace(matches?.[0] ?? "", firstPage),
+    content: text.replace(matches?.[0] ?? "", firstPage),
   };
 };
 

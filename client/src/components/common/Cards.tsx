@@ -31,12 +31,16 @@ const CardsBlock = styled.div`
     color: #000;  
   }
   
-  @media (max-width: 1050px) {
+  @media (max-width: 1440px) {
     grid-template-columns: repeat(3, 1fr);
   }
   
-  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+  @media (max-width: 1050px) {
     grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+    grid-template-columns: 1fr;
   }
 `;
 

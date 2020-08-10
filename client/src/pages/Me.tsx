@@ -1,6 +1,5 @@
 import React from "react";
 import SidebarLayout from "../components/common/SidebarLayout";
-import Cards from "../components/common/Cards";
 import Toast from "../components/common/Toast";
 
 const Me: React.FC = () => (

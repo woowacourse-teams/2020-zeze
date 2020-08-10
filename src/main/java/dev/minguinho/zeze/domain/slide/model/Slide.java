@@ -22,11 +22,26 @@ public class Slide extends BaseEntity {
     private String content;
     @Enumerated(EnumType.STRING)
     private AccessLevel accessLevel;
+    private Long userId;
+
+    public Slide(String title, String content, AccessLevel accessLevel) {
+        this.title = title;
+        this.content = content;
+        this.accessLevel = accessLevel;
+    }
 
     public void update(Slide slide) {
         this.title = slide.title;
         this.content = slide.content;
         this.accessLevel = slide.accessLevel;
+    }
+
+    public boolean isOwner(Long userId) {
+        return this.userId.equals(userId);
+    }
+
+    public boolean isPublic() {
+        return this.accessLevel.equals(AccessLevel.PUBLIC);
     }
 
     public enum AccessLevel {
