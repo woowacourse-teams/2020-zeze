@@ -1,9 +1,10 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import {RecoilRoot} from "recoil";
-import {css, Global} from "@emotion/core";
+import { RecoilRoot } from "recoil";
+import { css, Global } from "@emotion/core";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import Spinner from "./components/common/Spinner";
 
 const globalStyle = css`
   body {
@@ -25,9 +26,11 @@ const globalStyle = css`
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
-      <Global styles={globalStyle}/>
-      <App/>
-    </RecoilRoot>,
+      <Suspense fallback={<Spinner />}>
+        <App />
+      </Suspense>
+    </RecoilRoot>
+    <Global styles={globalStyle} />
   </React.StrictMode>,
   document.getElementById("root"),
 );
