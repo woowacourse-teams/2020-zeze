@@ -10,7 +10,16 @@ export const Keys = {
   ARROW_LEFT: "ArrowLeft",
 };
 
+const GithubAuth = {
+  baseUrl: "https://github.com/login/oauth/authorize",
+  callbackUrl: "http://localhost:3000/callback",
+  clientId: "c47a3779bada189b7721",
+};
+
+export const GITHUB_AUTH_URL = `${GithubAuth.baseUrl}?client_id=${GithubAuth.clientId}&redirect_uri=${GithubAuth.callbackUrl}`;
+
 export enum AccessLevel {
   PRIVATE = "PRIVATE",
   PUBLIC = "PUBLIC"
 }
+
