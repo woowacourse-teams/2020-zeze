@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  BUCKET: 'zeze-test'
+  BUCKET: 'slidemd-build'
 
 jobs:
   build:
@@ -32,4 +32,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./build/libs/*.jar s3://$BUCKET/build/app.jar --acl public-read-write
+        run: aws s3 cp --region ap-northeast-2 ./build/libs/*.jar s3://${BUCKET}/back/app.jar --acl public-read-write
