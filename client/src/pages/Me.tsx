@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Toast from "../components/common/Toast";
 import Info from "../components/common/Info";
@@ -17,8 +17,9 @@ const Me: React.FC = () => {
   const slides = useRecoilValue(getAllSlidesQuery);
   const user = useRecoilValue(getUserInfoQuery);
 
-  const updateUser = ({user}: User) => {
-
+  const updateInfo = (user: User) => {
+    usersApi.update(user)
+      .then(response => console.log(response.data));
   };
 
   return (
@@ -26,7 +27,7 @@ const Me: React.FC = () => {
       <Toast type="warn" message="Currently in development. Sorry for your inconvenience :("/>
        {/*<Cards title="Recent"/>*/}
        <Cards title="My Drafts" slides={slides}/>
-       {/*<Info user={user}/>*/}
+       <Info user={user} updateInfo={updateInfo}/>
     </SidebarLayout>
   );
 };

@@ -1,18 +1,24 @@
-import React, {useState} from "react";
+import React, {ChangeEvent, ChangeEventHandler, useState} from "react";
 import {User} from "../../pages/Me";
-import {useRecoilState} from "recoil";
 import {CardsLayout} from "./Cards";
 import styled from "@emotion/styled";
+import filesApi from "../../api/file";
 
 const InfoBlock = styled.div`
   display: flex;
   flex-direction: column;
+  color: #fff;
+
   
   > input {
   }
   
   > button {
   
+  }
+  
+  > img {
+    width: 30%;
   }
 `;
 
@@ -26,9 +32,12 @@ const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
   const [email, setEmail] = useState<string>(user.email);
   const [profileImage, setProfileImage] = useState<string>(user.profileImage);
 
-  const changeName = (target: {value: string}) => {
-    setName(target.value);
-  }
+  const changeProfileImage = (event: ChangeEvent<HTMLInputElement>) => {
+    const file: File | undefined = event.target.files?.[0];
+    file && filesApi.upload(file)
+      .then(response => response.data.urls[0])
+      .then(url => setProfileImage(url));
+  };
 
   return (
     <CardsLayout>
@@ -39,8 +48,9 @@ const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
         <input placeholder={user.name}/>
         <div>EMAIL</div>
         <input placeholder={user.email}/>
-        <div>IMAGE</div>
-        {/*upload*/}
+        <div>PROFILE IMAGE</div>
+        <img src={profileImage} alt={user.name}/>
+        <input type="file" onChange={changeProfileImage}/>
         <button onClick={() => updateInfo({name, email, profileImage})}>update</button>
       </InfoBlock>
     </CardsLayout>

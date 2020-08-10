@@ -4,7 +4,7 @@ import Card from "./Card";
 import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 import {SlideResponse} from "../../api/slide";
 
-const CardsLayout = styled.div`
+export const CardsLayout = styled.div`
   padding-bottom: 3rem;
 
   > h2 {

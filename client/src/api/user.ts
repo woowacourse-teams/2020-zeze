@@ -1,4 +1,5 @@
 import axios from "axios";
+import {User} from "../pages/Me";
 
 const userInstance = axios.create({
   baseURL: "/api/me",
@@ -9,8 +10,8 @@ const usersApi = {
   get() {
     return userInstance.get("/");
   },
-  update() {
-    return userInstance.put("/")
+  update(user: User) {
+    return userInstance.put("/", user)
   }
 };
 
