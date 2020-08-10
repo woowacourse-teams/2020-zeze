@@ -1,4 +1,4 @@
-import {atom, Loadable, selector} from "recoil";
+import {atom, selector} from "recoil";
 import {AxiosResponse} from "axios";
 import slideApi, {SlideResponses} from "../api/slide";
 import {AccessLevel} from "../domains/constants";

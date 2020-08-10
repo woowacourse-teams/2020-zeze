@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect} from "react";
+import React, {ChangeEvent} from "react";
 import {User} from "../../pages/Me";
 import {CardsLayout} from "./Cards";
 import styled from "@emotion/styled";
