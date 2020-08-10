@@ -39,13 +39,13 @@ jobs:
         uses: tuler/s3-check-action@master
         id: check_S3
         env:
-          FILE: ${{ env.LATEST }}.zip
+          FILE: ${{ env.LATEST }}.jar
           AWS_REGION: 'ap-northeast-2'
-          AWS_S3_BUCKET: ${{ env.BUCKET }}
+          AWS_S3_BUCKET: ${{ env.BUCKET }}/back
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Create back up build
         if: steps.check_S3.outputs.exists == 'true'
-        run: aws s3 mv s3://${BUCKET}/back/${LATEST}.zip s3://${BUCKET}/back/${BACKUP}.zip
+        run: aws s3 mv s3://${BUCKET}/back/${LATEST}.jar s3://${BUCKET}/back/${BACKUP}.jar
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./build/libs/*.jar s3://${BUCKET}/back/${LATEST}.jar --acl public-read-write
