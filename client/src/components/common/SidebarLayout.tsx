@@ -1,13 +1,8 @@
 import React from "react";
-import {Link, NavLink} from "react-router-dom";
 import styled from "@emotion/styled";
-import * as S from "../../assets/icons";
-import SidebarMenu from "./SidebarMenu";
-import SidebarHeader from "./SidebarHeader";
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
 import SidebarNav from "./SidebarNav";
-import {User} from "../../pages/Me";
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilValue} from "recoil";
 import {getUserInfoQuery} from "../../store/atoms";
 
 interface SidebarLayoutProps {

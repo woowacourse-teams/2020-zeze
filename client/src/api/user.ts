@@ -11,8 +11,8 @@ const usersApi = {
     return userInstance.get("/");
   },
   update(user: User) {
-    return userInstance.put("/", user)
-  }
+    return userInstance.put("/", user);
+  },
 };
 
 export default usersApi;

@@ -47,15 +47,16 @@ const CardsBlock = styled.div`
 
 interface IProps {
   title: string,
-  slides: Array<SlideResponse>
+  slides: Array<SlideResponse>,
+  author: string
 }
 
-const Cards: React.FC<IProps> = ({title, slides}) => (
+const Cards: React.FC<IProps> = ({title, slides, author}) => (
   <CardsLayout>
     <h2>{title}</h2>
     <hr/>
     <CardsBlock>
-      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author="Hodol"
+      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author={author}
         createdAt={slide.createdAt}/>))}
     </CardsBlock>
   </CardsLayout>

@@ -1,4 +1,4 @@
-import {atom, selector} from "recoil";
+import {atom, Loadable, selector} from "recoil";
 import {AxiosResponse} from "axios";
 import slideApi, {SlideResponses} from "../api/slide";
 import {AccessLevel} from "../domains/constants";
@@ -49,4 +49,9 @@ export const getUserInfoQuery = selector({
 
     return response.data;
   },
+});
+
+export const userInfoState = atom<User>({
+  key: "userInfoState",
+  default: getUserInfoQuery,
 });

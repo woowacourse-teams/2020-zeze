@@ -1,20 +1,20 @@
-import React, {ChangeEvent, ChangeEventHandler, useState} from "react";
+import React, {ChangeEvent, useEffect} from "react";
 import {User} from "../../pages/Me";
 import {CardsLayout} from "./Cards";
 import styled from "@emotion/styled";
 import filesApi from "../../api/file";
+import {useRecoilState} from "recoil";
+import {userInfoState} from "../../store/atoms";
 
 const InfoBlock = styled.div`
   display: flex;
   flex-direction: column;
   color: #fff;
-
   
   > input {
   }
   
   > button {
-  
   }
   
   > img {
@@ -28,15 +28,22 @@ interface Props {
 }
 
 const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
-  const [name, setName] = useState<string>(user.name);
-  const [email, setEmail] = useState<string>(user.email);
-  const [profileImage, setProfileImage] = useState<string>(user.profileImage);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
-  const changeProfileImage = (event: ChangeEvent<HTMLInputElement>) => {
+  const changeName = (event: ChangeEvent<HTMLInputElement>) => {
+    setUserInfo({...userInfo, name: event.target.value});
+  };
+
+  const changeEmail = (event: ChangeEvent<HTMLInputElement>) => {
+    setUserInfo({...userInfo, email: event.target.value});
+  };
+
+  const changeProfileImage = async (event: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = event.target.files?.[0];
-    file && filesApi.upload(file)
-      .then(response => response.data.urls[0])
-      .then(url => setProfileImage(url));
+    const newProfileImage = file && await filesApi.upload(file);
+    const newProfileImageUrl: string = newProfileImage?.data.urls[0] || userInfo.profileImage;
+
+    setUserInfo({...userInfo, profileImage: newProfileImageUrl});
   };
 
   return (
@@ -45,15 +52,16 @@ const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
       <hr/>
       <InfoBlock>
         <div>NAME</div>
-        <input placeholder={user.name}/>
+        <input placeholder={user.name} onChange={changeName}/>
         <div>EMAIL</div>
-        <input placeholder={user.email}/>
+        <input placeholder={user.email} onChange={changeEmail}/>
         <div>PROFILE IMAGE</div>
-        <img src={profileImage} alt={user.name}/>
+        <img src={userInfo.profileImage} alt={undefined}/>
         <input type="file" onChange={changeProfileImage}/>
-        <button onClick={() => updateInfo({name, email, profileImage})}>update</button>
+        <button onClick={event => updateInfo(userInfo)}>update</button>
       </InfoBlock>
     </CardsLayout>
   );
-}
-export default Info
+};
+
+export default Info;

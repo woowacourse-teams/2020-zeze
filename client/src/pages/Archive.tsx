@@ -13,7 +13,7 @@ const Archive: React.FC = () => {
   return (
     <SidebarLayout>
       <Toast type="warn" message="Currently in development. Sorry for your inconvenience :("/>
-      <Cards title="Archive" slides={slides}/>
+      <Cards title="Archive" slides={slides} author={"zeze"}/>
     </SidebarLayout>
   );
 };

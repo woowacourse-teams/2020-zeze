@@ -1,11 +1,15 @@
-import React from "react";
+import React, {useCallback, useState} from "react";
+import {useRecoilState, useRecoilValue} from "recoil";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Toast from "../components/common/Toast";
 import Info from "../components/common/Info";
 import Cards from "../components/common/Cards";
-import {useRecoilValue} from "recoil";
-import {getAllSlidesQuery, getUserInfoQuery} from "../store/atoms";
 import usersApi from "../api/user";
+
+import {
+  getAllSlidesQuery,
+  userInfoState,
+} from "../store/atoms";
 
 export interface User {
   name: string,
@@ -15,19 +19,22 @@ export interface User {
 
 const Me: React.FC = () => {
   const slides = useRecoilValue(getAllSlidesQuery);
-  const user = useRecoilValue(getUserInfoQuery);
+  const [user, setUser] = useRecoilState(userInfoState);
+  const [userName, setUserName] = useState<string>(user.name);
 
-  const updateInfo = (user: User) => {
-    usersApi.update(user)
-      .then(response => console.log(response.data));
-  };
+  const updateInfo = useCallback((userInfo: User) => {
+    usersApi.update(userInfo)
+      .then(() => alert("update success"));
+    setUser(userInfo);
+    setUserName(userInfo.name);
+  }, []);
 
   return (
     <SidebarLayout>
       <Toast type="warn" message="Currently in development. Sorry for your inconvenience :("/>
-       {/*<Cards title="Recent"/>*/}
-       <Cards title="My Drafts" slides={slides}/>
-       <Info user={user} updateInfo={updateInfo}/>
+      {/* <Cards title="Recent"/>*/}
+      <Cards title="My Drafts" slides={slides} author={userName}/>
+      <Info user={{...user, name: userName}} updateInfo={updateInfo}/>
     </SidebarLayout>
   );
 };
