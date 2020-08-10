@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: client build
+name: Development Server Front Side Deployment
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
     branches: dev
 
 env:
-  BUCKET: 'zeze-build/front'
+  BUCKET: 'zeze-build'
   BUILD_DIR: 'static'
   LATEST: 'latest'
   BACKUP: 'backup'
@@ -63,4 +63,4 @@ jobs:
         if: steps.check_S3.outputs.exists == 'true'
         run: aws s3 mv s3://$BUCKET/${LATEST}.zip s3://$BUCKET/${BACKUP}.zip
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ${LATEST}.zip s3://$BUCKET/build/${LATEST}.zip --acl public-read-write
+        run: aws s3 cp --region ap-northeast-2 ${LATEST}.zip s3://$BUCKET/front/${LATEST}.zip --acl public-read-write
