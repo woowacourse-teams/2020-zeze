@@ -1,14 +1,14 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import {Code, Image, Paragraph} from "./renderers";
-import parseMetadata from "../../utils/metadata";
+import parse from "../../utils/metadata";
 
 interface IProps {
-  value?: string
+  value: string
 }
 
-const Markdown: React.FC<IProps> = ({value}) => {
-  const {content} = parseMetadata(value);
+const Markdown: React.FC<IProps> = ({value = ""}) => {
+  const {content} = parse(value);
 
   return (
     <div id="themed">
