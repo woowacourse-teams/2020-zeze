@@ -1,21 +1,21 @@
 package dev.minguinho.zeze.domain.slide.documentation;
 
-import static io.restassured.config.EncoderConfig.*;
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.restassured.module.mockmvc.config.RestAssuredMockMvcConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
 import dev.minguinho.zeze.domain.auth.infra.AuthorizationTokenExtractor;
@@ -39,6 +39,9 @@ import dev.minguinho.zeze.domain.user.config.LoginUserIdMethodArgumentResolver;
 @WebMvcTest(controllers = {SlideController.class})
 public class SlideDocumentation extends Documentation {
     private static final String BASE_URL = "/api/slides/";
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private SlideService slideService;
@@ -61,25 +64,22 @@ public class SlideDocumentation extends Documentation {
     }
 
     @Test
-    void createSlide() {
+    void createSlide() throws Exception {
         SlideRequestDto slideRequestDto = new SlideRequestDto("제목", "내용", "PUBLIC");
         BDDMockito.given(slideService.create(any(), anyLong())).willReturn(1L);
         BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
         BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        String content = objectMapper.writeValueAsString(slideRequestDto);
 
-        given()
-            .log().all()
+        mockMvc.perform(post(BASE_URL)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
-            .config(RestAssuredMockMvcConfig.config()
-                .encoderConfig(encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false)))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(slideRequestDto)
-            .when()
-            .post(BASE_URL)
-            .then()
-            .log().all()
-            .apply(document("slides/create",
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(content)
+        )
+            .andExpect(status().isCreated())
+            .andDo(print())
+            .andDo(document("slides/create",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestHeaders(
@@ -92,30 +92,26 @@ public class SlideDocumentation extends Documentation {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 슬라이드 URI")
-                ))
-            ).extract();
+                )));
+
     }
 
     @Test
-    void retrieveSlides() {
-        Map<String, String> params = new HashMap<>();
-        params.put("id", "0");
-        params.put("size", "5");
+    void retrieveSlides() throws Exception {
         List<SlideResponseDto> slides = Collections.singletonList(
             new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(), ZonedDateTime.now())
         );
         SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides);
         BDDMockito.given(slideService.retrieveSlides(any())).willReturn(slideResponseDtos);
 
-        given()
-            .log().all()
+        mockMvc.perform(get(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .params(params)
-            .when()
-            .get(BASE_URL)
-            .then()
-            .log().all()
-            .apply(document("slides/retrieveAllPublic",
+            .param("id", "0")
+            .param("size", "5")
+        )
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(document("slides/retrieveAllPublic",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 responseFields(
@@ -126,14 +122,11 @@ public class SlideDocumentation extends Documentation {
                     fieldWithPath("slides[0].accessLevel").type(JsonFieldType.STRING).description("슬라이드 접근 권한"),
                     fieldWithPath("slides[0].createdAt").type(JsonFieldType.STRING).description("슬라이드 생성 날짜"),
                     fieldWithPath("slides[0].updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
-            ).extract();
+            );
     }
 
     @Test
-    void retrieveMySlides() {
-        Map<String, String> params = new HashMap<>();
-        params.put("id", "0");
-        params.put("size", "5");
+    void retrieveMySlides() throws Exception {
         List<SlideResponseDto> slides = Collections.singletonList(
             new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(), ZonedDateTime.now())
         );
@@ -143,16 +136,15 @@ public class SlideDocumentation extends Documentation {
         BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
-        given()
-            .log().all()
+        mockMvc.perform(get(BASE_URL + "me")
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .params(params)
-            .when()
-            .get(BASE_URL + "me")
-            .then()
-            .log().all()
-            .apply(document("slides/retrieveAll",
+            .param("id", "0")
+            .param("size", "5")
+        )
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(document("slides/retrieveAll",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestHeaders(
@@ -166,23 +158,22 @@ public class SlideDocumentation extends Documentation {
                     fieldWithPath("slides[0].accessLevel").type(JsonFieldType.STRING).description("슬라이드 접근 권한"),
                     fieldWithPath("slides[0].createdAt").type(JsonFieldType.STRING).description("슬라이드 생성 날짜"),
                     fieldWithPath("slides[0].updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
-            ).extract();
+            );
+
     }
 
     @Test
-    void retrieveSlide() {
+    void retrieveSlide() throws Exception {
         SlideResponseDto slideResponseDto = new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(),
             ZonedDateTime.now());
         BDDMockito.given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
 
-        given()
-            .log().all()
+        mockMvc.perform(get(BASE_URL + 1)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get(BASE_URL + 1)
-            .then()
-            .log().all()
-            .apply(document("slides/retrievePublic",
+        )
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(document("slides/retrievePublic",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 responseFields(
@@ -192,24 +183,22 @@ public class SlideDocumentation extends Documentation {
                     fieldWithPath("accessLevel").type(JsonFieldType.STRING).description("슬라이드 접근 권한"),
                     fieldWithPath("createdAt").type(JsonFieldType.STRING).description("슬라이드 생성 날짜"),
                     fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
-            ).extract();
+            );
     }
 
     @Test
-    void retrieveMySlide() {
+    void retrieveMySlide() throws Exception {
         SlideResponseDto slideResponseDto = new SlideResponseDto(1L, "제목", "내용", "PRIVATE", ZonedDateTime.now(),
             ZonedDateTime.now());
         BDDMockito.given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
 
-        given()
-            .log().all()
+        mockMvc.perform(get(BASE_URL + 1)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get(BASE_URL + 1)
-            .then()
-            .log().all()
-            .apply(document("slides/retrieve",
+        )
+            .andExpect(status().isOk())
+            .andDo(print())
+            .andDo(document("slides/retrieve",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestHeaders(
@@ -222,28 +211,25 @@ public class SlideDocumentation extends Documentation {
                     fieldWithPath("accessLevel").type(JsonFieldType.STRING).description("슬라이드 접근 권한"),
                     fieldWithPath("createdAt").type(JsonFieldType.STRING).description("슬라이드 생성 날짜"),
                     fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
-            ).extract();
+            );
     }
 
     @Test
-    void updateSlide() {
+    void updateSlide() throws Exception {
         SlideRequestDto updateRequestDto = new SlideRequestDto("새 제목", "새 내용", "PRIVATE");
         BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
         BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        String content = objectMapper.writeValueAsString(updateRequestDto);
 
-        given()
-            .log().all()
-            .config(RestAssuredMockMvcConfig.config()
-                .encoderConfig(encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false)))
+        mockMvc.perform(patch(BASE_URL + 1)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(updateRequestDto)
-            .when()
-            .patch(BASE_URL + 1L)
-            .then()
-            .log().all()
-            .apply(document("slides/update",
+            .content(content)
+        )
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(document("slides/update",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestHeaders(
@@ -252,33 +238,27 @@ public class SlideDocumentation extends Documentation {
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING).description("수정할 제목"),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("수정할 내용"),
-                    fieldWithPath("accessLevel").type(JsonFieldType.STRING).description("수정할 접근 레벨")
-                )
-            )).extract();
+                    fieldWithPath("accessLevel").type(JsonFieldType.STRING).description("수정할 접근 레벨")))
+            );
     }
 
     @Test
-    void deleteSlide() {
+    void deleteSlide() throws Exception {
         BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
         BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
-        given()
-            .log().all()
-            .config(RestAssuredMockMvcConfig.config()
-                .encoderConfig(encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false)))
+        mockMvc.perform(delete(BASE_URL + 1)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .delete(BASE_URL + 1L)
-            .then()
-            .log().all()
-            .apply(document("slides/delete",
+        )
+            .andExpect(status().isNoContent())
+            .andDo(print())
+            .andDo(document("slides/delete",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestHeaders(
-                    headerWithName("Authorization").description("Bearer auth credentials")
-                )
-            )).extract();
+                    headerWithName("Authorization").description("Bearer auth credentials")))
+            );
     }
 }
