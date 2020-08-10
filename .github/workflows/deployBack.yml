@@ -39,9 +39,9 @@ jobs:
         uses: tuler/s3-check-action@master
         id: check_S3
         env:
-          FILE: ${{ env.LATEST }}.jar
+          FILE: back/${{ env.LATEST }}.jar
           AWS_REGION: 'ap-northeast-2'
-          AWS_S3_BUCKET: ${{ env.BUCKET }}/back
+          AWS_S3_BUCKET: ${{ env.BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Create back up build
