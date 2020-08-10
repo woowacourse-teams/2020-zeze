@@ -50,3 +50,11 @@ operation::slides/update[snippets='http-request,http-response,request-headers']
 === 슬라이드 삭제
 
 operation::slides/delete[snippets='http-request,http-response,request-headers']
+
+[[resources-files]]
+== File
+
+[[resources-files-upload]]
+=== 파일 업로드
+
+operation::files/upload[snippets='http-request,http-response,request-parts,response-fields']

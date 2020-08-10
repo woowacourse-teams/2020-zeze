@@ -92,7 +92,8 @@ public class SlideDocumentation extends Documentation {
                 ),
                 responseHeaders(
                     headerWithName("Location").description("생성된 슬라이드 URI")
-                )));
+                ))
+            );
 
     }
 
