@@ -22,7 +22,7 @@ const CardBlock = styled.div`
   > header {
     border-radius: 5px 5px 0 0;
     height: 12px;
-    background-color: springgreen;
+    background-color: #747d8c;
   }
   
   > main {
