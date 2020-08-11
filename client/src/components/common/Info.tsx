@@ -10,6 +10,7 @@ const InfoBlock = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 512px;
   
   > button {
     align-self: flex-end;
