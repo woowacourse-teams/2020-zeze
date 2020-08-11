@@ -31,6 +31,9 @@ public class LoginUserInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = authorizationTokenExtractor.extract(request, "bearer");
+        if (token.isEmpty()) {
+            return true;
+        }
         if (!jwtTokenProvider.validateToken(token)) {
             return false;
         }

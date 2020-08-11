@@ -817,12 +817,37 @@ Content-Length: 221
     "title" : "제목",
     "content" : "내용",
     "accessLevel" : "PUBLIC",
-    "createdAt" : "2020-08-10T19:03:50.315+09:00",
-    "updatedAt" : "2020-08-10T19:03:50.316+09:00"
+    "createdAt" : "2020-08-11T16:33:30.295+09:00",
+    "updatedAt" : "2020-08-11T16:33:30.295+09:00"
   } ]
 }</code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="resources-slides-retrieveAll-Public_request_parameters"><a class="link" href="#resources-slides-retrieveAll-Public_request_parameters">Request parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 슬라이드 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="resources-slides-retrieveAll-Public_response_fields"><a class="link" href="#resources-slides-retrieveAll-Public_response_fields">Response fields</a></h4>
@@ -885,7 +910,7 @@ Content-Length: 221
 <h4 id="resources-slides-retrieveAll-User_http_request"><a class="link" href="#resources-slides-retrieveAll-User_http_request">Example Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/slides/me?id=0&amp;size=5 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/slides/?id=0&amp;size=5 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: bearer token
 Host: www.slidemd.com</code></pre>
@@ -906,8 +931,8 @@ Content-Length: 221
     "title" : "제목",
     "content" : "내용",
     "accessLevel" : "PUBLIC",
-    "createdAt" : "2020-08-10T19:03:50.225+09:00",
-    "updatedAt" : "2020-08-10T19:03:50.225+09:00"
+    "createdAt" : "2020-08-11T16:33:30.183+09:00",
+    "updatedAt" : "2020-08-11T16:33:30.183+09:00"
   } ]
 }</code></pre>
 </div>
@@ -930,6 +955,31 @@ Content-Length: 221
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bearer auth credentials</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-slides-retrieveAll-User_request_parameters"><a class="link" href="#resources-slides-retrieveAll-User_request_parameters">Request parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 슬라이드 id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 사이즈</p></td>
 </tr>
 </tbody>
 </table>
@@ -1014,11 +1064,33 @@ Content-Length: 186
   "title" : "제목",
   "content" : "내용",
   "accessLevel" : "PUBLIC",
-  "createdAt" : "2020-08-10T19:03:50.287+09:00",
-  "updatedAt" : "2020-08-10T19:03:50.287+09:00"
+  "createdAt" : "2020-08-11T16:33:30.253+09:00",
+  "updatedAt" : "2020-08-11T16:33:30.253+09:00"
 }</code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="resources-slides-retrieve-Public_path_parameters"><a class="link" href="#resources-slides-retrieve-Public_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/slides/{id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">슬라이드 id</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="resources-slides-retrieve-Public_response_fields"><a class="link" href="#resources-slides-retrieve-Public_response_fields">Response fields</a></h4>
@@ -1089,15 +1161,15 @@ Host: www.slidemd.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 187
+Content-Length: 186
 
 {
   "id" : 1,
   "title" : "제목",
   "content" : "내용",
   "accessLevel" : "PRIVATE",
-  "createdAt" : "2020-08-10T19:03:50.166+09:00",
-  "updatedAt" : "2020-08-10T19:03:50.166+09:00"
+  "createdAt" : "2020-08-11T16:33:30.12+09:00",
+  "updatedAt" : "2020-08-11T16:33:30.121+09:00"
 }</code></pre>
 </div>
 </div>
@@ -1119,6 +1191,28 @@ Content-Length: 187
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bearer auth credentials</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-slides-retrieve-User_path_parameters"><a class="link" href="#resources-slides-retrieve-User_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/slides/{id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">슬라이드 id</p></td>
 </tr>
 </tbody>
 </table>
@@ -1222,6 +1316,28 @@ Host: www.slidemd.com
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="resources-slides-update_path_parameters"><a class="link" href="#resources-slides-update_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/slides/{id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">슬라이드 id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="resources-slides-delete"><a class="link" href="#resources-slides-delete">슬라이드 삭제</a></h3>
@@ -1261,6 +1377,28 @@ Host: www.slidemd.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bearer auth credentials</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-slides-delete_path_parameters"><a class="link" href="#resources-slides-delete_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/slides/{id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">슬라이드 id</p></td>
 </tr>
 </tbody>
 </table>
@@ -1366,7 +1504,7 @@ Content-Length: 79
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2020-08-10 17:28:06 +0900
+Last updated 2020-08-11 16:27:20 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

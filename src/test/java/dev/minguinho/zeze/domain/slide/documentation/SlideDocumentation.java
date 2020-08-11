@@ -4,8 +4,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -67,7 +68,7 @@ public class SlideDocumentation extends Documentation {
     void createSlide() throws Exception {
         SlideRequestDto slideRequestDto = new SlideRequestDto("제목", "내용", "PUBLIC");
         given(slideService.create(any(), anyLong())).willReturn(1L);
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
         String content = objectMapper.writeValueAsString(slideRequestDto);
@@ -103,7 +104,10 @@ public class SlideDocumentation extends Documentation {
             new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(), ZonedDateTime.now())
         );
         SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides);
-        given(slideService.retrieveSlides(any())).willReturn(slideResponseDtos);
+        given(slideService.retrieveAll(any(), eq(null))).willReturn(slideResponseDtos);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(null);
 
         mockMvc.perform(get(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -115,6 +119,10 @@ public class SlideDocumentation extends Documentation {
             .andDo(document("slides/retrieveAllPublic",
                 getDocumentRequest(),
                 getDocumentResponse(),
+                requestParameters(
+                    parameterWithName("id").description("마지막 슬라이드 id"),
+                    parameterWithName("size").description("페이지 사이즈")
+                ),
                 responseFields(
                     fieldWithPath("slides").type(JsonFieldType.ARRAY).description("Public 슬라이드 목록"),
                     fieldWithPath("slides[0].id").type(JsonFieldType.NUMBER).description("슬라이드 id"),
@@ -132,12 +140,12 @@ public class SlideDocumentation extends Documentation {
             new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(), ZonedDateTime.now())
         );
         SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides);
-        given(slideService.retrieveSlides(any(), anyLong())).willReturn(slideResponseDtos);
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(slideService.retrieveAll(any(), anyLong())).willReturn(slideResponseDtos);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
-        mockMvc.perform(get(BASE_URL + "me")
+        mockMvc.perform(get(BASE_URL)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("id", "0")
@@ -151,6 +159,10 @@ public class SlideDocumentation extends Documentation {
                 requestHeaders(
                     headerWithName("Authorization").description("Bearer auth credentials")
                 ),
+                requestParameters(
+                    parameterWithName("id").description("마지막 슬라이드 id"),
+                    parameterWithName("size").description("페이지 사이즈")
+                ),
                 responseFields(
                     fieldWithPath("slides").type(JsonFieldType.ARRAY).description("User 슬라이드 목록"),
                     fieldWithPath("slides[0].id").type(JsonFieldType.NUMBER).description("슬라이드 id"),
@@ -160,16 +172,18 @@ public class SlideDocumentation extends Documentation {
                     fieldWithPath("slides[0].createdAt").type(JsonFieldType.STRING).description("슬라이드 생성 날짜"),
                     fieldWithPath("slides[0].updatedAt").type(JsonFieldType.STRING).description("슬라이드 수정 날짜")))
             );
-
     }
 
     @Test
     void retrieveSlide() throws Exception {
         SlideResponseDto slideResponseDto = new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(),
             ZonedDateTime.now());
-        given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
+        given(slideService.retrieve(anyLong(), eq(null))).willReturn(slideResponseDto);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(null);
 
-        mockMvc.perform(get(BASE_URL + 1)
+        mockMvc.perform(get(BASE_URL + "{id}", 1)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
         )
             .andExpect(status().isOk())
@@ -177,6 +191,9 @@ public class SlideDocumentation extends Documentation {
             .andDo(document("slides/retrievePublic",
                 getDocumentRequest(),
                 getDocumentResponse(),
+                pathParameters(
+                    parameterWithName("id").description("슬라이드 id")
+                ),
                 responseFields(
                     fieldWithPath("id").type(JsonFieldType.NUMBER).description("슬라이드 id"),
                     fieldWithPath("title").type(JsonFieldType.STRING).description("슬라이드 제목"),
@@ -191,9 +208,12 @@ public class SlideDocumentation extends Documentation {
     void retrieveMySlide() throws Exception {
         SlideResponseDto slideResponseDto = new SlideResponseDto(1L, "제목", "내용", "PRIVATE", ZonedDateTime.now(),
             ZonedDateTime.now());
-        given(slideService.retrieveSlide(anyLong())).willReturn(slideResponseDto);
+        given(slideService.retrieve(anyLong(), anyLong())).willReturn(slideResponseDto);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
-        mockMvc.perform(get(BASE_URL + 1)
+        mockMvc.perform(get(BASE_URL + "{id}", 1)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
         )
@@ -204,6 +224,9 @@ public class SlideDocumentation extends Documentation {
                 getDocumentResponse(),
                 requestHeaders(
                     headerWithName("Authorization").description("Bearer auth credentials")
+                ),
+                pathParameters(
+                    parameterWithName("id").description("슬라이드 id")
                 ),
                 responseFields(
                     fieldWithPath("id").type(JsonFieldType.NUMBER).description("슬라이드 id"),
@@ -218,12 +241,12 @@ public class SlideDocumentation extends Documentation {
     @Test
     void updateSlide() throws Exception {
         SlideRequestDto updateRequestDto = new SlideRequestDto("새 제목", "새 내용", "PRIVATE");
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
         String content = objectMapper.writeValueAsString(updateRequestDto);
 
-        mockMvc.perform(patch(BASE_URL + 1)
+        mockMvc.perform(patch(BASE_URL + "{id}", 1)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(content)
@@ -236,6 +259,9 @@ public class SlideDocumentation extends Documentation {
                 requestHeaders(
                     headerWithName("Authorization").description("Bearer auth credentials")
                 ),
+                pathParameters(
+                    parameterWithName("id").description("슬라이드 id")
+                ),
                 requestFields(
                     fieldWithPath("title").type(JsonFieldType.STRING).description("수정할 제목"),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("수정할 내용"),
@@ -245,11 +271,11 @@ public class SlideDocumentation extends Documentation {
 
     @Test
     void deleteSlide() throws Exception {
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
-        mockMvc.perform(delete(BASE_URL + 1)
+        mockMvc.perform(delete(BASE_URL + "{id}", 1)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
         )
@@ -258,6 +284,9 @@ public class SlideDocumentation extends Documentation {
             .andDo(document("slides/delete",
                 getDocumentRequest(),
                 getDocumentResponse(),
+                pathParameters(
+                    parameterWithName("id").description("슬라이드 id")
+                ),
                 requestHeaders(
                     headerWithName("Authorization").description("Bearer auth credentials")))
             );

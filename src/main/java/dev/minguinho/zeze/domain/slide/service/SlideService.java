@@ -1,6 +1,7 @@
 package dev.minguinho.zeze.domain.slide.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,32 +32,14 @@ public class SlideService {
         return persist.getId();
     }
 
-    public SlideResponseDtos retrieveSlides(SlidesRequestDto slidesRequestDto) {
+    public SlideResponseDtos retrieveAll(SlidesRequestDto slidesRequestDto, Long userId) {
         PageRequest pageRequest = PageRequest.of(FIRST_PAGE, slidesRequestDto.getSize());
-        List<Slide> slides = slideRepository.findAllByAccessLevel(Slide.AccessLevel.PUBLIC, pageRequest)
-            .getContent();
+        List<Slide> slides = getSlides(slidesRequestDto, userId, pageRequest);
         return SlideResponseDtos.from(slides);
     }
 
-    public SlideResponseDtos retrieveSlides(SlidesRequestDto slidesRequestDto, Long userId) {
-        PageRequest pageRequest = PageRequest.of(FIRST_PAGE, slidesRequestDto.getSize());
-        List<Slide> slides = slideRepository.findAllByUserIdAndIdGreaterThan(userId, slidesRequestDto.getId(),
-            pageRequest).getContent();
-        return SlideResponseDtos.from(slides);
-    }
-
-    public SlideResponseDto retrieveSlide(Long slideId) {
-        Slide slide = slideRepository.findById(slideId)
-            .orElseThrow(() -> new SlideNotFoundException(slideId));
-        if (!slide.isPublic()) {
-            throw new SlideNotAuthorizedException();
-        }
-
-        return SlideResponseDto.from(slide);
-    }
-
-    public SlideResponseDto retrieveSlide(Long slideId, Long userId) {
-        Slide slide = findSlideIfAuthorized(slideId, userId);
+    public SlideResponseDto retrieve(Long slideId, Long userId) {
+        Slide slide = getSlide(slideId, userId);
         return SlideResponseDto.from(slide);
     }
 
@@ -73,12 +56,36 @@ public class SlideService {
         slideRepository.delete(persist);
     }
 
+    private List<Slide> getSlides(SlidesRequestDto slidesRequestDto, Long userId, PageRequest pageRequest) {
+        if (Objects.isNull(userId)) {
+            return slideRepository.findAllByAccessLevel(Slide.AccessLevel.PUBLIC, pageRequest).getContent();
+        }
+        return slideRepository.findAllByUserIdAndIdGreaterThan(userId, slidesRequestDto.getId(),
+            pageRequest).getContent();
+    }
+
+    private Slide getSlide(Long slideId, Long userId) {
+        if (Objects.isNull(userId)) {
+            return findSlideIfPublic(slideId);
+        }
+        return findSlideIfAuthorized(slideId, userId);
+    }
+
     private Slide findSlideIfAuthorized(Long slideId, Long userId) {
-        Slide persist = slideRepository.findById(slideId)
+        Slide slide = slideRepository.findById(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
-        if (!persist.isOwner(userId)) {
+        if (!slide.isOwner(userId)) {
             throw new SlideNotAuthorizedException();
         }
-        return persist;
+        return slide;
+    }
+
+    private Slide findSlideIfPublic(Long slideId) {
+        Slide slide = slideRepository.findById(slideId)
+            .orElseThrow(() -> new SlideNotFoundException(slideId));
+        if (!slide.isPublic()) {
+            throw new SlideNotAuthorizedException();
+        }
+        return slide;
     }
 }

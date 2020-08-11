@@ -70,16 +70,15 @@ public class SlideAcceptanceTest {
     @TestFactory
     @DisplayName("슬라이드 추가 조회 업데이트 삭제")
     Stream<DynamicTest> slide() {
-        BDDMockito.given(jwtTokenProvider.validateToken(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
-        BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
-
         return Stream.of(
             dynamicTest("추가", () -> {
                 String title = "제목";
                 String content = "내용";
                 String accessLevel = "PUBLIC";
                 SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(1L);
 
                 createSlide(slideRequestDto);
 
@@ -96,8 +95,14 @@ public class SlideAcceptanceTest {
                 String content = "두번째 내용";
                 String accessLevel = "PRIVATE";
                 SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(1L);
 
                 createSlide(slideRequestDto);
+
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(null);
 
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> slides = slideResponseDtos.getSlides();
@@ -106,9 +111,12 @@ public class SlideAcceptanceTest {
                     () -> assertThat(slides.get(0).getTitle()).isEqualTo("제목")
                 );
             }),
-
             dynamicTest("내 슬라이드 list 조회", () -> {
-                SlideResponseDtos slideResponseDtos = retrieveMySlides();
+                BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(1L);
+                SlideResponseDtos slideResponseDtos = retrieveSlides();
+
                 List<SlideResponseDto> slides = slideResponseDtos.getSlides();
                 assertAll(
                     () -> assertThat(slides.get(0).getTitle()).isEqualTo("제목"),
@@ -116,6 +124,9 @@ public class SlideAcceptanceTest {
                 );
             }),
             dynamicTest("특정 슬라이드 조회", () -> {
+                BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(null);
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 Long id = slideResponseDtos.getSlides().get(0).getId();
 
@@ -128,10 +139,13 @@ public class SlideAcceptanceTest {
                 );
             }),
             dynamicTest("내 슬라이드 조회", () -> {
-                SlideResponseDtos slideResponseDtos = retrieveMySlides();
+                BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(1L);
+                SlideResponseDtos slideResponseDtos = retrieveSlides();
                 Long id = slideResponseDtos.getSlides().get(1).getId();
 
-                SlideResponseDto slideResponseDto = retrieveMySlide(id);
+                SlideResponseDto slideResponseDto = retrieveSlide(id);
 
                 assertAll(
                     () -> assertThat(slideResponseDto.getTitle()).isEqualTo("두번째 제목"),
@@ -144,6 +158,9 @@ public class SlideAcceptanceTest {
                 String content = "내용";
                 String accessLevel = "PUBLIC";
                 SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(1L);
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> slides = slideResponseDtos.getSlides();
                 Long id = slides.get(0).getId();
@@ -159,13 +176,16 @@ public class SlideAcceptanceTest {
                 );
             }),
             dynamicTest("삭제", () -> {
+                BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(1L);
                 SlideResponseDtos slideResponseDtos = retrieveSlides();
                 List<SlideResponseDto> values = slideResponseDtos.getSlides();
                 Long id = values.get(0).getId();
 
                 deleteSlide(id);
 
-                SlideResponseDtos result = retrieveMySlides();
+                SlideResponseDtos result = retrieveSlides();
                 List<SlideResponseDto> resultSlides = result.getSlides();
                 assertAll(
                     () -> assertThat(resultSlides.get(0).getTitle()).isEqualTo("두번째 제목"),
@@ -201,21 +221,6 @@ public class SlideAcceptanceTest {
             .extract().as(SlideResponseDtos.class);
     }
 
-    private SlideResponseDtos retrieveMySlides() {
-        Map<String, String> params = new HashMap<>();
-        params.put("id", "0");
-        params.put("size", "5");
-
-        return given()
-            .params(params)
-            .when()
-            .get(BASE_URL + "me")
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract().as(SlideResponseDtos.class);
-    }
-
     private SlideResponseDto retrieveSlide(Long slideId) {
         return given()
             .when()
@@ -226,30 +231,20 @@ public class SlideAcceptanceTest {
             .extract().as(SlideResponseDto.class);
     }
 
-    private SlideResponseDto retrieveMySlide(Long slideId) {
-        return given()
-            .when()
-            .get(BASE_URL + "me/" + slideId)
-            .then()
-            .log().all()
-            .statusCode(HttpStatus.OK.value())
-            .extract().as(SlideResponseDto.class);
-    }
-
-    private void updateSlide(Long id, SlideRequestDto slideRequestDto) {
+    private void updateSlide(Long slideId, SlideRequestDto slideRequestDto) {
         given()
             .body(slideRequestDto)
             .when()
-            .patch(BASE_URL + id)
+            .patch(BASE_URL + slideId)
             .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    private void deleteSlide(Long id) {
+    private void deleteSlide(Long slideId) {
         given()
             .when()
-            .delete(BASE_URL + id)
+            .delete(BASE_URL + slideId)
             .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());

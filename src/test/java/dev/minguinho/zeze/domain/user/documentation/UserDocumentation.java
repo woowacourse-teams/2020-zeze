@@ -64,7 +64,7 @@ public class UserDocumentation extends Documentation {
             .profileImage("url")
             .build();
         given(userService.retrieveUserResourceBy(anyLong())).willReturn(userResourceResponseDto);
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
@@ -97,7 +97,7 @@ public class UserDocumentation extends Documentation {
             .build();
         given(userService.updateUserResource(anyLong(), any(UserResourceRequestDto.class))).willReturn(
             userResourceResponseDto);
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
         String content = objectMapper.writeValueAsString(userResourceResponseDto);

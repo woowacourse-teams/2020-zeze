@@ -70,8 +70,7 @@ class SlideControllerTest {
         String accessLevel = "PUBLIC";
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
         String body = objectMapper.writeValueAsString(slideRequestDto);
-
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
@@ -95,12 +94,11 @@ class SlideControllerTest {
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
             new Slide(secondTitle, secondContent, AccessLevel.PUBLIC));
-        given(slideService.retrieveSlides(any(SlidesRequestDto.class))).willReturn(
+        given(slideService.retrieveAll(any(SlidesRequestDto.class), eq(null))).willReturn(
             SlideResponseDtos.from(slides));
-
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(null);
 
         mvc.perform(get(BASE_URL))
             .andExpect(status().isOk())
@@ -118,14 +116,13 @@ class SlideControllerTest {
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
             new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
-        given(slideService.retrieveSlides(any(SlidesRequestDto.class), anyLong())).willReturn(
+        given(slideService.retrieveAll(any(SlidesRequestDto.class), anyLong())).willReturn(
             SlideResponseDtos.from(slides));
-
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
-        mvc.perform(get(BASE_URL + "me"))
+        mvc.perform(get(BASE_URL))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString(firstTitle)))
             .andExpect(content().string(containsString(secondTitle)))
@@ -138,7 +135,10 @@ class SlideControllerTest {
         String title = "제목";
         String content = "내용";
         Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
-        given(slideService.retrieveSlide(1L)).willReturn(SlideResponseDto.from(slide));
+        given(slideService.retrieve(1L, null)).willReturn(SlideResponseDto.from(slide));
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(null);
 
         mvc.perform(get(BASE_URL + "1"))
             .andExpect(status().isOk())
@@ -154,12 +154,12 @@ class SlideControllerTest {
         String title = "제목";
         String content = "내용";
         Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
-        given(slideService.retrieveSlide(1L, 1L)).willReturn(SlideResponseDto.from(slide));
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(slideService.retrieve(1L, 1L)).willReturn(SlideResponseDto.from(slide));
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
-        mvc.perform(get(BASE_URL + "me/1"))
+        mvc.perform(get(BASE_URL + "1"))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString(title)))
             .andExpect(content().string(containsString(content)))
@@ -174,12 +174,10 @@ class SlideControllerTest {
         String content = "내용";
         String accessLevel = "PUBLIC";
         SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
-
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        String body = objectMapper.writeValueAsString(slideRequestDto);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
-
-        String body = objectMapper.writeValueAsString(slideRequestDto);
 
         mvc.perform(patch(BASE_URL + "1")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -194,7 +192,7 @@ class SlideControllerTest {
     @Test
     @DisplayName("슬라이드 삭제 요청")
     void deleteSlide() throws Exception {
-        given(jwtTokenProvider.validateToken(any())).willReturn(true);
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
