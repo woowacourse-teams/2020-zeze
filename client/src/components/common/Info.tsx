@@ -37,13 +37,10 @@ const InfoBlock = styled.div`
     background-color: #222;
     color: #fff;
     font-size: 1.1rem;
+    word-break: break-all;
     
     &:hover {
     cursor: pointer;
-    }
-    
-    @media(max-width: ${MOBILE_MAX_WIDTH}px) {
-    width: 90%
     }
   }
   
@@ -54,8 +51,15 @@ const InfoBlock = styled.div`
   }
   
   > img {
-    width: 30%;
     margin: 0.5em 0 0;
+    width: 200px;
+  }
+  
+  @media(max-width: ${MOBILE_MAX_WIDTH}px) {
+     > button, label {
+      text-align: center;
+      line-height: 1.9em;
+      width: 90%;
   }
 `;
 
@@ -87,6 +91,7 @@ const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
     <CardsLayout>
       <h2>{user.name}'s Info</h2>
       <hr/>
+      <div>
       <InfoBlock>
         <div>NAME</div>
         <input placeholder={user.name} onChange={changeName}/>
@@ -98,6 +103,7 @@ const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
         <input id="profile" type="file" style={{display:"none"}} onChange={changeProfileImage}/>
         <button onClick={event => updateInfo(userInfo)}>update</button>
       </InfoBlock>
+      </div>
     </CardsLayout>
   );
 };
