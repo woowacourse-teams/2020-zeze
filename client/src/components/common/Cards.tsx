@@ -47,7 +47,7 @@ const CardsBlock = styled.div`
 
 interface IProps {
   title: string,
-  slides: Array<SlideResponse>,
+  slides: SlideResponse[],
   author: string
 }
 

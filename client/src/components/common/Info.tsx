@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, useCallback} from "react";
 import {User} from "../../pages/Me";
 import {CardsLayout} from "./Cards";
 import styled from "@emotion/styled";
@@ -21,8 +21,8 @@ const InfoBlock = styled.div`
     border: none;
     
     @media(max-width: ${MOBILE_MAX_WIDTH}px) {
-    flex-direction: column-reverse;
-    width: 90%
+      flex-direction: column-reverse;
+      width: 90%
     }
   }
   
@@ -40,7 +40,7 @@ const InfoBlock = styled.div`
     word-break: break-all;
     
     &:hover {
-    cursor: pointer;
+      cursor: pointer;
     }
   }
   
@@ -63,29 +63,25 @@ const InfoBlock = styled.div`
   }
 `;
 
-interface Props {
+interface IProps {
   user: User,
   updateInfo: (user: User) => void
 }
 
-const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
+const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
-  const changeName = (event: ChangeEvent<HTMLInputElement>) => {
-    setUserInfo({...userInfo, name: event.target.value});
-  };
+  const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setUserInfo({...userInfo, [event.target.name]: event.target.value});
+  }, [userInfo]);
 
-  const changeEmail = (event: ChangeEvent<HTMLInputElement>) => {
-    setUserInfo({...userInfo, email: event.target.value});
-  };
-
-  const changeProfileImage = async (event: ChangeEvent<HTMLInputElement>) => {
+  const changeProfileImage = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = event.target.files?.[0];
     const newProfileImage = file && await filesApi.upload(file);
     const newProfileImageUrl: string = newProfileImage?.data.urls[0] || userInfo.profileImage;
 
     setUserInfo({...userInfo, profileImage: newProfileImageUrl});
-  };
+  }, [userInfo]);
 
   return (
     <CardsLayout>
@@ -94,14 +90,14 @@ const Info: React.FC<Props> = ({user, updateInfo}: Props) => {
       <div>
       <InfoBlock>
         <div>NAME</div>
-        <input placeholder={user.name} onChange={changeName}/>
+        <input name="name" placeholder={user.name} onChange={changeInput}/>
         <div>EMAIL</div>
-        <input placeholder={user.email} onChange={changeEmail}/>
+        <input name="email" placeholder={user.email} onChange={changeInput}/>
         <div>PROFILE IMAGE</div>
         <img src={userInfo.profileImage} alt={undefined}/>
         <label htmlFor="profile">upload profile</label>
         <input id="profile" type="file" style={{display:"none"}} onChange={changeProfileImage}/>
-        <button onClick={event => updateInfo(userInfo)}>update</button>
+        <button onClick={() => updateInfo(userInfo)}>update</button>
       </InfoBlock>
       </div>
     </CardsLayout>
