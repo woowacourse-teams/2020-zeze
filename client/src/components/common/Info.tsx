@@ -18,6 +18,7 @@ const InfoBlock = styled.div`
     padding: 5px 20px;
     border: 0;
     border-radius: 8px;
+    outline: none;
     color: #777;
     font-weight: bold;
     background-color: transparent;
@@ -77,6 +78,7 @@ const Input = styled.div`
   align-items: center;
   
   > div {
+    user-select: none;
     margin-left: 5px;
   }
   
@@ -127,11 +129,11 @@ const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
           <Form>
             <Input>
               <div>NAME</div>
-              <input name="name" placeholder={user.name} onChange={changeInput}/>
+              <input name="name" value={userInfo.name} onChange={changeInput}/>
             </Input>
             <Input>
               <div>EMAIL</div>
-              <input name="email" placeholder={user.email} onChange={changeInput}/>
+              <input name="email" value={userInfo.email} onChange={changeInput}/>
             </Input>
           </Form>
         </UserInfo>
