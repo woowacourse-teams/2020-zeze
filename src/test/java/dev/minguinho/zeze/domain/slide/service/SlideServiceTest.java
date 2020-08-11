@@ -69,7 +69,7 @@ class SlideServiceTest {
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
-        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);
+        SlideResponseDtos slideResponseDtos = slideService.retrieveAll(slidesRequestDto, null);
 
         assertAll(
             () -> assertThat(slideResponseDtos.getValues().get(0).getTitle()).isEqualTo(firstTitle),
@@ -90,7 +90,7 @@ class SlideServiceTest {
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
-        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto, 1L);
+        SlideResponseDtos slideResponseDtos = slideService.retrieveAll(slidesRequestDto, 1L);
 
         assertAll(
             () -> assertThat(slideResponseDtos.getValues().get(0).getTitle()).isEqualTo(firstTitle),
@@ -105,7 +105,7 @@ class SlideServiceTest {
         String content = "내용";
         given(slideRepository.findById(1L)).willReturn(Optional.of(new Slide(title, content, AccessLevel.PUBLIC)));
 
-        SlideResponseDto slideResponseDto = slideService.retrieveSlide(1L);
+        SlideResponseDto slideResponseDto = slideService.retrieve(1L, null);
 
         assertAll(
             () -> assertThat(slideResponseDto.getTitle()).isEqualTo(title),
