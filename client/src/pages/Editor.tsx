@@ -76,14 +76,14 @@ const Editor: React.FC = () => {
   }), []);
 
   const create = useCallback(async () => {
-    const response = await slideApi.create({
+    const {headers: { location }} = await slideApi.create({
       data: {
         title,
         content,
         accessLevel,
       },
     });
-    const slideId = response.headers.location.lastIndexOf("/") + 1;
+    const slideId = location.substring(location.lastIndexOf("/") + 1);
 
     setId(parseInt(slideId, 10));
   }, [title, content, accessLevel]);
