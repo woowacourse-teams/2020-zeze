@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-import dev.minguinho.zeze.domain.auth.config.Secured;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
@@ -29,7 +28,6 @@ import dev.minguinho.zeze.domain.user.config.LoginUserId;
 public class SlideController {
     private final SlideService slideService;
 
-    @Secured
     @PostMapping
     public ResponseEntity<Void> createSlide(
         @RequestBody SlideRequestDto slideRequestDto,
@@ -40,40 +38,23 @@ public class SlideController {
     }
 
     @GetMapping
-    public ResponseEntity<SlideResponseDtos> retrievePublicSlides(
-        @ModelAttribute SlidesRequestDto slidesRequestDto
-    ) {
-        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto);
-        return ResponseEntity.ok(slideResponseDtos);
-    }
-
-    @Secured
-    @GetMapping("/me")
     public ResponseEntity<SlideResponseDtos> retrieveSlides(
         @ModelAttribute SlidesRequestDto slidesRequestDto,
         @LoginUserId Long userId
     ) {
-        SlideResponseDtos slideResponseDtos = slideService.retrieveSlides(slidesRequestDto, userId);
+        SlideResponseDtos slideResponseDtos = slideService.retrieveAll(slidesRequestDto, userId);
         return ResponseEntity.ok(slideResponseDtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SlideResponseDto> retrievePublicSlide(@PathVariable("id") Long slideId) {
-        SlideResponseDto slideResponseDto = slideService.retrieveSlide(slideId);
-        return ResponseEntity.ok(slideResponseDto);
-    }
-
-    @Secured
-    @GetMapping("/me/{id}")
     public ResponseEntity<SlideResponseDto> retrieveSlide(
         @PathVariable("id") Long slideId,
         @LoginUserId Long userId
     ) {
-        SlideResponseDto slideResponseDto = slideService.retrieveSlide(slideId, userId);
+        SlideResponseDto slideResponseDto = slideService.retrieve(slideId, userId);
         return ResponseEntity.ok(slideResponseDto);
     }
 
-    @Secured
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateSlide(
         @PathVariable("id") Long slideId,
@@ -84,7 +65,6 @@ public class SlideController {
         return ResponseEntity.noContent().build();
     }
 
-    @Secured
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSlide(
         @PathVariable("id") Long slideId,
