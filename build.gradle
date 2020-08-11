@@ -4,7 +4,7 @@ plugins {
     id 'org.ec4j.editorconfig' version '0.0.3'
     id 'org.springframework.boot' version '2.3.1.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'org.asciidoctor.convert' version '1.5.10'
     id 'java'
 }
 
@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
@@ -46,7 +47,12 @@ dependencies {
     }
     testImplementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${okHttpVersion}"
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    // rest docs
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+
+    // rest assured
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
     // AWS
@@ -63,6 +69,13 @@ test {
 asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}/html5") {
+        into 'templates'
+    }
 }
 
 editorconfig {

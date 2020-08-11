@@ -1,7 +1,7 @@
 package dev.minguinho.zeze.domain.file.api;
 
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -53,7 +53,7 @@ class FileControllerTest {
         MockMultipartFile multipartFile = new MockMultipartFile("files", "test-image.png",
             MediaType.IMAGE_PNG_VALUE, "test-data".getBytes());
 
-        when(fileService.upload(Arrays.asList(multipartFile, multipartFile))).thenReturn(
+        given(fileService.upload(Arrays.asList(multipartFile, multipartFile))).willReturn(
             new FileUrlResponses(
                 Collections.singletonList("https://markdown-ppt-test.s3.ap-northeast-2.amazonaws.com/")));
 

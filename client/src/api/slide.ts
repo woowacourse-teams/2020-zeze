@@ -20,8 +20,8 @@ export interface SlideResponse {
   updatedAt: string
 }
 
-export interface SlidesResponse {
-  values: Array<SlideResponse>
+export interface SlideResponses {
+  slides: Array<SlideResponse>
 }
 
 interface PageProps {
@@ -38,7 +38,7 @@ const slideApi = {
   get(id?: number): Promise<AxiosResponse<SlideResponse>> {
     return slideInstance.get(`${id}`);
   },
-  getAll(page: PageProps): Promise<AxiosResponse<SlidesResponse>> {
+  getAll(page: PageProps): Promise<AxiosResponse<SlideResponses>> {
     return slideInstance.get("/", {
       params: {
         ...page,

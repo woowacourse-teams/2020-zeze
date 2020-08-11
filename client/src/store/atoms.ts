@@ -1,15 +1,15 @@
 import {atom, selector} from "recoil";
 import {AxiosResponse} from "axios";
-import slideApi, {SlidesResponse} from "../api/slide";
+import slideApi, {SlideResponses} from "../api/slide";
 import {AccessLevel} from "../domains/constants";
 import parse, {MetaProps} from "../utils/metadata";
 
 export const getAllSlidesQuery = selector({
   key: "getAllSlidesQuery",
   get: async () => {
-    const response: AxiosResponse<SlidesResponse> = await slideApi.getAll({id: 0, size: 5});
+    const response: AxiosResponse<SlideResponses> = await slideApi.getAll({id: 0, size: 5});
 
-    return response.data.values;
+    return response.data.slides;
   },
 });
 
