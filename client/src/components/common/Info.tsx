@@ -5,61 +5,90 @@ import styled from "@emotion/styled";
 import filesApi from "../../api/file";
 import {useRecoilState} from "recoil";
 import {userInfoState} from "../../store/atoms";
-import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 
 const InfoBlock = styled.div`
   display: flex;
   flex-direction: column;
-  color: #fff;
+  width: 100%;
   
-  > input {
-    width: 60%;
-    height: 2em;
-    margin: 0.5em 0 1em;
-    color: #fff;
-    background-color: #222;
-    border: none;
-    
-    @media(max-width: ${MOBILE_MAX_WIDTH}px) {
-      flex-direction: column-reverse;
-      width: 90%
-    }
-  }
-  
-  > button, label {
-    text-decoration: none;
-    display: inline-block;
-    width: 60%;
-    height: 2em;
-    margin: 0.5em 0;
-    border: 1px solid white;
-    border-radius: 50px;
-    background-color: #222;
-    color: #fff;
-    font-size: 1.1rem;
-    word-break: break-all;
+  > button {
+    align-self: flex-end;
+    margin-top: 20px;
+    padding: 5px 20px;
+    border: 0;
+    border-radius: 8px;
+    color: #777;
+    font-weight: bold;
+    background-color: transparent;
+    cursor: pointer;
     
     &:hover {
-      cursor: pointer;
+      color: #fff;
     }
+  }
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  flex: 1;
+`;
+
+const Profile = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 5px;
+  color: #fff;
+  width: 200px;
+  
+  > img {
+    width: 80px;
+    border-radius: 80px;
+    border : 1px solid #777;
+    margin-bottom: 10px;
   }
   
   > label {
-    text-align: center;
-    line-height: 1.9em;
-    width: 30%;
+    cursor: pointer;
+    color: #777;
+    
+    &:hover {
+      color: #fff;
+    }
+  }
+    
+`;
+
+const Form = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 25px 0 0 20px;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const Input = styled.div`
+  display: flex;
+  font-size: 10px;
+  color: #777;
+  border-bottom: 2px solid #777;
+  padding-bottom: 5px;
+  align-items: center;
+  
+  > div {
+    margin-left: 5px;
   }
   
-  > img {
-    margin: 0.5em 0 0;
-    width: 200px;
-  }
-  
-  @media(max-width: ${MOBILE_MAX_WIDTH}px) {
-     > button, label {
-      text-align: center;
-      line-height: 1.9em;
-      width: 90%;
+  > input {
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 20px;
+    padding: 0;
+    border: 0;
+    outline: none;
+    width: 100%;
+    background-color: transparent;
   }
 `;
 
@@ -87,19 +116,26 @@ const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
     <CardsLayout>
       <h2>{user.name}'s Info</h2>
       <hr/>
-      <div>
       <InfoBlock>
-        <div>NAME</div>
-        <input name="name" placeholder={user.name} onChange={changeInput}/>
-        <div>EMAIL</div>
-        <input name="email" placeholder={user.email} onChange={changeInput}/>
-        <div>PROFILE IMAGE</div>
-        <img src={userInfo.profileImage} alt={undefined}/>
-        <label htmlFor="profile">upload profile</label>
-        <input id="profile" type="file" style={{display:"none"}} onChange={changeProfileImage}/>
-        <button onClick={() => updateInfo(userInfo)}>update</button>
+        <UserInfo>
+          <Profile>
+            <img src={userInfo.profileImage} alt={undefined}/>
+            <label htmlFor="profile">CHANGE PROFILE</label>
+            <input id="profile" type="file" style={{display: "none"}} onChange={changeProfileImage}/>
+          </Profile>
+          <Form>
+            <Input>
+              <div>NAME</div>
+              <input name="name" placeholder={user.name} onChange={changeInput}/>
+            </Input>
+            <Input>
+              <div>EMAIL</div>
+              <input name="email" placeholder={user.email} onChange={changeInput}/>
+            </Input>
+          </Form>
+        </UserInfo>
+        <button onClick={() => updateInfo(userInfo)}>UPDATE</button>
       </InfoBlock>
-      </div>
     </CardsLayout>
   );
 };

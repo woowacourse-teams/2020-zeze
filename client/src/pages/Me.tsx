@@ -33,8 +33,8 @@ const Me: React.FC = () => {
     <SidebarLayout>
       <Toast type="warn" message="Currently in development. Sorry for your inconvenience :("/>
       {/* <Cards title="Recent"/>*/}
-      <Cards title="My Drafts" slides={slides} author={userName}/>
       <Info user={{...user, name: userName}} updateInfo={updateInfo}/>
+      <Cards title="My Drafts" slides={slides} author={userName}/>
     </SidebarLayout>
   );
 };
