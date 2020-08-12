@@ -4,7 +4,7 @@ import Card from "./Card";
 import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 import {SlideResponse} from "../../api/slide";
 
-const CardsLayout = styled.div`
+export const CardsLayout = styled.div`
   padding-bottom: 3rem;
 
   > h2 {
@@ -47,15 +47,16 @@ const CardsBlock = styled.div`
 
 interface IProps {
   title: string,
-  slides: Array<SlideResponse>
+  slides: SlideResponse[],
+  author: string
 }
 
-const Cards: React.FC<IProps> = ({title, slides}) => (
+const Cards: React.FC<IProps> = ({title, slides, author}) => (
   <CardsLayout>
     <h2>{title}</h2>
     <hr/>
     <CardsBlock>
-      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author="Hodol"
+      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author={author}
         createdAt={slide.createdAt}/>))}
     </CardsBlock>
   </CardsLayout>

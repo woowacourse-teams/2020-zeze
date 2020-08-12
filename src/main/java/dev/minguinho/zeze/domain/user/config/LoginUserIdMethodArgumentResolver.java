@@ -24,7 +24,7 @@ public class LoginUserIdMethodArgumentResolver implements HandlerMethodArgumentR
         NativeWebRequest webRequest,
         WebDataBinderFactory binderFactory
     ) {
-        String id = (String)webRequest.getAttribute("loginUserId", SCOPE_REQUEST);
+        String id = String.valueOf(webRequest.getAttribute("loginUserId", SCOPE_REQUEST));
         if (StringUtils.isEmpty(id)) {
             return null;
         }

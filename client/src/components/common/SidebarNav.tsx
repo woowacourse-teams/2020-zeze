@@ -3,11 +3,16 @@ import {Link, NavLink} from "react-router-dom";
 import SidebarHeader from "./SidebarHeader";
 import SidebarMenu from "./SidebarMenu";
 import * as S from "../../assets/icons";
+import {User} from "../../pages/Me";
 
-const SidebarNav: React.FC = () => (
+interface IProps {
+  user: User
+}
+
+const SidebarNav: React.FC<IProps> = ({user}: IProps) => (
   <nav>
     <div>
-      <SidebarHeader src={undefined} title="Hodol"/>
+      <SidebarHeader src={user.profileImage} title={user.name}/>
       <NavLink to="/me" activeClassName="current">
         <SidebarMenu src={S.slide} title="All Slides"/>
       </NavLink>

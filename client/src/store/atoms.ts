@@ -3,6 +3,8 @@ import {AxiosResponse} from "axios";
 import slideApi, {SlideResponses} from "../api/slide";
 import {AccessLevel} from "../domains/constants";
 import parse, {MetaProps} from "../utils/metadata";
+import {User} from "../pages/Me";
+import usersApi from "../api/user";
 
 export const getAllSlidesQuery = selector({
   key: "getAllSlidesQuery",
@@ -40,3 +42,16 @@ export const slideAccessLevelState = atom<AccessLevel>({
   default: AccessLevel.PRIVATE,
 });
 
+export const getUserInfoQuery = selector({
+  key: "getUserInfoQuery",
+  get: async () => {
+    const response: AxiosResponse<User> = await usersApi.get();
+
+    return response.data;
+  },
+});
+
+export const userInfoState = atom<User>({
+  key: "userInfoState",
+  default: getUserInfoQuery,
+});
