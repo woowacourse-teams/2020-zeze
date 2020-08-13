@@ -5,6 +5,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.1.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'org.asciidoctor.convert' version '1.5.10'
+    id 'org.flywaydb.flyway' version '6.0.1'
     id 'java'
 }
 
@@ -37,9 +38,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.flywaydb:flyway-core'
     compileOnly 'org.projectlombok:lombok'
+    runtime 'org.mariadb.jdbc:mariadb-java-client'
     runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'ch.qos.logback:logback-access:1.2.3'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -84,45 +86,6 @@ editorconfig {
 
 checkstyle {
     maxWarnings = 0 // 규칙이 어긋나는 코드가 하나라도 있을 경우 빌드 fail을 내고 싶다면 이 선언을 추가한다.
-    configFile = file("${rootDir}/.zeze-checkstyle.xml")
+    configFile = file("${rootDir}/config/.zeze-checkstyle.xml")
     toolVersion = "8.34"  // checkstyle 버전 8.24 이상 선언
-}
-
-check.dependsOn editorconfigCheck
-
-node {
-    version = '12.18.2'
-    download = false // temporary
-    distBaseUrl = 'https://nodejs.org/dist'
-    workDir = file("${projectDir}/.gradle/nodejs")
-    yarnWorkDir = file("${projectDir}/.gradle/yarn")
-    nodeModulesDir = file("${rootDir}/client/")
-}
-
-task yarnInstall(type: YarnTask) {
-    args = ['install']
-}
-
-task yarnBuild(type: YarnTask) {
-    args = ['run', "build"]
-}
-
-task deleteStatic(type: Delete) {
-    delete("${projectDir}/src/main/resources/static/")
-}
-
-task copyBuild(type: Copy) {
-    from("${rootDir}/client/build/")
-    into("${projectDir}/src/main/resources/static/")
-    includeEmptyDirs = true
-}
-
-task buildClient {
-    dependsOn 'yarnInstall'
-    dependsOn 'yarnBuild'
-    dependsOn 'deleteStatic'
-    dependsOn 'copyBuild'
-    tasks.findByName('yarnBuild').mustRunAfter 'yarnInstall'
-    tasks.findByName('deleteStatic').mustRunAfter 'yarnBuild'
-    tasks.findByName('copyBuild').mustRunAfter 'deleteStatic'
 }

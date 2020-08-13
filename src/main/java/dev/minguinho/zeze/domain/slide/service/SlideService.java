@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import dev.minguinho.zeze.domain.auth.exception.NotAuthorizedException;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
@@ -27,6 +28,9 @@ public class SlideService {
 
     @Transactional
     public Long create(SlideRequestDto slideRequestDto, Long userId) {
+        if (Objects.isNull(userId)) {
+            throw new NotAuthorizedException();
+        }
         Slide slide = slideRequestDto.toEntity(userId);
         Slide persist = slideRepository.save(slide);
         return persist.getId();

@@ -2,6 +2,7 @@ package dev.minguinho.zeze.domain.user.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import dev.minguinho.zeze.domain.common.model.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@Table(name = "member_resource")
 public class UserResource extends BaseEntity {
     @Column(unique = true)
     private Long userId;

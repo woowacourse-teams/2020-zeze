@@ -34,9 +34,6 @@ public class LoginUserInterceptor implements HandlerInterceptor {
         if (token.isEmpty()) {
             return true;
         }
-        if (!jwtTokenProvider.validateToken(token)) {
-            return false;
-        }
         Long loginUserId = jwtTokenProvider.getUserId(token);
         request.setAttribute(LOGIN_USER_ID, loginUserId);
         return true;

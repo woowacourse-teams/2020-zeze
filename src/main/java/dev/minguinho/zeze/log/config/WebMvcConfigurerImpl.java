@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import dev.minguinho.zeze.log.interceptor.LogInterceptor;
 
-@Profile("prod")
+@Profile("log")
 @RequiredArgsConstructor
 @Configuration
 public class WebMvcConfigurerImpl implements WebMvcConfigurer {
