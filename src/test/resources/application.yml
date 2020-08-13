@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: aws, github, jwt, log
+    include: aws, github, jwt
   jpa:
     hibernate:
       ddl-auto: create
@@ -19,6 +19,9 @@ spring:
       jdbc-url: "jdbc:h2:mem:testdb"
       username: "sa"
       driver-class-name: "org.h2.Driver"
+
+  flyway:
+    enabled: false
 
 server:
   servlet:
