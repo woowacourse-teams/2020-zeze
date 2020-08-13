@@ -77,12 +77,11 @@ export const FullScreenButton = styled.button`
   background-position: center;
   background-repeat: no-repeat;
   background-color: transparent;
-  width: 25px;
+  width: 18px;
   height: 25px;
   border: none;
   position: absolute;
   right: 20px;
-  top: 20px;
   z-index: 3;
   cursor: pointer;
   

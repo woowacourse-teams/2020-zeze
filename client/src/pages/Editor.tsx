@@ -12,6 +12,7 @@ import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import fixtures from "../utils/fixtures";
 import { MOBILE_MAX_WIDTH } from "../domains/constants";
+import {clear, save} from "../assets/icons";
 
 import {
   parsedSlides,
@@ -36,6 +37,41 @@ const EditorBlock = styled.main`
     flex-direction: column-reverse;
     height: 100vh;
   }
+`;
+
+const Edit = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ButtonMenu = styled.div`
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  background-color: #313335;
+  
+  > button {
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 16px;
+    width: 50px;
+    margin: 5px;
+    border: 0;
+    border-radius: 8px;
+    outline: none;
+    color: #777;
+    font-weight: bold;
+    background-color: transparent;
+    cursor: pointer;
+  }
+`;
+
+const SaveButton = styled.button`
+  background-image: url(${save});
+`;
+
+const DeleteButton = styled.button`
+  background-image: url(${clear});
 `;
 
 interface Params {
@@ -115,12 +151,14 @@ const Editor: React.FC = () => {
   return (
     <SidebarLayout fluid>
       <EditorBlock>
-        <div className="editor">
-          <button onClick={save}>save</button>
-          <button onClick={deleteSlide}>delete</button>
+        <Edit>
+          <ButtonMenu>
+            <SaveButton onClick={save} />
+            <DeleteButton onClick={deleteSlide} />
+          </ButtonMenu>
           <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile} />
           <FullScreenMode contents={slides} />
-        </div>
+        </Edit>
         <Preview content={content} />
       </EditorBlock>
     </SidebarLayout>
