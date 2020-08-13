@@ -1,4 +1,5 @@
 import React from "react";
+import dotenv from 'dotenv';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 const Home = React.lazy(() => import("./pages/Home"));
 const Me = React.lazy(() => import("./pages/Me"));
@@ -7,9 +8,9 @@ const Archive = React.lazy(() => import("./pages/Archive"));
 const Callback = React.lazy(() => import("./pages/Callback"));
 const Error = React.lazy(() => import("./pages/Error"));
 
-const App: React.FC = () => {
+dotenv.config();
 
-  require('dotenv').config();
+const App: React.FC = () => {
 
   return(
     <Router>
