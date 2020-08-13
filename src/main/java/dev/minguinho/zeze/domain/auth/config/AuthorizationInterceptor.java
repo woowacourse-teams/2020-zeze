@@ -14,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import lombok.RequiredArgsConstructor;
 
+import dev.minguinho.zeze.domain.auth.exception.NotAuthorizedException;
 import dev.minguinho.zeze.domain.auth.infra.AuthorizationTokenExtractor;
 import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 import dev.minguinho.zeze.domain.auth.model.Authority;
@@ -31,11 +32,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = authorizationTokenExtractor.extract(request, "bearer");
-        if (jwtTokenProvider.validateToken(token)) {
-            return false;
-        }
         Set<Authority.Role> roles = jwtTokenProvider.getAuthorities(token);
-        return roles.contains(secured.authority());
+        if(roles.contains(secured.authority())) {
+            return true;
+        }
+        throw new NotAuthorizedException();
     }
 
     private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {

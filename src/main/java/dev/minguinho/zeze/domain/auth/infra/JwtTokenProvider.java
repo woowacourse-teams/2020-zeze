@@ -15,6 +15,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import dev.minguinho.zeze.domain.auth.exception.InvalidTokenException;
 import dev.minguinho.zeze.domain.auth.model.Authority;
 
 @Component
@@ -53,28 +54,35 @@ public class JwtTokenProvider {
     }
 
     public Long getUserId(String token) {
-        return Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(token)
-            .getBody()
-            .get(USER_ID_KEY, Long.class);
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            if (claims.getBody().getExpiration().after(new Date())) {
+                throw new InvalidTokenException();
+            }
+            return claims.getBody().get(USER_ID_KEY, Long.class);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw e;
+        }
     }
 
     public Set<Authority.Role> getAuthorities(String token) {
-        String roles = Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(token)
-            .getBody()
-            .get(ROLES_KEY, String.class);
-        return Arrays.stream(roles.split(ROLE_DELIMITER))
-            .map(Authority.Role::valueOf)
-            .collect(Collectors.toSet());
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            if (claims.getBody().getExpiration().after(new Date())) {
+                throw new InvalidTokenException();
+            }
+            String roles = claims.getBody().get(ROLES_KEY, String.class);
+            return Arrays.stream(roles.split(ROLE_DELIMITER))
+                .map(Authority.Role::valueOf)
+                .collect(Collectors.toSet());
+        } catch (JwtException | IllegalArgumentException e) {
+            throw e;
+        }
     }
 
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
             return claims.getBody().getExpiration().after(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
