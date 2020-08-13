@@ -5,7 +5,7 @@ CREATE TABLE member_authorities (
 );
 
 ALTER TABLE member_authorities
-    ADD CONSTRAINT fk_user_authorities_authorities_id
+    ADD CONSTRAINT fk_member_authorities_authorities_id
         FOREIGN KEY (authorities_id)
             REFERENCES authority (id);
 
