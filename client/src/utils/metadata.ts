@@ -32,11 +32,13 @@ const parse = (text: string) => {
     const {author, title, subtitle, createdAt} = metadata;
 
     firstPage = firstPage
-      .concat(title ? `# ${title}\n\n` : "")
-      .concat(subtitle ? `### ${subtitle}\n\n` : "")
-      .concat(author ? `###### ${author}\n\n` : "")
-      .concat(createdAt ? `###### ${createdAt}\n\n` : "")
-      .concat("---\n\n");
+      .concat(`<div class="first-page">`)
+      .concat(title ? `<h1 class="title">${title}</h1>` : "")
+      .concat(subtitle ? `<h2 class="subtitle">${subtitle}</h2>` : "")
+      .concat(author ? `<h3 class="author">${author}</h3>` : "")
+      .concat(createdAt ? `<h4 class="created-at">${createdAt}</h4>` : "")
+      .concat("</div>")
+      .concat("\n\n---\n\n");
   }
 
   return {

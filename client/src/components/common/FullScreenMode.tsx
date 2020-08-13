@@ -41,6 +41,32 @@ const FullScreenBlock = styled.div<FullScreenProps>`
     display: flex;
     flex-direction: column;
     
+    div.first-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 80%;
+      padding: 30px;
+      
+      h1, h2, h3, h4 {
+        border: none;
+        padding: 0;
+      }
+      
+      h1 {
+        font-size: 4em;
+      }
+      
+      h2.subtitle {
+        font-size: 2.5em;
+        color: #777; 
+      }
+      
+      h3.author {
+        margin-top: 1em !important; 
+      }
+    }
+    
     p.images {
       display: flex;
       flex-wrap: wrap;
