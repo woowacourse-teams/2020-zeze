@@ -4,8 +4,8 @@ public class NotAuthorizedException extends IllegalStateException {
     public NotAuthorizedException() {
     }
 
-    public NotAuthorizedException(String s) {
-        super(s);
+    public NotAuthorizedException(String message) {
+        super(message);
     }
 
     public NotAuthorizedException(String message, Throwable cause) {

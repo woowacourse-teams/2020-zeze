@@ -1,12 +1,11 @@
 package dev.minguinho.zeze.domain.auth.exception;
 
 public class InvalidTokenException extends IllegalArgumentException {
-
     public InvalidTokenException() {
     }
 
-    public InvalidTokenException(String s) {
-        super(s);
+    public InvalidTokenException(String message) {
+        super(message);
     }
 
     public InvalidTokenException(String message, Throwable cause) {

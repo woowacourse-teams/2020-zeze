@@ -33,7 +33,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
         String token = authorizationTokenExtractor.extract(request, "bearer");
         Set<Authority.Role> roles = jwtTokenProvider.getAuthorities(token);
-        if(roles.contains(secured.authority())) {
+        if (roles.contains(secured.authority())) {
             return true;
         }
         throw new NotAuthorizedException();
