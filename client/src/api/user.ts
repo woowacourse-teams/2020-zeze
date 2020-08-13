@@ -2,7 +2,7 @@ import axios from "axios";
 import {User} from "../pages/Me";
 
 const userInstance = axios.create({
-  baseURL: "/api/me",
+  baseURL: `/api/me`,
   headers: {authorization: localStorage.getItem("accessToken")},
 });
 

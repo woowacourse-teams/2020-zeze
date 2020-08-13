@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const fileInstance = axios.create({
-  baseURL: "/api/files",
+  baseURL: `/api/files`,
   headers: {authorization: localStorage.getItem("accessToken")},
 });
 

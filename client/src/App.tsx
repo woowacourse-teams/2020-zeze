@@ -7,18 +7,23 @@ const Archive = React.lazy(() => import("./pages/Archive"));
 const Callback = React.lazy(() => import("./pages/Callback"));
 const Error = React.lazy(() => import("./pages/Error"));
 
-const App: React.FC = () => (
-  <Router>
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route path="/me" component={Me} />
-      <Route exact path="/editor" component={Editor} />
-      <Route path="/editor/:id" component={Editor} />
-      <Route path="/archive" component={Archive} />
-      <Route path="/callback" component={Callback} />
-      <Route component={Error} />
-    </Switch>
-  </Router>
-);
+const App: React.FC = () => {
+
+  require('dotenv').config();
+
+  return(
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/me" component={Me}/>
+        <Route exact path="/editor" component={Editor}/>
+        <Route path="/editor/:id" component={Editor}/>
+        <Route path="/archive" component={Archive}/>
+        <Route path="/callback" component={Callback}/>
+        <Route component={Error}/>
+      </Switch>
+    </Router>
+  );
+}
 
 export default App;

@@ -30,7 +30,7 @@ interface PageProps {
 }
 
 const slideInstance = axios.create({
-  baseURL: "/api/slides",
+  baseURL: `/api/slides`,
   headers: {authorization: localStorage.getItem("accessToken")},
 });
 

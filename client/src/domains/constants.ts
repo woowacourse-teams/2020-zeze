@@ -12,8 +12,8 @@ export const Keys = {
 
 const GithubAuth = {
   baseUrl: "https://github.com/login/oauth/authorize",
-  callbackUrl: "http://localhost:3000/callback",
-  clientId: "c47a3779bada189b7721",
+  callbackUrl: process.env.REACT_APP_CALLBACK_URL,
+  clientId: process.env.REACT_APP_CLIENT_ID,
 };
 
 export const GITHUB_AUTH_URL = `${GithubAuth.baseUrl}?client_id=${GithubAuth.clientId}&redirect_uri=${GithubAuth.callbackUrl}`;
