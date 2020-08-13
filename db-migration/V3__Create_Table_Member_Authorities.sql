@@ -10,6 +10,6 @@ ALTER TABLE member_authorities
             REFERENCES authority (id);
 
 ALTER TABLE member_authorities
-    ADD CONSTRAINT fk_user_authorities_user_id
+    ADD CONSTRAINT fk_member_authorities_user_id
         FOREIGN KEY (user_id)
             REFERENCES member (id);

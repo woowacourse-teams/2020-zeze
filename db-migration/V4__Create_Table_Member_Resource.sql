@@ -10,5 +10,5 @@ CREATE TABLE member_resource (
 );
 
 ALTER TABLE member_resource
-    ADD CONSTRAINT uk_user_resource_user_id
+    ADD CONSTRAINT uk_member_resource_user_id
         UNIQUE (user_id);
