@@ -8,6 +8,7 @@ logs/
 **/src/main/resources/static
 **/src/main/resources/application-aws.yml
 **/src/main/resources/application-github.yml
+**/src/main/resources/application-github-local.yml
 **/src/main/resources/application-jwt.yml
 **/src/main/resources/application-log.yml
 **/src/main/resources/logback-spring.xml
