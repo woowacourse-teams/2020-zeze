@@ -9,7 +9,7 @@ interface props {
 }
 
 const Callback: React.FC<props> = ({location, history}: props) => {
-  const githubBaseUrl = "/api/signin/github";
+  const githubBaseUrl = `/api/signin/github`;
 
   useEffect(() => {
     const getToken = async () => {
