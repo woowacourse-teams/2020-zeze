@@ -56,7 +56,7 @@ public class JwtTokenProvider {
     public Long getUserId(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            if (claims.getBody().getExpiration().after(new Date())) {
+            if (claims.getBody().getExpiration().before(new Date())) {
                 throw new InvalidTokenException();
             }
             return claims.getBody().get(USER_ID_KEY, Long.class);
@@ -68,7 +68,7 @@ public class JwtTokenProvider {
     public Set<Authority.Role> getAuthorities(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            if (claims.getBody().getExpiration().after(new Date())) {
+            if (claims.getBody().getExpiration().before(new Date())) {
                 throw new InvalidTokenException();
             }
             String roles = claims.getBody().get(ROLES_KEY, String.class);
