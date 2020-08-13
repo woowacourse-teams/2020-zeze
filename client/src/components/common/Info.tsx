@@ -129,11 +129,11 @@ const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
           <Form>
             <Input>
               <div>NAME</div>
-              <input name="name" value={userInfo.name} onChange={changeInput}/>
+              <input autoComplete="off" name="name" value={userInfo.name} onChange={changeInput}/>
             </Input>
             <Input>
               <div>EMAIL</div>
-              <input name="email" value={userInfo.email} onChange={changeInput}/>
+              <input autoComplete="off" name="email" value={userInfo.email} onChange={changeInput}/>
             </Input>
           </Form>
         </UserInfo>
