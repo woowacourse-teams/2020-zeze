@@ -20,21 +20,19 @@ export interface User {
 const Me: React.FC = () => {
   const slides = useRecoilValue(getAllSlidesQuery);
   const [user, setUser] = useRecoilState(userInfoState);
-  const [userName, setUserName] = useState<string>(user.name);
 
   const updateInfo = useCallback((userInfo: User) => {
     usersApi.update(userInfo)
       .then(() => alert("update success"));
     setUser(userInfo);
-    setUserName(userInfo.name);
   }, []);
 
   return (
     <SidebarLayout>
       <Toast type="warn" message="Currently in development. Sorry for your inconvenience :("/>
       {/* <Cards title="Recent"/>*/}
-      <Info user={{...user, name: userName}} updateInfo={updateInfo}/>
-      <Cards title="My Drafts" slides={slides} author={userName}/>
+      <Info user={user!} updateInfo={updateInfo}/>
+      <Cards title="My Drafts" slides={slides} author={user!.name}/>
     </SidebarLayout>
   );
 };

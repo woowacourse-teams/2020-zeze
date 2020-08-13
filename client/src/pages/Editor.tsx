@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useRef } from "react";
-import { useRecoilState, useRecoilValue, atom } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useParams, useHistory } from "react-router-dom";
 import styled from "@emotion/styled";
 
@@ -12,7 +12,7 @@ import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import fixtures from "../utils/fixtures";
 import { MOBILE_MAX_WIDTH } from "../domains/constants";
-import {clear, save} from "../assets/icons";
+import {clear, saveImg} from "../assets/icons";
 
 import {
   parsedSlides,
@@ -67,7 +67,7 @@ const ButtonMenu = styled.div`
 `;
 
 const SaveButton = styled.button`
-  background-image: url(${save});
+  background-image: url(${saveImg});
 `;
 
 const DeleteButton = styled.button`

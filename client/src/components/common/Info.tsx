@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useCallback} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import {User} from "../../pages/Me";
 import {CardsLayout} from "./Cards";
 import styled from "@emotion/styled";
@@ -97,11 +97,11 @@ const Input = styled.div`
 
 interface IProps {
   user: User,
-  updateInfo: (user: User) => void
+  updateInfo: (user: User) => void,
 }
 
-const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+const Info: React.FC<IProps> = ({user, updateInfo,}: IProps) => {
+  const [userInfo, setUserInfo] = useState<User>(user);
 
   const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setUserInfo({...userInfo, [event.target.name]: event.target.value});

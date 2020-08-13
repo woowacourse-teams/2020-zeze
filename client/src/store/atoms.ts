@@ -51,7 +51,7 @@ export const getUserInfoQuery = selector({
   },
 });
 
-export const userInfoState = atom<User>({
+export const userInfoState = atom<User | null>({
   key: "userInfoState",
-  default: getUserInfoQuery,
+  default: null,
 });

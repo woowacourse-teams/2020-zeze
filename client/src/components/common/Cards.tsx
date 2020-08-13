@@ -56,7 +56,7 @@ const Cards: React.FC<IProps> = ({title, slides, author}) => (
     <h2>{title}</h2>
     <hr/>
     <CardsBlock>
-      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author={author}
+      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author={author!}
         createdAt={slide.createdAt}/>))}
     </CardsBlock>
   </CardsLayout>
