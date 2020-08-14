@@ -15,7 +15,7 @@ dotenv.config();
 const App: React.FC = () => {
 
   return (
-    <Router>[
+    <Router>
       <Switch>
         <Route exact path="/" component={Home}/>
         <Route path="/callback" component={Callback}/>

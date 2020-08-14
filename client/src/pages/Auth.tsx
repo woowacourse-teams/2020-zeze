@@ -1,7 +1,7 @@
 import React, {LazyExoticComponent} from "react";
+import {Route, Redirect} from "react-router-dom";
 import {useRecoilValue} from "recoil";
 import {userInfoQuery} from "../store/atoms";
-import {Route, Redirect} from "react-router-dom";
 
 interface IProps {
   path: string,
