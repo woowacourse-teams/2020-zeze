@@ -142,12 +142,6 @@ const FullScreenMode: React.FC<IProps> = ({ contents }) => {
       case Keys.ARROW_LEFT:
         slideExists(index - 1) && setIndex(index - 1);
         break;
-      case Keys.ENTER:
-        slideExists(index - 1) && setIndex(index - 1);
-        break;
-      case Keys.SPACEBAR:
-        slideExists(index - 1) && setIndex(index - 1);
-        break;
     }
   };
 
