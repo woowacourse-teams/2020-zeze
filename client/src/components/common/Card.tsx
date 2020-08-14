@@ -55,7 +55,7 @@ interface IProps {
   id: number,
   title: string,
   subtitle: string,
-  author: string,
+  author?: string,
   createdAt: string
 }
 
@@ -66,7 +66,7 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => (
       <main>
         <div className="title">{title}</div>
         <div className="subtitle">{subtitle}</div>
-        <div className="author">{author}</div>
+        <div className="author">{author || "author"}</div>
         <div className="created_at">{createdAt}</div>
       </main>
     </CardBlock>

@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
 import SidebarNav from "./SidebarNav";
 import {useRecoilValue} from "recoil";
-import {getUserInfoQuery} from "../../store/atoms";
+import {userInfoQuery} from "../../store/atoms";
 
 interface SidebarLayoutProps {
   fluid?: boolean
@@ -63,11 +63,11 @@ interface IProps {
 }
 
 const SidebarLayout: React.FC<IProps> = ({children, fluid = false}) => {
-  const user = useRecoilValue(getUserInfoQuery);
+  const user = useRecoilValue(userInfoQuery);
 
   return (
     <SidebarLayoutBlock fluid={fluid}>
-      <SidebarNav user={user}/>
+      <SidebarNav user={user!}/>
       <main>
         <div>
           {children}
@@ -75,6 +75,6 @@ const SidebarLayout: React.FC<IProps> = ({children, fluid = false}) => {
       </main>
     </SidebarLayoutBlock>
   );
-}
+};
 
 export default SidebarLayout;

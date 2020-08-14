@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useHistory, useParams} from "react-router-dom";
+import {useParams, useHistory} from "react-router-dom";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -137,7 +137,7 @@ const Editor: React.FC = () => {
 
   const save = useCallback(() => {
     id ? update() : create();
-  }, [create, id, update]);
+  }, [id, update, create]);
 
   const deleteSlide = useCallback(async () => {
     id && await slideApi.delete(id);
