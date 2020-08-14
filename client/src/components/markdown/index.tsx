@@ -24,8 +24,6 @@ const Markdown: React.FC<IProps> = ({ value = "" }) => {
       source: block,
     }));
 
-  console.log("왜");
-
   return (
     <div id="themed">
       {blocks?.map(({ key, source }) => (
