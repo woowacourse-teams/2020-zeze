@@ -1,13 +1,13 @@
-import { atom, selector } from "recoil";
-import { AxiosResponse } from "axios";
-import slideApi, { SlideResponses } from "../api/slide";
-import { User } from "../pages/Me";
+import {atom, selector} from "recoil";
+import {AxiosResponse} from "axios";
+import slideApi, {SlideResponses} from "../api/slide";
+import {User} from "../pages/Me";
 import usersApi from "../api/user";
 
 export const getAllSlidesQuery = selector({
   key: "getAllSlidesQuery",
   get: async () => {
-    const response: AxiosResponse<SlideResponses> = await slideApi.getAll({ id: 0, size: 5 });
+    const response: AxiosResponse<SlideResponses> = await slideApi.getAll({id: 0, size: 5});
 
     return response.data.slides;
   },

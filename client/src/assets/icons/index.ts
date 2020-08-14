@@ -6,7 +6,7 @@ import slide from "./slide.svg";
 import archive from "./archive.svg";
 import newSlides from "./newSlides.svg";
 import more from "./more.svg";
-import save from "./save.svg";
+import saveImg from "./save.svg";
 import clear from "./clear.svg";
 
 export {
@@ -18,7 +18,7 @@ export {
   archive,
   newSlides,
   more,
-  save,
+  saveImg,
   clear,
 };
 

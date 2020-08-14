@@ -26,7 +26,7 @@ const Me: React.FC = () => {
       .then(() => alert("update success"));
     setUser(userInfo);
     setUserName(userInfo.name);
-  }, []);
+  }, [setUser]);
 
   return (
     <SidebarLayout>

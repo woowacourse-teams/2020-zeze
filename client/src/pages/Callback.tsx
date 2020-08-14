@@ -28,7 +28,7 @@ const Callback: React.FC<props> = ({location, history}: props) => {
         alert("login failed");
         history.push("/");
       });
-  }, [location, history]);
+  }, [location, history, githubBaseUrl]);
 
   return (
     <GlobalLayout>

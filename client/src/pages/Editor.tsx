@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import React, {useCallback, useEffect, useRef, useState, useMemo} from "react";
+import {useHistory, useParams} from "react-router-dom";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -9,8 +9,8 @@ import SidebarLayout from "../components/common/SidebarLayout";
 
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
-import { MOBILE_MAX_WIDTH, AccessLevel } from "../domains/constants";
-import { clear, save } from "../assets/icons";
+import {MOBILE_MAX_WIDTH, AccessLevel} from "../domains/constants";
+import {clear, saveImg} from "../assets/icons";
 import parse from "../utils/metadata";
 
 const EditorBlock = styled.main`
@@ -58,7 +58,7 @@ const ButtonMenu = styled.div`
 `;
 
 const SaveButton = styled.button`
-  background-image: url(${save});
+  background-image: url(${saveImg});
 `;
 
 const DeleteButton = styled.button`
@@ -77,23 +77,23 @@ const Editor: React.FC = () => {
 
   const [content, setContent] = useState<string>("");
 
-  const parsed = useMemo<any>(() => parse(content), [content])
+  const parsed = useMemo<any>(() => parse(content), [content]);
 
   const slides = useMemo<string[]>(() => (
     parsed.content.split(/^---$/m)
-      .filter((content: string) => content.trim())
-  ), [parsed])
+      .filter((slideContent: string) => slideContent.trim())
+  ), [parsed]);
 
   useEffect(() => {
     id && slideApi.get(id)
-      .then(({ data }) => {
+      .then(({data}) => {
         setContent(data.content);
         codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
-        alert("데이터를 불러오지 못했습니다.")
+        alert("데이터를 불러오지 못했습니다.");
       });
-  }, []);
+  }, [id]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -102,8 +102,7 @@ const Editor: React.FC = () => {
   }), []);
 
   const create = useCallback(async () => {
-    console.log(parsed)
-    const { headers: { location } } = await slideApi.create({
+    const {headers: {location}} = await slideApi.create({
       data: {
         title: parsed.metadata?.title ?? "Untitled",
         content: codemirrorRef.current!.getValue(),
@@ -111,8 +110,9 @@ const Editor: React.FC = () => {
       },
     });
     const slideId = location.substring(location.lastIndexOf("/") + 1);
-    history.replace(`/editor/${slideId}`)
-  }, [parsed]);
+
+    history.replace(`/editor/${slideId}`);
+  }, [history, parsed]);
 
   const update = useCallback(async () => {
     const data = {
@@ -134,12 +134,12 @@ const Editor: React.FC = () => {
 
   const save = useCallback(() => {
     id ? update() : create();
-  }, [id, parsed]);
+  }, [create, id, update]);
 
   const deleteSlide = useCallback(async () => {
     id && await slideApi.delete(id);
     history.push("/archive");
-  }, [id]);
+  }, [history, id]);
 
   return (
     <SidebarLayout fluid>
