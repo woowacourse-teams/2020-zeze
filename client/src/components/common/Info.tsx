@@ -105,7 +105,7 @@ const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
 
   const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setUserInfo({...userInfo, [event.target.name]: event.target.value});
-  }, [userInfo]);
+  }, [setUserInfo, userInfo]);
 
   const changeProfileImage = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = event.target.files?.[0];
@@ -113,7 +113,7 @@ const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
     const newProfileImageUrl: string = newProfileImage?.data.urls[0] || userInfo.profileImage;
 
     setUserInfo({...userInfo, profileImage: newProfileImageUrl});
-  }, [userInfo]);
+  }, [setUserInfo, userInfo]);
 
   return (
     <CardsLayout>
@@ -122,18 +122,18 @@ const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
       <InfoBlock>
         <UserInfo>
           <Profile>
-            <img src={userInfo.profileImage} alt={undefined}/>
+            <img src={userInfo.profileImage} alt={user.name}/>
             <label htmlFor="profile">CHANGE PROFILE</label>
             <input id="profile" type="file" style={{display: "none"}} onChange={changeProfileImage}/>
           </Profile>
           <Form>
             <Input>
               <div>NAME</div>
-              <input autoComplete="off" name="name" value={userInfo.name} onChange={changeInput}/>
+              <input autoComplete="off" name="name" value={userInfo.name || ""} onChange={changeInput}/>
             </Input>
             <Input>
               <div>EMAIL</div>
-              <input autoComplete="off" name="email" value={userInfo.email} onChange={changeInput}/>
+              <input autoComplete="off" name="email" value={userInfo.email || ""} onChange={changeInput}/>
             </Input>
           </Form>
         </UserInfo>

@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
-import { css, Global } from "@emotion/core";
+import {css, Global} from "@emotion/core";
 
 const codeMirrorStyle = css`
     .cm-s-darcula.CodeMirror {
@@ -24,7 +24,7 @@ interface IProps {
   onSaveKeyDown: () => void;
 }
 
-const MarkdownEditor: React.FC<IProps> = ({ inputRef, onChange, onDrop, onSaveKeyDown }) => {
+const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onSaveKeyDown}) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [codemirror, setCodeMirror] = useState<CodeMirror.Editor | null>(null);
 
@@ -57,7 +57,7 @@ const MarkdownEditor: React.FC<IProps> = ({ inputRef, onChange, onDrop, onSaveKe
 
       const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
 
-      files.filter(({ type }) => type.split("/")[0] === "image")
+      files.filter(({type}) => type.split("/")[0] === "image")
         .forEach(file => {
           const setEditor = async () => {
             const marker = `![Uploading ${file.name}...]()`;
@@ -88,8 +88,8 @@ const MarkdownEditor: React.FC<IProps> = ({ inputRef, onChange, onDrop, onSaveKe
 
   return (
     <>
-      <Global styles={codeMirrorStyle} />
-      <StyledTextArea ref={textareaRef} />
+      <Global styles={codeMirrorStyle}/>
+      <StyledTextArea ref={textareaRef}/>
     </>
   );
 };

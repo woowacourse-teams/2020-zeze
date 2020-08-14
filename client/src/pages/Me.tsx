@@ -5,10 +5,7 @@ import Info from "../components/common/Info";
 import Cards from "../components/common/Cards";
 import usersApi from "../api/user";
 
-import {
-  getAllSlidesQuery,
-  userInfoState,
-} from "../store/atoms";
+import {getAllSlidesQuery, userInfoState} from "../store/atoms";
 
 export interface User {
   name: string,

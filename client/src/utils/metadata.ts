@@ -1,8 +1,13 @@
 export interface MetaProps {
-    title: string;
-    subtitle?: string;
-    author?: string;
-    createdAt?: string;
+  title: string;
+  subtitle?: string;
+  author?: string;
+  createdAt?: string;
+}
+
+export interface ParsedData {
+  metadata?: MetaProps,
+  content: string
 }
 
 const METADATA_REGEX = /---\n(.+?)\n---/s;
@@ -13,18 +18,18 @@ const DEFAULT_PROPS: MetaProps = {
   title: "Untitled",
 };
 
-const parse = (text: string) => {
+const parse = (text: string): ParsedData => {
   const matches = text.match(METADATA_REGEX);
-  const metadata = matches?.[1].split(NEW_LINE_SEPARATOR)
-        .map(line => {
-          const [key, ...value] = line.split(KEY_VALUE_SEPARATOR);
+  const metadata: MetaProps | undefined = matches?.[1].split(NEW_LINE_SEPARATOR)
+    .map(line => {
+      const [key, ...value] = line.split(KEY_VALUE_SEPARATOR);
 
-          return [key, value.join(KEY_VALUE_SEPARATOR).trim()];
-        })
-        .reduce((previous, [key, value]) => ({
-          ...previous,
-          [key]: value,
-        }), DEFAULT_PROPS);
+      return [key, value.join(KEY_VALUE_SEPARATOR).trim()];
+    })
+    .reduce((previous, [key, value]) => ({
+      ...previous,
+      [key]: value,
+    }), DEFAULT_PROPS);
 
   let firstPage = "";
 

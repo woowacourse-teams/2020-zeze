@@ -2,7 +2,7 @@ import {css, SerializedStyles} from "@emotion/core";
 import github from "./github";
 
 export enum Theme {
-  DEFAULT= "default",
+  DEFAULT = "default",
   DARK = "dark",
   GITHUB = "github"
 }
