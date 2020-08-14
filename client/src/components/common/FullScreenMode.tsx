@@ -119,6 +119,7 @@ export const FullScreenButton = styled.button`
 interface IProps {
   contents: string[]
 }
+
 const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const [index, setIndex] = useState<number>(0);
   const [slides, setSlides] = useState<string[]>(contents);
@@ -146,20 +147,26 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
   };
   const handleKeyDown = (event: React.KeyboardEvent) => {
     switch (event.key) {
-    case Keys.ARROW_RIGHT:
-      _slideExists(index + 1) && _changeSlide(index + 1);
-      break;
-    case Keys.ARROW_LEFT:
-      _slideExists(index - 1) && _changeSlide(index - 1);
-      break;
-    default:
-      break;
+      case Keys.ARROW_RIGHT:
+        _slideExists(index + 1) && _changeSlide(index + 1);
+        break;
+      case Keys.ARROW_LEFT:
+        _slideExists(index - 1) && _changeSlide(index - 1);
+        break;
+      case Keys.ENTER:
+        _slideExists(index - 1) && _changeSlide(index - 1);
+        break;
+      case Keys.SPACEBAR:
+        _slideExists(index - 1) && _changeSlide(index - 1);
+        break;
+      default:
+        break;
     }
   };
 
   return (
     <>
-      <Global styles={fullScreenStyle} />
+      <Global styles={fullScreenStyle}/>
       <FullScreenBlock
         slideTheme={Theme.GITHUB}
         ref={slideReference}

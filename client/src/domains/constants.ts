@@ -8,6 +8,8 @@ export const MOBILE_MAX_WIDTH = 575.98;
 export const Keys = {
   ARROW_RIGHT: "ArrowRight",
   ARROW_LEFT: "ArrowLeft",
+  ENTER: "Enter",
+  SPACEBAR: "Spacebar"
 };
 
 const GithubAuth = {
