@@ -2,9 +2,6 @@ import React, {useEffect} from "react";
 import axios from "axios";
 import GlobalLayout from "../components/common/GlobalLayout";
 import Spinner from "../components/common/Spinner";
-import {useRecoilState} from "recoil";
-import {userInfoQuery} from "../store/atoms";
-import usersApi from "../api/user";
 
 interface props {
   location: string,
@@ -31,7 +28,7 @@ const Callback: React.FC<props> = ({location, history}: props) => {
         alert("login failed");
         history.push("/");
       });
-  }, [location, history]);
+  }, [location, history, githubBaseUrl]);
 
   return (
     <GlobalLayout>

@@ -1,12 +1,12 @@
 import React, {ChangeEvent, useCallback, useState} from "react";
-import {useRecoilState, useRecoilValue} from "recoil";
+import {useRecoilState, useRecoilValue, useResetRecoilState} from "recoil";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Info from "../components/common/Info";
 import Cards from "../components/common/Cards";
 import usersApi from "../api/user";
 
 import {
-  getAllSlidesQuery, userInfo,
+  getAllSlidesQuery,
   userInfoQuery,
 } from "../store/atoms";
 import filesApi from "../api/file";
@@ -19,7 +19,8 @@ export interface User {
 
 const Me: React.FC = () => {
   const slides = useRecoilValue(getAllSlidesQuery);
-  const [user, setUser] = useRecoilState(userInfoQuery);
+  const user = useRecoilValue(userInfoQuery);
+  const setUser = useResetRecoilState(userInfoQuery);
   const [editedUser, setEditedUser] = useState<User>(user!);
 
   const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -36,18 +37,18 @@ const Me: React.FC = () => {
 
   const updateInfo = useCallback((userInfo: User) => {
     usersApi.update(userInfo)
-      .then(() => alert("update success"));
-    setUser(userInfo);
-  }, []);
+      .then(() => alert("update success"))
+      .then(() => setUser());
+  }, [setUser]);
 
   return (
     <SidebarLayout>
       {/* <Cards title="Recent"/>*/}
       <Info user={user!}
-            editedUser={editedUser}
-            updateInfo={updateInfo}
-            changeInput={changeInput}
-            changeProfileImage={changeProfileImage}/>
+        editedUser={editedUser}
+        updateInfo={updateInfo}
+        changeInput={changeInput}
+        changeProfileImage={changeProfileImage}/>
       <Cards title="My Drafts" slides={slides} author={user!.name}/>
     </SidebarLayout>
   );

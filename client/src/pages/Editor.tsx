@@ -1,6 +1,6 @@
-import React, { useEffect, useCallback, useRef } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { useParams, useHistory } from "react-router-dom";
+import React, {useEffect, useCallback, useRef} from "react";
+import {useRecoilState, useRecoilValue} from "recoil";
+import {useParams, useHistory} from "react-router-dom";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -11,7 +11,7 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import fixtures from "../utils/fixtures";
-import { MOBILE_MAX_WIDTH } from "../domains/constants";
+import {MOBILE_MAX_WIDTH} from "../domains/constants";
 import {clear, saveImg} from "../assets/icons";
 
 import {
@@ -86,16 +86,16 @@ const Editor: React.FC = () => {
   const [id, setId] = useRecoilState(slideIdState);
   const [content, setContent] = useRecoilState(slideContentState);
   const slides = useRecoilValue(parsedSlides);
-  const { title } = useRecoilValue(slideMetadata);
+  const {title} = useRecoilValue(slideMetadata);
   const accessLevel = useRecoilValue(slideAccessLevelState);
 
   useEffect(() => {
     setId(parseInt(params?.id ?? "", 10));
-  }, [params]);
+  }, [params, setId]);
 
   useEffect(() => {
     id && slideApi.get(id)
-      .then(({ data }) => {
+      .then(({data}) => {
         setContent(data.content);
         codemirrorRef.current?.setValue(data.content);
       })
@@ -103,7 +103,7 @@ const Editor: React.FC = () => {
         setContent(fixtures);
         codemirrorRef.current?.setValue(fixtures);
       });
-  }, [id]);
+  }, [id, setContent]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -112,7 +112,7 @@ const Editor: React.FC = () => {
   }), []);
 
   const create = useCallback(async () => {
-    const {headers: { location }} = await slideApi.create({
+    const {headers: {location}} = await slideApi.create({
       data: {
         title,
         content,
@@ -122,7 +122,7 @@ const Editor: React.FC = () => {
     const slideId = location.substring(location.lastIndexOf("/") + 1);
 
     setId(parseInt(slideId, 10));
-  }, [title, content, accessLevel]);
+  }, [title, content, accessLevel, setId]);
 
   const update = useCallback(() => {
     const data = {
@@ -141,7 +141,7 @@ const Editor: React.FC = () => {
 
   const save = useCallback(() => {
     id ? update() : create();
-  }, [id, content]);
+  }, [id, update, create]);
 
   const deleteSlide = useCallback(() => {
     id && slideApi.delete(id)

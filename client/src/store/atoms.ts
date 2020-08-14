@@ -43,15 +43,18 @@ export const slideAccessLevelState = atom<AccessLevel>({
   default: AccessLevel.PRIVATE,
 });
 
-export const userInfo = atom<User | null>( {
-  key: "userInfo",
-  default: null,
+export const userInfoTrigger = atom<number>({
+  key: "userInfoTrigger",
+  default: 0,
 });
 
 export const userInfoQuery = selector<User | null>({
   key: "userInfoQuery",
-  get: async () => {
-    return localStorage.getItem("accessToken") ? await usersApi.get().then(response => response.data) : null
+  get: ({get}) => {
+    get(userInfoTrigger);
+    return localStorage.getItem("accessToken") ? usersApi.get().then(response => response.data) : null;
   },
-  set: ({set}, user) => set(userInfo, user),
+  set: ({set}) => {
+    set(userInfoTrigger, v => v + 1);
+  },
 });
