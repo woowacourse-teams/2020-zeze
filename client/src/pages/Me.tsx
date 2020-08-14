@@ -7,8 +7,8 @@ import Cards from "../components/common/Cards";
 import usersApi from "../api/user";
 
 import {
-  getAllSlidesQuery,
-  userInfoState,
+  getAllSlidesQuery, userInfo,
+  userInfoQuery,
 } from "../store/atoms";
 
 export interface User {
@@ -19,7 +19,7 @@ export interface User {
 
 const Me: React.FC = () => {
   const slides = useRecoilValue(getAllSlidesQuery);
-  const [user, setUser] = useRecoilState(userInfoState);
+  const [user, setUser] = useRecoilState(userInfoQuery);
 
   const updateInfo = useCallback((userInfo: User) => {
     usersApi.update(userInfo)

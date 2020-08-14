@@ -3,8 +3,6 @@ import {User} from "../../pages/Me";
 import {CardsLayout} from "./Cards";
 import styled from "@emotion/styled";
 import filesApi from "../../api/file";
-import {useRecoilState} from "recoil";
-import {userInfoState} from "../../store/atoms";
 
 const InfoBlock = styled.div`
   display: flex;
