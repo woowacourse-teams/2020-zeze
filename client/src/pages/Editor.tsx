@@ -1,6 +1,5 @@
-import React, {useCallback, useEffect, useRef} from "react";
-import {useRecoilState, useRecoilValue} from "recoil";
-import {useHistory, useParams} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -10,11 +9,9 @@ import SidebarLayout from "../components/common/SidebarLayout";
 
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
-import fixtures from "../utils/fixtures";
-import {MOBILE_MAX_WIDTH} from "../domains/constants";
-import {clear, save} from "../assets/icons";
-
-import {parsedSlides, slideAccessLevelState, slideContentState, slideIdState, slideMetadata,} from "../store/atoms";
+import { MOBILE_MAX_WIDTH } from "../domains/constants";
+import { clear, save } from "../assets/icons";
+import parse from "../utils/metadata";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -73,92 +70,90 @@ interface Params {
 }
 
 const Editor: React.FC = () => {
-    const params = useParams<Params>();
-    const history = useHistory();
-    const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
+  const params = useParams<Params>();
+  const id = parseInt(params?.id ?? "0", 10);
+  const history = useHistory();
+  const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
 
-    const [id, setId] = useRecoilState(slideIdState);
-    const [content, setContent] = useRecoilState(slideContentState);
-    const slides = useRecoilValue(parsedSlides);
-    const {title} = useRecoilValue(slideMetadata);
-    const accessLevel = useRecoilValue(slideAccessLevelState);
+  const [content, setContent] = useState<string>("");
 
-    useEffect(() => {
-      setId(parseInt(params?.id ?? "", 10));
-    }, [params]);
+  const slides = useMemo<string[]>(() => (
+    parse(content).content.split(/^---$/m)
+      .filter(content => content.trim())
+  ), [content])
 
-    useEffect(() => {
-      id && slideApi.get(id)
-        .then(({data}) => {
-          setContent(data.content);
-          codemirrorRef.current?.setValue(data.content);
-        })
-        .catch(() => {
-          setContent(fixtures);
-          codemirrorRef.current?.setValue(fixtures);
-        });
-    }, [id]);
-
-    const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
-      filesApi.upload(file)
-        .then(response => response.data.urls[0])
-        .then(url => resolve(url));
-    }), []);
-
-    const create = useCallback(async (value: string | undefined) => {
-      const {headers: {location}} = await slideApi.create({
-        data: {
-          title,
-          content: value || content,
-          accessLevel,
-        },
+  useEffect(() => {
+    id && slideApi.get(id)
+      .then(({ data }) => {
+        setContent(data.content);
+        codemirrorRef.current?.setValue(data.content);
+      })
+      .catch(() => {
+        alert("데이터를 불러오지 못했습니다.")
       });
-      const slideId = location.substring(location.lastIndexOf("/") + 1);
+  }, []);
 
-      setId(parseInt(slideId, 10));
-    }, [title, content, accessLevel]);
+  const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
+    filesApi.upload(file)
+      .then(response => response.data.urls[0])
+      .then(url => resolve(url));
+  }), []);
 
-    const update = useCallback((value: string | undefined) => {
-      const data = {
-        id,
-        data: {
-          title,
-          content: value || content,
-          accessLevel,
-        },
-      };
+  const create = useCallback(async () => {
+    const { headers: { location } } = await slideApi.create({
+      data: {
+        title: "",
+        content: codemirrorRef.current!.getValue(),
+        accessLevel: "PRIVATE",
+      },
+    });
+    const slideId = location.substring(location.lastIndexOf("/") + 1);
+    history.replace(`/editor/${slideId}`)
+  }, []);
 
-      slideApi.update(data)
-        .then(() => alert("성공"))
-        .catch(() => alert("실패"));
-    }, [id, title, content, accessLevel]);
+  const update = useCallback(async () => {
+    const data = {
+      id,
+      data: {
+        title: "",
+        content: codemirrorRef.current!.getValue(),
+        accessLevel: "PRIVATE",
+      },
+    };
 
-    const save = useCallback((e, value) => {
-      id ? update(value) : create(value);
-    }, [id, content]);
+    try {
+      await slideApi.update(data);
+      alert("성공");
+    } catch {
+      alert("실패");
+    }
+  }, [id]);
 
-    const deleteSlide = useCallback(() => {
-      id && slideApi.delete(id)
-        .then(() => history.push("/archive"));
-    }, [id, history]);
+  const save = useCallback(() => {
+    id ? update() : create();
+  }, [id]);
 
-    return (
-      <SidebarLayout fluid>
-        <EditorBlock>
-          <Edit>
-            <ButtonMenu>
-              <SaveButton onClick={(e) => save(e, undefined)}/>
-              <DeleteButton onClick={deleteSlide}/>
-            </ButtonMenu>
-            <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile}
-                            onSaveKeyDown={value => save(undefined, value)}/>
-            <FullScreenMode contents={slides}/>
-          </Edit>
-          <Preview content={content}/>
-        </EditorBlock>
-      </SidebarLayout>
-    );
-  }
-;
+  const deleteSlide = useCallback(async () => {
+    id && await slideApi.delete(id);
+    history.push("/archive");
+  }, [id]);
+
+  return (
+    <SidebarLayout fluid>
+      <EditorBlock>
+        <Edit>
+          <ButtonMenu>
+            <SaveButton onClick={save} />
+            <DeleteButton onClick={deleteSlide} />
+          </ButtonMenu>
+          <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile}
+            onSaveKeyDown={save} />
+          <FullScreenMode contents={slides} />
+        </Edit>
+        <Preview content={content} />
+      </EditorBlock>
+    </SidebarLayout>
+  );
+};
 
 export default Editor;

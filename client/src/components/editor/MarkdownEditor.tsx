@@ -1,11 +1,11 @@
-import React, {useEffect, useRef} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
-import {css, Global} from "@emotion/core";
+import { css, Global } from "@emotion/core";
 
 const codeMirrorStyle = css`
     .cm-s-darcula.CodeMirror {
@@ -21,31 +21,27 @@ interface IProps {
   inputRef: React.MutableRefObject<CodeMirror.Editor | null>
   onChange?: (newValue: string) => void;
   onDrop?: (files: File) => Promise<string>;
-  onSaveKeyDown: (value: string) => void;
+  onSaveKeyDown: () => void;
 }
 
-const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onSaveKeyDown}) => {
+const MarkdownEditor: React.FC<IProps> = ({ inputRef, onChange, onDrop, onSaveKeyDown }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [codemirror, setCodeMirror] = useState<CodeMirror.Editor | null>(null);
 
   useEffect(() => {
-    // document.addEventListener("keydown", event => {
-    //   if (event.key === 's' && (navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)) {
-    //     event.preventDefault();
-    //     onSaveKeyDown();
-    //   }
-    // });
+    codemirror?.removeKeyMap(navigator.platform.match("Mac") ? "Cmd-S" : "Ctrl-S");
+    codemirror?.addKeyMap({
+      [navigator.platform.match("Mac") ? "Cmd-S" : "Ctrl-S"]: () => {
+        onSaveKeyDown();
+      },
+    });
+  }, [codemirror, onSaveKeyDown]);
 
+  useEffect(() => {
     const codemirror = CodeMirror.fromTextArea(textareaRef.current!, {
       lineNumbers: true,
       mode: "text/markdown",
       theme: "darcula",
-    });
-
-    codemirror.on("keydown", async (editor, event) => {
-      if (event.key === 's' && (navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)) {
-        event.preventDefault();
-        onSaveKeyDown(editor.getValue());
-      }
     });
 
     codemirror.on("change", editor => {
@@ -61,7 +57,7 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onSaveKey
 
       const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
 
-      files.filter(({type}) => type.split("/")[0] === "image")
+      files.filter(({ type }) => type.split("/")[0] === "image")
         .forEach(file => {
           const setEditor = async () => {
             const marker = `![Uploading ${file.name}...]()`;
@@ -82,6 +78,8 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onSaveKey
 
     inputRef.current = codemirror;
 
+    setCodeMirror(codemirror);
+
     return () => {
       codemirror.toTextArea();
     };
@@ -90,8 +88,8 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onSaveKey
 
   return (
     <>
-      <Global styles={codeMirrorStyle}/>
-      <StyledTextArea ref={textareaRef}/>
+      <Global styles={codeMirrorStyle} />
+      <StyledTextArea ref={textareaRef} />
     </>
   );
 };

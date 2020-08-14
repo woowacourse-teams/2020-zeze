@@ -1,10 +1,10 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import fscreen from "fscreen";
-import {css, Global} from "@emotion/core";
-import {Keys} from "../../domains/constants";
+import { css, Global } from "@emotion/core";
+import { Keys } from "../../domains/constants";
 import Markdown from "../markdown";
-import {applyTheme, Theme} from "../theme";
+import { applyTheme, Theme } from "../theme";
 import play from "../../assets/icons/play.svg";
 
 const fullScreenStyle = css`
@@ -93,7 +93,7 @@ const FullScreenBlock = styled.div<FullScreenProps>`
       flex: 1;
     }
     
-    ${({slideTheme}) => applyTheme(slideTheme)}
+    ${({ slideTheme }) => applyTheme(slideTheme)}
   }
 `;
 
@@ -120,24 +120,12 @@ interface IProps {
   contents: string[]
 }
 
-const FullScreenMode: React.FC<IProps> = ({contents}) => {
+const FullScreenMode: React.FC<IProps> = ({ contents }) => {
   const [index, setIndex] = useState<number>(0);
-  const [slides, setSlides] = useState<string[]>(contents);
-
-  const [slide, setSlide] = useState<string>(contents[0]);
-
-  useEffect(() => {
-    setSlides(contents);
-    setSlide(contents[0]);
-  }, [contents]);
 
   const slideReference = useRef<HTMLDivElement>(null);
 
-  const _slideExists = (_index: number) => slides[_index] !== undefined;
-  const _changeSlide = (_index: number) => {
-    setIndex(_index);
-    setSlide(slides[_index]);
-  };
+  const slideExists = (_index: number) => !!contents[_index];
 
   const toggleFullScreen = () => {
     if (slideReference.current) {
@@ -145,35 +133,34 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
       slideReference.current.focus();
     }
   };
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     switch (event.key) {
       case Keys.ARROW_RIGHT:
-        _slideExists(index + 1) && _changeSlide(index + 1);
+        slideExists(index + 1) && setIndex(index + 1);
         break;
       case Keys.ARROW_LEFT:
-        _slideExists(index - 1) && _changeSlide(index - 1);
+        slideExists(index - 1) && setIndex(index - 1);
         break;
       case Keys.ENTER:
-        _slideExists(index - 1) && _changeSlide(index - 1);
+        slideExists(index - 1) && setIndex(index - 1);
         break;
       case Keys.SPACEBAR:
-        _slideExists(index - 1) && _changeSlide(index - 1);
-        break;
-      default:
+        slideExists(index - 1) && setIndex(index - 1);
         break;
     }
   };
 
   return (
     <>
-      <Global styles={fullScreenStyle}/>
+      <Global styles={fullScreenStyle} />
       <FullScreenBlock
         slideTheme={Theme.GITHUB}
         ref={slideReference}
         tabIndex={-1}
         onKeyDown={handleKeyDown}
-      ><Markdown value={slide}/></FullScreenBlock>
-      <FullScreenButton onClick={toggleFullScreen}/>
+      ><Markdown value={contents[index]} /></FullScreenBlock>
+      <FullScreenButton onClick={toggleFullScreen} />
     </>
   );
 };
