@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import {useRecoilState, useRecoilValue} from "recoil";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Info from "../components/common/Info";
@@ -9,6 +9,7 @@ import {
   getAllSlidesQuery, userInfo,
   userInfoQuery,
 } from "../store/atoms";
+import filesApi from "../api/file";
 
 export interface User {
   name: string,
@@ -19,6 +20,19 @@ export interface User {
 const Me: React.FC = () => {
   const slides = useRecoilValue(getAllSlidesQuery);
   const [user, setUser] = useRecoilState(userInfoQuery);
+  const [editedUser, setEditedUser] = useState<User>(user!);
+
+  const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setEditedUser({...editedUser, [event.target.name]: event.target.value});
+  }, [editedUser]);
+
+  const changeProfileImage = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    const file: File | undefined = event.target.files?.[0];
+    const newProfileImage = file && await filesApi.upload(file);
+    const newProfileImageUrl: string = newProfileImage?.data.urls[0] || editedUser.profileImage;
+
+    setEditedUser({...editedUser, profileImage: newProfileImageUrl});
+  }, [editedUser]);
 
   const updateInfo = useCallback((userInfo: User) => {
     usersApi.update(userInfo)
@@ -29,7 +43,11 @@ const Me: React.FC = () => {
   return (
     <SidebarLayout>
       {/* <Cards title="Recent"/>*/}
-      <Info user={user!} updateInfo={updateInfo}/>
+      <Info user={user!}
+            editedUser={editedUser}
+            updateInfo={updateInfo}
+            changeInput={changeInput}
+            changeProfileImage={changeProfileImage}/>
       <Cards title="My Drafts" slides={slides} author={user!.name}/>
     </SidebarLayout>
   );
