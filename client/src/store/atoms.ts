@@ -34,7 +34,7 @@ export const slideMetadata = selector<MetaProps>({
 export const parsedSlides = selector<string[]>({
   key: "parsedSlidesState",
   get: ({get}) => parse(get(slideContentState)).content
-    ?.split(("---"))
+    ?.split(/^---$/m)
     .filter(content => content.trim().length !== 0),
 });
 
