@@ -1,7 +1,7 @@
 import React, {ChangeEvent} from "react";
+import styled from "@emotion/styled";
 import {User} from "../../pages/Me";
 import {CardsLayout} from "./Cards";
-import styled from "@emotion/styled";
 
 const InfoBlock = styled.div`
   display: flex;
@@ -100,7 +100,13 @@ interface IProps {
   changeInput: (event: ChangeEvent<HTMLInputElement>) => void,
 }
 
-const Info: React.FC<IProps> = ({user, editedUser, updateInfo, changeProfileImage, changeInput}: IProps) => (
+const Info: React.FC<IProps> = ({
+  user,
+  editedUser,
+  updateInfo,
+  changeProfileImage,
+  changeInput,
+}: IProps) => (
   <CardsLayout>
     <h2>{user.name}'s Info</h2>
     <hr/>

@@ -6,7 +6,7 @@ interface IProps {
   code: string,
 }
 
-const Youtube: React.FC<IProps> = ({ code = "" }) => {
+const Youtube: React.FC<IProps> = ({code = ""}) => {
   const id = code.match(YOUTUBE_ID_REGEX)?.[1];
 
   return id ?
@@ -17,7 +17,7 @@ const Youtube: React.FC<IProps> = ({ code = "" }) => {
       height="315"
       src={`https://www.youtube.com/embed/${id}`} frameBorder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen /> : null;
+      allowFullScreen/> : null;
 };
 
 export default Youtube;

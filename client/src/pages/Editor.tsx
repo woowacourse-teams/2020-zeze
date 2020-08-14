@@ -1,5 +1,4 @@
-import React, {useEffect, useCallback, useRef} from "react";
-import {useRecoilState, useRecoilValue} from "recoil";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import styled from "@emotion/styled";
 
@@ -10,17 +9,9 @@ import SidebarLayout from "../components/common/SidebarLayout";
 
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
-import fixtures from "../utils/fixtures";
-import {MOBILE_MAX_WIDTH} from "../domains/constants";
+import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
 import {clear, saveImg} from "../assets/icons";
-
-import {
-  parsedSlides,
-  slideAccessLevelState,
-  slideContentState,
-  slideIdState,
-  slideMetadata,
-} from "../store/atoms";
+import parse, {ParsedData} from "../utils/metadata";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -80,30 +71,32 @@ interface Params {
 
 const Editor: React.FC = () => {
   const params = useParams<Params>();
+  const id = parseInt(params?.id ?? "0", 10);
   const history = useHistory();
   const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
 
-  const [id, setId] = useRecoilState(slideIdState);
-  const [content, setContent] = useRecoilState(slideContentState);
-  const slides = useRecoilValue(parsedSlides);
-  const {title} = useRecoilValue(slideMetadata);
-  const accessLevel = useRecoilValue(slideAccessLevelState);
+  const [content, setContent] = useState<string>("");
 
-  useEffect(() => {
-    setId(parseInt(params?.id ?? "", 10));
-  }, [params, setId]);
+  const parsed = useMemo<ParsedData>(() => parse(content), [content]);
+
+  const slides = useMemo<string[]>(() => (
+    parsed.content.split(/^---$/m)
+      .filter((slideContent: string) => slideContent.trim())
+  ), [parsed]);
 
   useEffect(() => {
     id && slideApi.get(id)
       .then(({data}) => {
-        setContent(data.content);
         codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
-        setContent(fixtures);
-        codemirrorRef.current?.setValue(fixtures);
+        alert("데이터를 불러오지 못했습니다.");
       });
-  }, [id, setContent]);
+
+    if (!id) {
+      codemirrorRef.current?.setValue("");
+    }
+  }, [id]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -114,52 +107,56 @@ const Editor: React.FC = () => {
   const create = useCallback(async () => {
     const {headers: {location}} = await slideApi.create({
       data: {
-        title,
-        content,
-        accessLevel,
+        title: parsed.metadata?.title ?? "Untitled",
+        content: codemirrorRef.current!.getValue(),
+        accessLevel: AccessLevel.PRIVATE,
       },
     });
     const slideId = location.substring(location.lastIndexOf("/") + 1);
 
-    setId(parseInt(slideId, 10));
-  }, [title, content, accessLevel, setId]);
+    history.replace(`/editor/${slideId}`);
+  }, [history, parsed]);
 
-  const update = useCallback(() => {
+  const update = useCallback(async () => {
     const data = {
       id,
       data: {
-        title,
-        content,
-        accessLevel,
+        title: parsed.metadata?.title ?? "Untitled",
+        content: codemirrorRef.current!.getValue(),
+        accessLevel: AccessLevel.PRIVATE,
       },
     };
 
-    slideApi.update(data)
-      .then(() => alert("성공"))
-      .catch(() => alert("실패"));
-  }, [id, title, content, accessLevel]);
+    try {
+      await slideApi.update(data);
+      alert("성공");
+    } catch {
+      alert("실패");
+    }
+  }, [id, parsed]);
 
   const save = useCallback(() => {
     id ? update() : create();
   }, [id, update, create]);
 
-  const deleteSlide = useCallback(() => {
-    id && slideApi.delete(id)
-      .then(() => history.push("/archive"));
-  }, [id, history]);
+  const deleteSlide = useCallback(async () => {
+    id && await slideApi.delete(id);
+    history.push("/archive");
+  }, [history, id]);
 
   return (
     <SidebarLayout fluid>
       <EditorBlock>
         <Edit>
           <ButtonMenu>
-            <SaveButton onClick={save} />
-            <DeleteButton onClick={deleteSlide} />
+            <SaveButton onClick={save}/>
+            <DeleteButton onClick={deleteSlide}/>
           </ButtonMenu>
-          <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile} />
-          <FullScreenMode contents={slides} />
+          <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile}
+            onSaveKeyDown={save}/>
+          <FullScreenMode contents={slides}/>
         </Edit>
-        <Preview content={content} />
+        <Preview content={content}/>
       </EditorBlock>
     </SidebarLayout>
   );

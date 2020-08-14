@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React from "react";
 import ReactMarkdown from "react-markdown/with-html";
 import {Code, Image, Paragraph} from "./renderers";
 import parse from "../../utils/metadata";
@@ -17,7 +17,7 @@ const renderers = {
 const Markdown: React.FC<IProps> = ({value = ""}) => {
   const {content} = parse(value);
 
-  const blocks = content?.split(/(^---\n)/m)
+  const blocks = content?.split(/(^---$)/m)
     .flatMap(slide => slide.split(/(^```[a-z]*\n[\s\S]*?\n```)/m))
     .map((block, index) => ({
       key: index,
@@ -31,7 +31,7 @@ const Markdown: React.FC<IProps> = ({value = ""}) => {
           key={key}
           source={source}
           escapeHtml={false}
-          renderers={renderers} />
+          renderers={renderers}/>
       ))}
     </div>
   );
