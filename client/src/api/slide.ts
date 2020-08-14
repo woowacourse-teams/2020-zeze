@@ -34,7 +34,7 @@ const slideInstance = axios.create({
 });
 
 const slideApi = {
-  get(id?: number): Promise<AxiosResponse<SlideResponse>> {
+  get(id: number): Promise<AxiosResponse<SlideResponse>> {
     return slideInstance.get(`${id}`, {
       headers: {
         authorization: localStorage.getItem("accessToken"),

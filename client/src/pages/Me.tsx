@@ -49,7 +49,7 @@ const Me: React.FC = () => {
         updateInfo={updateInfo}
         changeInput={changeInput}
         changeProfileImage={changeProfileImage}/>
-      <Cards title="My Drafts" slides={slides} author={user!.name}/>
+      <Cards title="My Drafts" slides={slides} author={user?.name}/>
     </SidebarLayout>
   );
 };
