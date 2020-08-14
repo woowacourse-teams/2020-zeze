@@ -9,7 +9,7 @@ import SidebarLayout from "../components/common/SidebarLayout";
 
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
-import { MOBILE_MAX_WIDTH } from "../domains/constants";
+import { MOBILE_MAX_WIDTH, AccessLevel } from "../domains/constants";
 import { clear, save } from "../assets/icons";
 import parse from "../utils/metadata";
 
@@ -77,10 +77,12 @@ const Editor: React.FC = () => {
 
   const [content, setContent] = useState<string>("");
 
+  const parsed = useMemo<any>(() => parse(content), [content])
+
   const slides = useMemo<string[]>(() => (
-    parse(content).content.split(/^---$/m)
-      .filter(content => content.trim())
-  ), [content])
+    parsed.content.split(/^---$/m)
+      .filter((content: string) => content.trim())
+  ), [parsed])
 
   useEffect(() => {
     id && slideApi.get(id)
@@ -100,24 +102,25 @@ const Editor: React.FC = () => {
   }), []);
 
   const create = useCallback(async () => {
+    console.log(parsed)
     const { headers: { location } } = await slideApi.create({
       data: {
-        title: "",
+        title: parsed.metadata?.title ?? "Untitled",
         content: codemirrorRef.current!.getValue(),
-        accessLevel: "PRIVATE",
+        accessLevel: AccessLevel.PRIVATE,
       },
     });
     const slideId = location.substring(location.lastIndexOf("/") + 1);
     history.replace(`/editor/${slideId}`)
-  }, []);
+  }, [parsed]);
 
   const update = useCallback(async () => {
     const data = {
       id,
       data: {
-        title: "",
+        title: parsed.metadata?.title ?? "Untitled",
         content: codemirrorRef.current!.getValue(),
-        accessLevel: "PRIVATE",
+        accessLevel: AccessLevel.PRIVATE,
       },
     };
 
@@ -127,11 +130,11 @@ const Editor: React.FC = () => {
     } catch {
       alert("실패");
     }
-  }, [id]);
+  }, [id, parsed]);
 
   const save = useCallback(() => {
     id ? update() : create();
-  }, [id]);
+  }, [id, parsed]);
 
   const deleteSlide = useCallback(async () => {
     id && await slideApi.delete(id);
