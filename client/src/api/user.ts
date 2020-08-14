@@ -3,15 +3,22 @@ import {User} from "../pages/Me";
 
 const userInstance = axios.create({
   baseURL: `/api/me`,
-  headers: {authorization: localStorage.getItem("accessToken")},
 });
 
 const usersApi = {
   get() {
-    return userInstance.get("/");
+    return userInstance.get("/", {
+      headers: {
+        authorization: localStorage.getItem("accessToken"),
+      },
+    });
   },
   update(user: User) {
-    return userInstance.put("/", user);
+    return userInstance.put("/", user, {
+      headers: {
+        authorization: localStorage.getItem("accessToken"),
+      },
+    });
   },
 };
 

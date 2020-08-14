@@ -1,10 +1,7 @@
-import React, {ChangeEvent, useCallback} from "react";
+import React, {ChangeEvent} from "react";
 import {User} from "../../pages/Me";
 import {CardsLayout} from "./Cards";
 import styled from "@emotion/styled";
-import filesApi from "../../api/file";
-import {useRecoilState} from "recoil";
-import {userInfoState} from "../../store/atoms";
 
 const InfoBlock = styled.div`
   display: flex;
@@ -97,50 +94,37 @@ const Input = styled.div`
 
 interface IProps {
   user: User,
-  updateInfo: (user: User) => void
+  editedUser: User,
+  updateInfo: (user: User) => void,
+  changeProfileImage: (event: ChangeEvent<HTMLInputElement>) => void,
+  changeInput: (event: ChangeEvent<HTMLInputElement>) => void,
 }
 
-const Info: React.FC<IProps> = ({user, updateInfo}: IProps) => {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
-
-  const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setUserInfo({...userInfo, [event.target.name]: event.target.value});
-  }, [userInfo]);
-
-  const changeProfileImage = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-    const file: File | undefined = event.target.files?.[0];
-    const newProfileImage = file && await filesApi.upload(file);
-    const newProfileImageUrl: string = newProfileImage?.data.urls[0] || userInfo.profileImage;
-
-    setUserInfo({...userInfo, profileImage: newProfileImageUrl});
-  }, [userInfo]);
-
-  return (
-    <CardsLayout>
-      <h2>{user.name}'s Info</h2>
-      <hr/>
-      <InfoBlock>
-        <UserInfo>
-          <Profile>
-            <img src={userInfo.profileImage} alt={undefined}/>
-            <label htmlFor="profile">CHANGE PROFILE</label>
-            <input id="profile" type="file" style={{display: "none"}} onChange={changeProfileImage}/>
-          </Profile>
-          <Form>
-            <Input>
-              <div>NAME</div>
-              <input autoComplete="off" name="name" value={userInfo.name} onChange={changeInput}/>
-            </Input>
-            <Input>
-              <div>EMAIL</div>
-              <input autoComplete="off" name="email" value={userInfo.email} onChange={changeInput}/>
-            </Input>
-          </Form>
-        </UserInfo>
-        <button onClick={() => updateInfo(userInfo)}>UPDATE</button>
-      </InfoBlock>
-    </CardsLayout>
-  );
-};
+const Info: React.FC<IProps> = ({user, editedUser, updateInfo, changeProfileImage, changeInput}: IProps) => (
+  <CardsLayout>
+    <h2>{user.name}'s Info</h2>
+    <hr/>
+    <InfoBlock>
+      <UserInfo>
+        <Profile>
+          <img src={editedUser.profileImage} alt={undefined}/>
+          <label htmlFor="profile">CHANGE PROFILE</label>
+          <input id="profile" type="file" style={{display: "none"}} onChange={changeProfileImage}/>
+        </Profile>
+        <Form>
+          <Input>
+            <div>NAME</div>
+            <input autoComplete="off" name="name" value={editedUser.name} onChange={changeInput}/>
+          </Input>
+          <Input>
+            <div>EMAIL</div>
+            <input autoComplete="off" name="email" value={editedUser.email} onChange={changeInput}/>
+          </Input>
+        </Form>
+      </UserInfo>
+      <button onClick={() => updateInfo(editedUser)}>UPDATE</button>
+    </InfoBlock>
+  </CardsLayout>
+);
 
 export default Info;

@@ -48,7 +48,7 @@ const CardsBlock = styled.div`
 interface IProps {
   title: string,
   slides: SlideResponse[],
-  author: string
+  author?: string
 }
 
 const Cards: React.FC<IProps> = ({title, slides, author}) => (

@@ -5,6 +5,7 @@ import {AccessLevel} from "../domains/constants";
 import parse, {MetaProps} from "../utils/metadata";
 import {User} from "../pages/Me";
 import usersApi from "../api/user";
+import {user} from "../assets/icons";
 
 export const getAllSlidesQuery = selector({
   key: "getAllSlidesQuery",
@@ -42,16 +43,18 @@ export const slideAccessLevelState = atom<AccessLevel>({
   default: AccessLevel.PRIVATE,
 });
 
-export const getUserInfoQuery = selector({
-  key: "getUserInfoQuery",
-  get: async () => {
-    const response: AxiosResponse<User> = await usersApi.get();
-
-    return response.data;
-  },
+export const userInfoTrigger = atom<number>({
+  key: "userInfoTrigger",
+  default: 0,
 });
 
-export const userInfoState = atom<User>({
-  key: "userInfoState",
-  default: getUserInfoQuery,
+export const userInfoQuery = selector<User | null>({
+  key: "userInfoQuery",
+  get: ({get}) => {
+    get(userInfoTrigger);
+    return localStorage.getItem("accessToken") ? usersApi.get().then(response => response.data) : null;
+  },
+  set: ({set}) => {
+    set(userInfoTrigger, v => v + 1);
+  },
 });
