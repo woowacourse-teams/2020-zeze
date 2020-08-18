@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useParams, useHistory} from "react-router-dom";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -9,9 +9,9 @@ import SidebarLayout from "../components/common/SidebarLayout";
 
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
-import { AccessLevel, MOBILE_MAX_WIDTH } from "../domains/constants";
-import { clear, saveImg } from "../assets/icons";
-import parse, { ParsedData } from "../utils/metadata";
+import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
+import {clear, saveImg} from "../assets/icons";
+import parse, {ParsedData} from "../utils/metadata";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -86,7 +86,7 @@ const Editor: React.FC = () => {
 
   useEffect(() => {
     id && slideApi.get(id)
-      .then(({ data }) => {
+      .then(({data}) => {
         codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
@@ -111,7 +111,7 @@ const Editor: React.FC = () => {
   }), []);
 
   const create = useCallback(async () => {
-    const { headers: { location } } = await slideApi.create({
+    const {headers: {location}} = await slideApi.create({
       data: {
         title: parsed.metadata?.title ?? "Untitled",
         content: codemirrorRef.current!.getValue(),

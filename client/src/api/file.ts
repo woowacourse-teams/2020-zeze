@@ -12,20 +12,20 @@ const filesApi = {
     return fileInstance.post("/", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        authorization: localStorage.getItem("accessToken")
+        authorization: localStorage.getItem("accessToken"),
       },
     });
   },
   uploadExternal(fileUrl: string, fileName: string) {
     return fileInstance.post("/external", {
       fileUrl,
-      fileName
+      fileName,
     }, {
       headers: {
-        authorization: localStorage.getItem("accessToken")
-      }
+        authorization: localStorage.getItem("accessToken"),
+      },
     });
-  }
+  },
 };
 
 export default filesApi;

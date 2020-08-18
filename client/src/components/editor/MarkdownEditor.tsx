@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 
 import CodeMirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
-import { css, Global } from "@emotion/core";
+import {css, Global} from "@emotion/core";
 
 const codeMirrorStyle = css`
   .cm-s-darcula.CodeMirror {
@@ -25,7 +25,7 @@ interface IProps {
   onSaveKeyDown: () => void;
 }
 
-const MarkdownEditor: React.FC<IProps> = ({ inputRef, onChange, onDrop, onExternalDrop, onSaveKeyDown }) => {
+const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExternalDrop, onSaveKeyDown}) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [codemirror, setCodeMirror] = useState<CodeMirror.Editor | null>(null);
 
