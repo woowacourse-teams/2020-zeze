@@ -1,8 +1,8 @@
 package dev.minguinho.zeze.domain.user.config;
 
-import java.util.Objects;
-
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
+
+import java.util.Objects;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
