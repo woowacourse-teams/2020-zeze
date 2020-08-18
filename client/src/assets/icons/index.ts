@@ -8,6 +8,8 @@ import newSlides from "./newSlides.svg";
 import more from "./more.svg";
 import saveImg from "./save.svg";
 import clear from "./clear.svg";
+import privateToggle from "./private.svg";
+import publicToggle from "./public.svg";
 
 export {
   logo,
@@ -20,5 +22,7 @@ export {
   more,
   saveImg,
   clear,
+  privateToggle,
+  publicToggle,
 };
 

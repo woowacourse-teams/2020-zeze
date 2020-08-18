@@ -1,11 +1,12 @@
 import axios, {AxiosResponse} from "axios";
+import {AccessLevel} from "../domains/constants";
 
 export interface SlideRequest {
   id?: number,
   data?: {
     title: string
     content: string
-    accessLevel: string
+    accessLevel: AccessLevel
     createdAt?: string
     updatedAt?: string
   }
@@ -15,7 +16,7 @@ export interface SlideResponse {
   id: number,
   title: string
   content: string
-  accessLevel: string
+  accessLevel: AccessLevel
   createdAt: string
   updatedAt: string
 }

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useParams, useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -10,7 +10,7 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
-import {clear, saveImg} from "../assets/icons";
+import {clear, privateToggle, publicToggle, saveImg} from "../assets/icons";
 import parse, {ParsedData} from "../utils/metadata";
 
 const EditorBlock = styled.main`
@@ -35,7 +35,7 @@ const Edit = styled.div`
   flex-direction: column;
 `;
 
-const ButtonMenu = styled.div`
+const Menu = styled.div`
   display: flex;
   align-items: center;
   padding-left: 15px;
@@ -76,6 +76,7 @@ const Editor: React.FC = () => {
   const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
 
   const [content, setContent] = useState<string>("");
+  const [accessLevel, setAccessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
 
@@ -88,6 +89,7 @@ const Editor: React.FC = () => {
     id && slideApi.get(id)
       .then(({data}) => {
         codemirrorRef.current?.setValue(data.content);
+        setAccessLevel(data.accessLevel);
       })
       .catch(() => {
         alert("데이터를 불러오지 못했습니다.");
@@ -109,13 +111,13 @@ const Editor: React.FC = () => {
       data: {
         title: parsed.metadata?.title ?? "Untitled",
         content: codemirrorRef.current!.getValue(),
-        accessLevel: AccessLevel.PRIVATE,
+        accessLevel,
       },
     });
     const slideId = location.substring(location.lastIndexOf("/") + 1);
 
     history.replace(`/editor/${slideId}`);
-  }, [history, parsed]);
+  }, [history, parsed, accessLevel]);
 
   const update = useCallback(async () => {
     const data = {
@@ -123,7 +125,7 @@ const Editor: React.FC = () => {
       data: {
         title: parsed.metadata?.title ?? "Untitled",
         content: codemirrorRef.current!.getValue(),
-        accessLevel: AccessLevel.PRIVATE,
+        accessLevel,
       },
     };
 
@@ -133,7 +135,7 @@ const Editor: React.FC = () => {
     } catch {
       alert("실패");
     }
-  }, [id, parsed]);
+  }, [id, parsed, accessLevel]);
 
   const save = useCallback(() => {
     id ? update() : create();
@@ -144,14 +146,20 @@ const Editor: React.FC = () => {
     history.push("/archive");
   }, [history, id]);
 
+  const changeAccessLevel = useCallback(() => {
+    setAccessLevel(accessLevel === AccessLevel.PRIVATE ? AccessLevel.PUBLIC : AccessLevel.PRIVATE);
+  }, [accessLevel]);
+
   return (
     <SidebarLayout fluid>
       <EditorBlock>
         <Edit>
-          <ButtonMenu>
+          <Menu>
+            <button style={{backgroundImage: `url(${accessLevel === AccessLevel.PUBLIC ? publicToggle : privateToggle})`}}
+              onClick={changeAccessLevel}/>
             <SaveButton onClick={save}/>
             <DeleteButton onClick={deleteSlide}/>
-          </ButtonMenu>
+          </Menu>
           <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile}
             onSaveKeyDown={save}/>
           <FullScreenMode contents={slides}/>
