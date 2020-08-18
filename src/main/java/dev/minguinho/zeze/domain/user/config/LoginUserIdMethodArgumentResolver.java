@@ -1,5 +1,9 @@
 package dev.minguinho.zeze.domain.user.config;
 
+import java.util.Objects;
+
+import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -7,9 +11,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.util.Objects;
-
-import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 @Component
 public class LoginUserIdMethodArgumentResolver implements HandlerMethodArgumentResolver {
