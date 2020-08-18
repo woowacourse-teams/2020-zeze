@@ -69,7 +69,7 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
           const scroll = editor.getScrollInfo();
           editor.setValue(editor.getValue().replace(marker, `![${file.name}](${uploadUrl})`));
           editor.setCursor(cursor);
-          editor.scrollTo(scroll.left, scroll.top)
+          editor.scrollTo(scroll.left, scroll.top);
         });
     });
 
