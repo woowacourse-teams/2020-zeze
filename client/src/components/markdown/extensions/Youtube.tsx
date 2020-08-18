@@ -17,7 +17,7 @@ const Youtube: React.FC<IProps> = ({code = ""}) => {
       height="315"
       src={`https://www.youtube.com/embed/${id}`} frameBorder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen/> : null;
+    /> : null;
 };
 
 export default Youtube;
