@@ -1,7 +1,6 @@
 package dev.minguinho.zeze.domain.file.api;
 
 import static org.hamcrest.Matchers.*;
-import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -13,6 +12,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -74,7 +74,7 @@ class FileControllerTest {
     @Test
     @DisplayName("외부 자원 업로드 요청")
     void uploadExternalFile() throws Exception {
-        given(fileService.upload(any(FileUploadRequestDto.class))).willReturn(
+        given(fileService.upload(BDDMockito.any(FileUploadRequestDto.class))).willReturn(
             new FileUrlResponsesDto(
                 Collections.singletonList("https://markdown-ppt-test.s3.ap-northeast-2.amazonaws.com/")));
 
