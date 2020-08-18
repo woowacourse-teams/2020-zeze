@@ -3,6 +3,7 @@ package dev.minguinho.zeze.domain.file.model;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.AfterAll;
@@ -70,11 +71,11 @@ class S3UploaderTest {
 
     @Test
     @DisplayName("S3에 파일 업로드")
-    void upload() {
+    void uploadMultipartFile() {
         String fileName = "test-image.png";
         MultipartFile multipartFile = new MockMultipartFile("files", fileName,
             MediaType.IMAGE_PNG_VALUE, "test-data".getBytes());
-        String actual = s3Uploader.upload(multipartFile);
+        String actual = s3Uploader.uploadMultiPartFile(multipartFile);
         String basicUrl = String.format("http://localhost:8001/%s/%s", bucket,
             directory);
 
@@ -85,11 +86,25 @@ class S3UploaderTest {
     }
 
     @Test
+    @DisplayName("외부 자원 업로드")
+    void uploadExternalFile() throws IOException {
+        String fileUrl = "https://user-images.githubusercontent.com/58076838/87573659-3751e080-c708-11ea-955f-ce99396bb591.gif";
+        String actual = s3Uploader.uploadExternalFile(fileUrl, "IU");
+        String basicUrl = String.format("http://localhost:8001/%s/%s", bucket,
+            directory);
+
+        assertAll(
+            () -> assertThat(actual).startsWith(basicUrl),
+            () -> assertThat(actual).contains("IU")
+        );
+    }
+
+    @Test
     @DisplayName("파일 변환이 안되는 경우")
     void uploadWithInvalidMultipartFile() {
         MultipartFile multipartFile = new MockMultipartFile("files", (byte[])null);
 
-        assertThatThrownBy(() -> s3Uploader.upload(multipartFile))
+        assertThatThrownBy(() -> s3Uploader.uploadMultiPartFile(multipartFile))
             .isInstanceOf(FileNotConvertedException.class)
             .hasMessage("의 파일 변환에 실패했습니다.");
     }
