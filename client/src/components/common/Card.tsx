@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import moment from 'moment';
 import styled from "@emotion/styled";
 import {ZEZE_GRAY} from "../../domains/constants";
 
@@ -60,8 +61,7 @@ interface IProps {
 }
 
 const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => {
-  const date = new Date(Date.parse(createdAt));
-  const parsedTime = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+  const parsedTime = moment(createdAt).format('YYYY-MM-DD HH:mm:ss');
 
   return (
     <Link to={`/editor/${id}`}>
