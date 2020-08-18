@@ -59,18 +59,23 @@ interface IProps {
   createdAt: string
 }
 
-const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => (
-  <Link to={`/editor/${id}`}>
-    <CardBlock>
-      <header/>
-      <main>
-        <div className="title">{title}</div>
-        <div className="subtitle">{subtitle}</div>
-        <div className="author">{author || "author"}</div>
-        <div className="created_at">{createdAt}</div>
-      </main>
-    </CardBlock>
-  </Link>
-);
+const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => {
+  const date = new Date(Date.parse(createdAt));
+  const parsedTime = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+
+  return (
+    <Link to={`/editor/${id}`}>
+      <CardBlock>
+        <header/>
+        <main>
+          <div className="title">{title}</div>
+          <div className="subtitle">{subtitle}</div>
+          <div className="author">{author || "author"}</div>
+          <div className="created_at">{parsedTime}</div>
+        </main>
+      </CardBlock>
+    </Link>
+  );
+}
 
 export default Card;
