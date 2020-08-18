@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import moment from 'moment';
 import styled from "@emotion/styled";
 import {ZEZE_GRAY} from "../../domains/constants";
 
@@ -59,18 +60,22 @@ interface IProps {
   createdAt: string
 }
 
-const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => (
-  <Link to={`/editor/${id}`}>
-    <CardBlock>
-      <header/>
-      <main>
-        <div className="title">{title}</div>
-        <div className="subtitle">{subtitle}</div>
-        <div className="author">{author || "author"}</div>
-        <div className="created_at">{createdAt}</div>
-      </main>
-    </CardBlock>
-  </Link>
-);
+const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => {
+  const parsedTime = moment(createdAt).format('YYYY-MM-DD HH:mm:ss');
+
+  return (
+    <Link to={`/editor/${id}`}>
+      <CardBlock>
+        <header/>
+        <main>
+          <div className="title">{title}</div>
+          <div className="subtitle">{subtitle}</div>
+          <div className="author">{author || "author"}</div>
+          <div className="created_at">{parsedTime}</div>
+        </main>
+      </CardBlock>
+    </Link>
+  );
+}
 
 export default Card;
