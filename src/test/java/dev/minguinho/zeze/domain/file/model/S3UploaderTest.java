@@ -63,6 +63,9 @@ class S3UploaderTest {
         Field directoryField = S3Uploader.class.getDeclaredField("directory");
         directoryField.setAccessible(true);
         directoryField.set(s3Uploader, directory);
+        Field tmpDirField = S3Uploader.class.getDeclaredField("tmpDir");
+        tmpDirField.setAccessible(true);
+        tmpDirField.set(s3Uploader, "");
     }
 
     @Test

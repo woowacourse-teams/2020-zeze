@@ -3,7 +3,6 @@ package dev.minguinho.zeze.domain.file.model;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +25,8 @@ public class S3Uploader {
     private String bucket;
     @Value("${cloud.aws.s3.directory}")
     private String directory;
+    @Value("#{systemProperties['java.io.tmpdir']}")
+    private String tmpDir;
 
     public String upload(MultipartFile multipartFile) {
         File file = convert(multipartFile);
@@ -39,7 +40,7 @@ public class S3Uploader {
     }
 
     private File convert(MultipartFile multipartFile) {
-        File convertedFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        File convertedFile = new File(tmpDir + multipartFile.getOriginalFilename());
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
             fos.write(multipartFile.getBytes());
         } catch (IOException ie) {
