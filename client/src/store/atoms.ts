@@ -13,6 +13,15 @@ export const getAllSlidesQuery = selector({
   },
 });
 
+export const getPublicSlidesQuery = selector({
+  key: "getPublicSlidesQuery",
+  get: async () => {
+    const response: AxiosResponse<SlideResponses> = await slideApi.getPublic({id: 0, size: 5});
+
+    return response.data.slides;
+  },
+});
+
 export const userInfoTrigger = atom<number>({
   key: "userInfoTrigger",
   default: 0,

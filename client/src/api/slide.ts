@@ -52,6 +52,13 @@ const slideApi = {
       },
     });
   },
+  getPublic(page: PageProps): Promise<AxiosResponse<SlideResponses>> {
+    return slideInstance.get("/", {
+      params: {
+        ...page,
+      },
+    });
+  },
   create({data}: SlideRequest): Promise<AxiosResponse<SlideResponse>> {
     return slideInstance.post("/", data, {
       headers: {
