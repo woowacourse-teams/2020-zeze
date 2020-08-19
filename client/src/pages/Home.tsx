@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import GlobalLayout from "../components/common/GlobalLayout";
 import {GITHUB_AUTH_URL, MAX_WIDTH, MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../domains/constants";
+import Carousel from "../components/common/Carousel";
 
 export const HomeBlock = styled.div`
   background-color: ${ZEZE_GRAY};
@@ -91,18 +92,15 @@ const Home: React.FC = () => (
       <Section background={ZEZE_GRAY}>
         <div style={{
           width: "100%",
-          maxWidth: MAX_WIDTH,
+          maxWidth: "960px",
           margin: "0 auto",
-          minHeight: "30rem",
-          backgroundColor: "#fff",
-          fontWeight: "bold",
-          fontSize: 20,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          boxShadow: "1px 1px 1px #aaa",
+          height: "30rem",
         }}>
-          Slide example goes here
+          <Carousel>
+            <div><h2>슬라이드 1</h2></div>
+            <div><h2>슬라이드 2</h2></div>
+            <div><h2>슬라이드 3</h2></div>
+          </Carousel>
         </div>
       </Section>
     </HomeBlock>
