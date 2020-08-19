@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useCallback, useState} from "react";
+import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {useRecoilValue, useResetRecoilState} from "recoil";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Info from "../components/common/Info";
@@ -9,6 +9,7 @@ import {getAllSlidesQuery, userInfoQuery} from "../store/atoms";
 import filesApi from "../api/file";
 import {ToastType} from "../domains/constants";
 import ToastFactory from "../domains/ToastFactory";
+import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 export interface User {
   name: string,
@@ -24,6 +25,10 @@ const Me: React.FC = () => {
   const [editedUser, setEditedUser] = useState<User>(user!);
   const toastFactory = ToastFactory();
 
+  useEffect(() => {
+    googleAnalyticsPageView("My Page");
+  }, []);
+
   const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setEditedUser({...editedUser, [event.target.name]: event.target.value});
   }, [editedUser]);
@@ -38,10 +43,13 @@ const Me: React.FC = () => {
 
   const updateInfo = useCallback((userInfo: User) => {
     usersApi.update(userInfo)
-      .then(() => toastFactory.createToast("update success", ToastType.SUCCESS))
+      .then(() => {
+        googleAnalyticsEvent("유저", "정보 업데이트 성공");
+        toastFactory.createToast("update success", ToastType.SUCCESS);
+      })
       .then(() => setUser())
       .catch(() => toastFactory.createToast("update failure", ToastType.ERROR));
-  }, [setUser, toastFactory]);
+  }, [setUser]);
 
   return (
     <SidebarLayout>

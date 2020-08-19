@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "@emotion/styled";
 import GlobalLayout from "../components/common/GlobalLayout";
 import {GITHUB_AUTH_URL, MAX_WIDTH, MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../domains/constants";
+import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 export const HomeBlock = styled.div`
   background-color: ${ZEZE_GRAY};
@@ -57,56 +58,63 @@ export const Button = styled.a`
     font-size: 1.1rem;
   }
 `;
-const Home: React.FC = () => (
-  <GlobalLayout>
-    <HomeBlock>
-      <Section background={ZEZE_GRAY}>
-        <Layout>
-          <Slogan>Beautiful,</Slogan>
-          <Slogan>Minimal <span style={{color: "#00FF7F"}}>Slides</span></Slogan>
-          <Slogan>With Markdown</Slogan>
-          <Button href={GITHUB_AUTH_URL}>Get Started for Free →</Button>
-        </Layout>
-      </Section>
-      <Section background="#333">
-        <Layout>
-          <code style={{color: "#fff"}}>
-            --- <br/>
-            title: Hello Limetree! <br/>
-            author: Hodol <br/>
-            created_at: 2020-07-12 <br/>
-            --- <br/> <br/>
-            ## Works like charm <br/>
-            ### with minimal effort <br/> <br/>
-            - Only need to type <br/>
-            - Supports GFM Markdown <br/>
-            - Youtube, Charts, and more! <br/> <br/>
-            --- <br/> <br/>
-            ## Focus on your idea <br/> <br/>
-            > No more decorating stuff <br/>
-            > Pixel perfect beautiful slides
-          </code>
-        </Layout>
-      </Section>
-      <Section background={ZEZE_GRAY}>
-        <div style={{
-          width: "100%",
-          maxWidth: MAX_WIDTH,
-          margin: "0 auto",
-          minHeight: "30rem",
-          backgroundColor: "#fff",
-          fontWeight: "bold",
-          fontSize: 20,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          boxShadow: "1px 1px 1px #aaa",
-        }}>
-          Slide example goes here
-        </div>
-      </Section>
-    </HomeBlock>
-  </GlobalLayout>
-);
+
+const Home: React.FC = () => {
+  useEffect(() => {
+    googleAnalyticsPageView("Landing");
+  }, []);
+
+  return (
+    <GlobalLayout>
+      <HomeBlock>
+        <Section background={ZEZE_GRAY}>
+          <Layout>
+            <Slogan>Beautiful,</Slogan>
+            <Slogan>Minimal <span style={{color: "#00FF7F"}}>Slides</span></Slogan>
+            <Slogan>With Markdown</Slogan>
+            <Button href={GITHUB_AUTH_URL} onClick={() => googleAnalyticsEvent("User", "Get Started")}>Get Started for Free →</Button>
+          </Layout>
+        </Section>
+        <Section background="#333">
+          <Layout>
+            <code style={{color: "#fff"}}>
+              --- <br/>
+              title: Hello Limetree! <br/>
+              author: Hodol <br/>
+              created_at: 2020-07-12 <br/>
+              --- <br/> <br/>
+              ## Works like charm <br/>
+              ### with minimal effort <br/> <br/>
+              - Only need to type <br/>
+              - Supports GFM Markdown <br/>
+              - Youtube, Charts, and more! <br/> <br/>
+              --- <br/> <br/>
+              ## Focus on your idea <br/> <br/>
+              > No more decorating stuff <br/>
+              > Pixel perfect beautiful slides
+            </code>
+          </Layout>
+        </Section>
+        <Section background={ZEZE_GRAY}>
+          <div style={{
+            width: "100%",
+            maxWidth: MAX_WIDTH,
+            margin: "0 auto",
+            minHeight: "30rem",
+            backgroundColor: "#fff",
+            fontWeight: "bold",
+            fontSize: 20,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow: "1px 1px 1px #aaa",
+          }}>
+            Slide example goes here
+          </div>
+        </Section>
+      </HomeBlock>
+    </GlobalLayout>
+  );
+};
 
 export default Home;
