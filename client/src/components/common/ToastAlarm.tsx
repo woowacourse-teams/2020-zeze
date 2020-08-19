@@ -4,7 +4,7 @@ import {MOBILE_MAX_WIDTH, Toast} from "../../domains/constants";
 import {useRecoilState} from "recoil";
 import {toastMessages} from "../../store/atoms";
 
-const autoDeleteTime = 3000;
+const autoDeleteTime = 2000;
 
 const ToastNotificationBlock = styled.div`
   position: relative;
@@ -111,16 +111,10 @@ const ToastNotificationBlock = styled.div`
   
   @keyframes toast-from-top {
     0% {
-      transform: translateY(-100%);
+      transform: translateY(-100%); 
     }
-    30% {
+    50% {
       transform: translateY(0);
-    }
-    70% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(-130%);
     }
   }
 `
