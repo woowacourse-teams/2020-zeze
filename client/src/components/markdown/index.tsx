@@ -1,7 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown/with-html";
 import {Code, Image, Paragraph} from "./renderers";
-import parse from "../../utils/metadata";
+import {parse} from "../../utils/metadata";
 
 interface IProps {
   value: string
