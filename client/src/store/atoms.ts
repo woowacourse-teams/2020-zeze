@@ -7,7 +7,7 @@ import usersApi from "../api/user";
 export const getAllSlidesQuery = selector({
   key: "getAllSlidesQuery",
   get: async () => {
-    const response: AxiosResponse<SlideResponses> = await slideApi.getAll({id: 0, size: 5});
+    const response: AxiosResponse<SlideResponses> = await slideApi.getAll({page: 0, size: 5});
 
     return response.data.slides;
   },

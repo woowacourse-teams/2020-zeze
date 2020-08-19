@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface SlideRepository extends JpaRepository<Slide, Long> {
     Page<Slide> findAllByAccessLevel(AccessLevel accessLevel, Pageable pageable);
 
-    Page<Slide> findAllByUserIdAndIdGreaterThan(Long userId, Long id, Pageable pageable);
+    Page<Slide> findAllByUserIdOrderByUpdatedAtDesc(Long userId, Pageable pageable);
 }

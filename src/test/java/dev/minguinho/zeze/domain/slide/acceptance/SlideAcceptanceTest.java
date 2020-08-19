@@ -119,8 +119,8 @@ public class SlideAcceptanceTest {
 
                 List<SlideResponseDto> slides = slideResponseDtos.getSlides();
                 assertAll(
-                    () -> assertThat(slides.get(0).getTitle()).isEqualTo("제목"),
-                    () -> assertThat(slides.get(1).getTitle()).isEqualTo("두번째 제목")
+                    () -> assertThat(slides.get(0).getTitle()).isEqualTo("두번째 제목"),
+                    () -> assertThat(slides.get(1).getTitle()).isEqualTo("제목")
                 );
             }),
             dynamicTest("특정 슬라이드 조회", () -> {
@@ -148,9 +148,9 @@ public class SlideAcceptanceTest {
                 SlideResponseDto slideResponseDto = retrieveSlide(id);
 
                 assertAll(
-                    () -> assertThat(slideResponseDto.getTitle()).isEqualTo("두번째 제목"),
-                    () -> assertThat(slideResponseDto.getContent()).isEqualTo("두번째 내용"),
-                    () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PRIVATE")
+                    () -> assertThat(slideResponseDto.getTitle()).isEqualTo("제목"),
+                    () -> assertThat(slideResponseDto.getContent()).isEqualTo("내용"),
+                    () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PUBLIC")
                 );
             }),
             dynamicTest("업데이트", () -> {
@@ -188,9 +188,9 @@ public class SlideAcceptanceTest {
                 SlideResponseDtos result = retrieveSlides();
                 List<SlideResponseDto> resultSlides = result.getSlides();
                 assertAll(
-                    () -> assertThat(resultSlides.get(0).getTitle()).isEqualTo("두번째 제목"),
-                    () -> assertThat(resultSlides.get(0).getContent()).isEqualTo("두번째 내용"),
-                    () -> assertThat(resultSlides.get(0).getAccessLevel()).isEqualTo("PRIVATE")
+                    () -> assertThat(resultSlides.get(0).getTitle()).isEqualTo("제목"),
+                    () -> assertThat(resultSlides.get(0).getContent()).isEqualTo("내용"),
+                    () -> assertThat(resultSlides.get(0).getAccessLevel()).isEqualTo("PUBLIC")
                 );
             })
         );
@@ -208,7 +208,7 @@ public class SlideAcceptanceTest {
 
     private SlideResponseDtos retrieveSlides() {
         Map<String, String> params = new HashMap<>();
-        params.put("id", "0");
+        params.put("page", "0");
         params.put("size", "5");
 
         return given()
