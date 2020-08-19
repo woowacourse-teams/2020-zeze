@@ -3,13 +3,19 @@ import {AxiosResponse} from "axios";
 import slideApi, {SlideResponses} from "../api/slide";
 import {User} from "../pages/Me";
 import usersApi from "../api/user";
+import {googleAnalyticsException} from "../utils/googleAnalytics";
 
 export const getAllSlidesQuery = selector({
   key: "getAllSlidesQuery",
   get: async () => {
-    const response: AxiosResponse<SlideResponses> = await slideApi.getAll({id: 0, size: 5});
+    try {
+      const response: AxiosResponse<SlideResponses> = await slideApi.getAll({id: 0, size: 5});
 
-    return response.data.slides;
+      return response.data.slides;
+    } catch (error) {
+      googleAnalyticsException("슬라이드 목록 조회 API 호출 실패");
+      throw error;
+    }
   },
 });
 

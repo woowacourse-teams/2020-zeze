@@ -33,6 +33,7 @@ const FullScreenBlock = styled.div<FullScreenProps>`
   }
   
   > div#themed {
+    position: relative;
     height: 100%;
     overflow-y: scroll;
     box-sizing: border-box;
@@ -91,6 +92,14 @@ const FullScreenBlock = styled.div<FullScreenProps>`
     
     iframe.youtube {
       flex: 1;
+      
+      &:only-child {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
     }
     
     ${({slideTheme}) => applyTheme(slideTheme)}
