@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import GlobalLayout from "../components/common/GlobalLayout";
 import {GITHUB_AUTH_URL, MAX_WIDTH, MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../domains/constants";
 import Carousel from "../components/common/Carousel";
+import SlideExample from "../components/common/SlideExample";
 
 export const HomeBlock = styled.div`
   background-color: ${ZEZE_GRAY};
@@ -58,6 +59,34 @@ export const Button = styled.a`
     font-size: 1.1rem;
   }
 `;
+
+const MetaData = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 80%;
+  padding-top: 30px;
+  
+  h1, h2, h3, h4 {
+    border: none;
+    padding-left: 30px;
+    margin: 10px;
+  }
+  
+  h1 {
+    font-size: 4em;
+  }
+  
+  h2 {
+    font-size: 2.5em;
+    color: #777; 
+  }
+  
+  h3 {
+    margin-top: 1em;
+  }
+`;
+
 const Home: React.FC = () => (
   <GlobalLayout>
     <HomeBlock>
@@ -74,8 +103,9 @@ const Home: React.FC = () => (
           <code style={{color: "#fff"}}>
             --- <br/>
             title: Hello Limetree! <br/>
+            subtitle: Hi! <br/>
             author: Hodol <br/>
-            created_at: 2020-07-12 <br/>
+            createdAt: 2020-07-12 <br/>
             --- <br/> <br/>
             ## Works like charm <br/>
             ### with minimal effort <br/> <br/>
@@ -97,9 +127,16 @@ const Home: React.FC = () => (
           height: "30rem",
         }}>
           <Carousel>
-            <div><h2>슬라이드 1</h2></div>
-            <div><h2>슬라이드 2</h2></div>
-            <div><h2>슬라이드 3</h2></div>
+            <MetaData>
+              <h1>Hello Limetree!</h1>
+              <h2>Hi!</h2>
+              <h3>Hodol</h3>
+              <h4>2020-07-12</h4>
+            </MetaData>
+            <SlideExample
+              content={`## Works like charm \n ### with minimal effort \n\n - Only need to type \n - Supports GFM Markdown \n - Youtube, Charts, and more! \n\n`}/>
+            <SlideExample
+              content={`## Focus on your idea \n\n > No more decorating stuff \n\n > Pixel perfect beautiful slides`}/>
           </Carousel>
         </div>
       </Section>

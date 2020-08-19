@@ -22,7 +22,7 @@ interface FullScreenProps {
   slideTheme: Theme;
 }
 
-const FullScreenBlock = styled.div<FullScreenProps>`
+export const FullScreenBlock = styled.div<FullScreenProps>`
   position: absolute;
   top: -9999px;
   left: -9999px;
