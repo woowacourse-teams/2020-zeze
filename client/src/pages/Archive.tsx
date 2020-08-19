@@ -25,10 +25,11 @@ const Archive: React.FC = () => {
         setSlides(res.data.slides);
         setTotalPage(res.data.totalPage);
       });
-  }, []);
+  }, [page]);
 
   const onClickPage = (e: React.MouseEvent<HTMLDivElement>) => {
     const page = parseInt(e.currentTarget.getAttribute("data-page")!);
+
     setPage(page);
     slideApi.getAll({page, size})
       .then(res => setSlides(res.data.slides));
@@ -51,10 +52,10 @@ const Archive: React.FC = () => {
       <ArchiveBlock>
         <Cards title="Archive" slides={slides} author={"zeze"}/>
         <Pagination page={page}
-                    totalPage={totalPage}
-                    onClickPage={onClickPage}
-                    onClickPrevious={onClickPrevious}
-                    onClickNext={onClickNext}/>
+          totalPage={totalPage}
+          onClickPage={onClickPage}
+          onClickPrevious={onClickPrevious}
+          onClickNext={onClickNext}/>
       </ArchiveBlock>
     </SidebarLayout>
   );

@@ -9,7 +9,7 @@ export const CardsLayout = styled.div`
 
   > h2 {
     color: #fff;
-    margin: 0;
+    margin: 30px 0 0;
     display: inline-block;
     font-size: 2rem;
   }

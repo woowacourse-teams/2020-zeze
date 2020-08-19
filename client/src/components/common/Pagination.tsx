@@ -2,20 +2,20 @@ import React from 'react'
 import styled from "@emotion/styled";
 
 const PAGES = styled.div`
-  width: 100%;
   height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 10px;
   
   div {
     display: flex;
     justify-content: center;
-    align-items: center;  
+    align-items: center;
     width: 30px;
     height: 100%;
-    margin: 0 5px;
     color: white;
+    margin: 0 5px;
   }
   
   div.active {
@@ -29,7 +29,7 @@ const PAGES = styled.div`
     border-radius: 50%;
     cursor: pointer;
   }
-`
+`;
 
 interface IProps {
   page: number
@@ -54,13 +54,13 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
     if (first > 5) {
       return <div onClick={onClickPrevious}>&laquo;</div>;
     }
-  }
+  };
 
   const showNextBtn = () => {
     if (next > 5 && next < totalPage) {
       return <div onClick={onClickNext}>&raquo;</div>
     }
-  }
+  };
 
   const showNumbers = () => {
     const elements: JSX.Element[] = [];
@@ -72,7 +72,7 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
       }
     }
     return elements;
-  }
+  };
 
   return (
     <PAGES>
@@ -81,6 +81,6 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
       {showNextBtn()}
     </PAGES>
   );
-}
+};
 
 export default Pagination;
