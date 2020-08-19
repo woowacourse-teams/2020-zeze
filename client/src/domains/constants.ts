@@ -1,5 +1,3 @@
-import {checkIcon} from "../assets/icons";
-
 export const ZEZE_GRAY = "#1E1E1E";
 export const PRIMARY_GREEN = "#76BA1B";
 export const SECONDARY_GREEN = "#58C247";
@@ -26,24 +24,14 @@ export enum AccessLevel {
 }
 
 export type Toast = {
-  id: number,
   title: string,
-  description: string,
   backgroundColor: string,
   icon: string,
 }
 
 export enum ToastType {
-  SUCCESS = "success",
-  ERROR = "error",
-  WARN = "warn",
-  INFO ="info",
+  SUCCESS = "SUCCESS",
+  ERROR = "ERROR",
+  WARN = "WARN",
+  INFO ="INFO",
 }
-
-export enum ToastPosition {
-  TOP_RIGHT = "top-right",
-  TOP_LEFT = "top-left",
-  BOTTOM_RIGHT =  "bottom-right",
-  BOTTOM_LEFT = "bottom-left",
-}
-

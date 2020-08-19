@@ -1,41 +1,29 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from "@emotion/styled";
-import {Toast} from "../../domains/constants";
+import {MOBILE_MAX_WIDTH, Toast} from "../../domains/constants";
+import {useRecoilState} from "recoil";
+import {toastMessages} from "../../store/atoms";
+
+const autoDeleteTime = 3000;
 
 const ToastNotificationBlock = styled.div`
+  position: relative;
+  
   .notification-container {
     font-size: 14px;
     box-sizing: border-box;
     position: fixed;
     z-index: 999999;
+    @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+      padding-left: 0;
+    }
   }
   
-  .top-right {
-    top: 12px;
-    right: 12px;
-    transition: transform .6s ease-in-out;
-    animation: toast-in-right .7s;
-  }
-
-  .bottom-right {
-    bottom: 12px;
-    right: 12px;
-    transition: transform .6s ease-in-out;
-    animation: toast-in-right .7s;
-  }
-
-  .top-left {
-    top: 12px;
-    left: 12px;
+  .top-center {
+    top: 2%;
+    left: 32%;
     transition: transform .6s ease-in;
-    animation: toast-in-left .7s;
-  }
-
-  .bottom-left {
-    bottom: 12px;
-    left: 12px;
-    transition: transform .6s ease-in;
-    animation: toast-in-left .7s;
+    animation: toast-from-top ${autoDeleteTime + 500}ms;
   }
   
   .notification {
@@ -46,53 +34,53 @@ const ToastNotificationBlock = styled.div`
     overflow: hidden;
     margin: 0 0 6px;
     padding: 30px;
-    margin-bottom: 15px;
-    width: 300px;
+    margin-bottom: 1rem;
     max-height: 100px;
     border-radius: 3px 3px 3px 3px;
     color: #000;
     opacity: .9;
     background-position: 15px;
     background-repeat: no-repeat;
+    border-radius: 20px;
+    display: flex;
   }
 
   .notification:hover {
     opacity: 1;
   }
+  
+  .notification-center {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+  }
 
   .notification-title {
     font-weight: 700;
     font-size: 16px;
-    text-align: left;
+    text-align: center;
     margin-top: 0;
-    margin-bottom: 6px;
-    width: 300px;
-    height: 18px;
-  }
-
-  .notification-message {
-    margin: 0;
-    text-align: left;
-    height: 18px;
-    margin-left: -1px;
+    margin-bottom: 0.7rem;
+    width: 275px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    height: 18px;
   }
 
   .notification-image {
-    float: left;
-    margin-right: 15px;
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   .notification-image img {
-    width: 30px;
-    height: 30px;
+    width: 15px;
+    height: 15px;
   }
 
   .toast {
-    height: 50px;
-    width: 365px;
+    height: 20px;
     color: #fff;
     padding: 20px 15px 10px 10px;
   }
@@ -120,47 +108,49 @@ const ToastNotificationBlock = styled.div`
     opacity: 1;
     cursor: pointer;
   }
-
-  @keyframes toast-in-right {
-    from {
-      transform: translateX(100%);
-      
+  
+  @keyframes toast-from-top {
+    0% {
+      transform: translateY(-100%);
     }
-    to {
-      transform: translateX(0);
+    30% {
+      transform: translateY(0);
     }
-}
-
-@keyframes toast-in-left {
-  from {
-    transform: translateX(-100%);
+    70% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-130%);
+    }
   }
-  to {
-    transform: translateX(0);
-  }
-}
 `
 
-interface IProps {
-  toasts: Array<Toast>,
-  position: string
-  deleteToast(id: number): void,
-}
-
-const ToastAlarm: React.FC<IProps> = ({toasts, position, deleteToast}) => {
+const ToastAlarm: React.FC = () => {
+  const [toasts, setToasts] = useRecoilState<Array<Toast>>(toastMessages);
+  const removeToast = (toast : Toast) => {
+    const newToasts = toasts.filter(value => value !== toast)
+    setToasts([...newToasts]);
+  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (toasts.length) {
+        removeToast(toasts[0]);
+      }
+    }, autoDeleteTime);
+    return () => {
+      clearInterval(interval);
+    }
+  }, [toasts, removeToast]);
   return (
     <ToastNotificationBlock>
-      <div className={`notification-container ${position}`}>
+      <div className={`notification-container top-center`}>
         {
           toasts.map((toast, i) =>
-            <div key={i} className={`notification toast ${position}`} style={{backgroundColor: toast.backgroundColor}}>
-              <button onClick={() => deleteToast(toast.id)}>
-                X
-              </button>
-              <div className={"notification-image"}>
+            <div key={i} className={`notification toast top-center`} style={{backgroundColor: toast.backgroundColor}}>
+              <div className={"notification-image notification-center"}>
                 <img src={toast.icon} alt={""}/>
               </div>
-              <div>
+              <div className={"notification-center"}>
                 <p className={"notification-title"}>{toast.title}</p>
               </div>
             </div>
