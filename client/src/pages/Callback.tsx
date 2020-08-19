@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import axios from "axios";
 import GlobalLayout from "../components/common/GlobalLayout";
 import Spinner from "../components/common/Spinner";
+import {googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 interface props {
   location: string,
@@ -10,6 +11,10 @@ interface props {
 
 const Callback: React.FC<props> = ({location, history}: props) => {
   const githubBaseUrl = `/api/signin/github`;
+
+  useEffect(() => {
+    googleAnalyticsPageView("Github Login Callback");
+  }, []);
 
   useEffect(() => {
     const getToken = async () => {
@@ -25,6 +30,7 @@ const Callback: React.FC<props> = ({location, history}: props) => {
     getToken()
       .then(() => history.push("/me"))
       .catch(() => {
+        googleAnalyticsException("로그인 실패");
         alert("login failed");
         history.push("/");
       });
