@@ -121,6 +121,32 @@ const convertDataSets = (head: string[], body: string[][], type: string) => {
   }
 };
 
+const convertOptions = (type: Type, json: any) => {
+  switch (type) {
+  case Type.BAR:
+  case Type.HBAR:
+  case Type.LINE:
+  case Type.BUBBLE:
+  case Type.SCATTER:
+    return {
+      scales: {
+        yAxes: [{
+          ticks: {
+            min: json?.y_min,
+            max: json?.y_max,
+          },
+        }],
+        xAxes: [{
+          ticks: {
+            min: json?.x_min,
+            max: json?.x_max,
+          },
+        }],
+      }
+    }
+  }
+}
+
 interface IProps {
   code: string,
 }
@@ -140,6 +166,7 @@ const Chart: React.FC<IProps> = ({code = ""}) => {
           labels: convertLabels(head, body, type),
           datasets: convertDataSets(head, body, type),
         },
+        options: convertOptions(type, json)
       });
 
       return () => {
