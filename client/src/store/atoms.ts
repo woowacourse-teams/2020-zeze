@@ -14,7 +14,7 @@ export const getAllSlidesQuery = selector({
       return response.data.slides;
     } catch (error) {
       googleAnalyticsException("슬라이드 목록 조회 API 호출 실패");
-      return Promise.reject();
+      throw error;
     }
   },
 });
