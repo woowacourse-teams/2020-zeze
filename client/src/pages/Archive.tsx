@@ -14,7 +14,7 @@ const ArchiveBlock = styled.div`
 `;
 
 const Archive: React.FC = () => {
-  const size = 10;
+  const size = 9;
   const [slides, setSlides] = useState<Array<SlideResponse>>([]);
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
@@ -52,10 +52,10 @@ const Archive: React.FC = () => {
       <ArchiveBlock>
         <Cards title="Archive" slides={slides} author={"zeze"}/>
         <Pagination page={page}
-          totalPage={totalPage}
-          onClickPage={onClickPage}
-          onClickPrevious={onClickPrevious}
-          onClickNext={onClickNext}/>
+                    totalPage={totalPage}
+                    onClickPage={onClickPage}
+                    onClickPrevious={onClickPrevious}
+                    onClickNext={onClickNext}/>
       </ArchiveBlock>
     </SidebarLayout>
   );

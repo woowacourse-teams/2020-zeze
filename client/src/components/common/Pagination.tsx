@@ -2,20 +2,21 @@ import React from 'react'
 import styled from "@emotion/styled";
 
 const PAGES = styled.div`
+  width: 100%;
   height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px;
+  padding: 30px 0;
   
   div {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;  
     width: 30px;
     height: 100%;
-    color: white;
     margin: 0 5px;
+    color: white;
   }
   
   div.active {
@@ -29,7 +30,7 @@ const PAGES = styled.div`
     border-radius: 50%;
     cursor: pointer;
   }
-`;
+`
 
 interface IProps {
   page: number
@@ -43,36 +44,35 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
   const pageCnt = 5;
   const pageGroup = Math.floor(page / pageCnt) + 1;
   let last = pageGroup * pageCnt;
-  if (last > totalPage)
+  const first = last - pageCnt;
+  if (last > totalPage) {
     last = totalPage;
-  let first = last - (pageCnt - 1);
-  if (totalPage < 1)
-    first = last;
+  }
   const next = last + 1;
 
   const showPrevBtn = () => {
-    if (first > 5) {
+    if (first > pageCnt) {
       return <div onClick={onClickPrevious}>&laquo;</div>;
     }
-  };
+  }
 
   const showNextBtn = () => {
-    if (next > 5 && next < totalPage) {
+    if (next > pageCnt && next < totalPage) {
       return <div onClick={onClickNext}>&raquo;</div>
     }
-  };
+  }
 
   const showNumbers = () => {
     const elements: JSX.Element[] = [];
     for (let i = first; i < last; i++) {
       if (i === page) {
         elements.push(<div data-page={i} onClick={onClickPage} className="active">{i + 1}</div>);
-      } else if (i > 0) {
+      } else {
         elements.push(<div data-page={i} onClick={onClickPage}>{i + 1}</div>);
       }
     }
     return elements;
-  };
+  }
 
   return (
     <PAGES>
@@ -81,6 +81,6 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
       {showNextBtn()}
     </PAGES>
   );
-};
+}
 
 export default Pagination;
