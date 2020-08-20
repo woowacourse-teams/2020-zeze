@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useParams, useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {useRecoilValue} from "recoil";
 import styled from "@emotion/styled";
 
@@ -11,7 +11,7 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
-import {parse, createTemplate, ParsedData} from "../utils/metadata";
+import {createTemplate, parse, ParsedData} from "../utils/metadata";
 import {userInfoQuery} from "../store/atoms";
 import {clear, privateToggle, publicToggle, saveImg} from "../assets/icons";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
@@ -80,6 +80,7 @@ const Editor: React.FC = () => {
   const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
   const [content, setContent] = useState<string>("");
   const [accessLevel, setAccessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
+  const isInitialMount = useRef(true);
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
 
@@ -95,8 +96,9 @@ const Editor: React.FC = () => {
   useEffect(() => {
     id && slideApi.get(id)
       .then(({data}) => {
-        codemirrorRef.current?.setValue(data.content);
+        isInitialMount.current = data.accessLevel === AccessLevel.PUBLIC;
         setAccessLevel(data.accessLevel);
+        codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
         googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
@@ -109,6 +111,14 @@ const Editor: React.FC = () => {
       }));
     }
   }, [id]);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      save();
+    }
+  }, [accessLevel]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -171,8 +181,8 @@ const Editor: React.FC = () => {
     }
   }, [history, id]);
 
-  const changeAccessLevel = useCallback(() => {
-    setAccessLevel(accessLevel === AccessLevel.PRIVATE ? AccessLevel.PUBLIC : AccessLevel.PRIVATE);
+  const changeAccessLevel = useCallback( () => {
+    setAccessLevel(accessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
   }, [accessLevel]);
 
   return (
