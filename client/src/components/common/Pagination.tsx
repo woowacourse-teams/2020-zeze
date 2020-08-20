@@ -36,11 +36,11 @@ interface IProps {
   page: number
   totalPage: number
   onClickPage: (e: React.MouseEvent<HTMLDivElement>) => void
-  onClickPrevious: () => void
-  onClickNext: () => void
+  onClickPrev: (prev: number) => void
+  onClickNext: (next: number) => void
 }
 
-const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrevious, onClickNext}) => {
+const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev, onClickNext}) => {
   const pageCnt = 5;
   const pageGroup = Math.floor(page / pageCnt) + 1;
   let last = pageGroup * pageCnt;
@@ -49,16 +49,17 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
     last = totalPage;
   }
   const next = last + 1;
+  const prev = first - 1;
 
   const showPrevBtn = () => {
     if (first > pageCnt) {
-      return <div onClick={onClickPrevious}>&laquo;</div>;
+      return <div onClick={() => onClickPrev(prev)}>&laquo;</div>;
     }
   }
 
   const showNextBtn = () => {
     if (next > pageCnt && next < totalPage) {
-      return <div onClick={onClickNext}>&raquo;</div>
+      return <div onClick={() => onClickNext(next)}>&raquo;</div>
     }
   }
 

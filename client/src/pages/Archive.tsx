@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react"
 import styled from "@emotion/styled";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Cards from "../components/common/Cards";
@@ -29,20 +29,19 @@ const Archive: React.FC = () => {
 
   const onClickPage = (e: React.MouseEvent<HTMLDivElement>) => {
     const page = parseInt(e.currentTarget.getAttribute("data-page")!);
-
     setPage(page);
     slideApi.getAll({page, size})
       .then(res => setSlides(res.data.slides));
   };
 
-  const onClickPrevious = () => {
-    setPage(page - 1);
+  const onClickPrev = (prev: number) => {
+    setPage(prev);
     slideApi.getAll({page, size})
       .then(res => setSlides(res.data.slides));
   };
 
-  const onClickNext = () => {
-    setPage(page + 1);
+  const onClickNext = (next: number) => {
+    setPage(next);
     slideApi.getAll({page, size})
       .then(res => setSlides(res.data.slides));
   };
@@ -58,7 +57,7 @@ const Archive: React.FC = () => {
         <Pagination page={page}
                     totalPage={totalPage}
                     onClickPage={onClickPage}
-                    onClickPrevious={onClickPrevious}
+                    onClickPrevious={onClickPrev}
                     onClickNext={onClickNext}/>
       </ArchiveBlock>
     </SidebarLayout>
