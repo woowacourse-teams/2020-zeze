@@ -54,7 +54,7 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
     }
     setFirst(first);
     setLast(last);
-  }, [page])
+  }, [page, totalPage])
 
   const showPrevBtn = () => {
     if (first > PAGE_CNT) {
@@ -72,9 +72,9 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
     const elements: JSX.Element[] = [];
     for (let i = first; i < last; i++) {
       if (i === page) {
-        elements.push(<div data-page={i} onClick={onClickPage} className="active">{i + 1}</div>);
+        elements.push(<div key={i} data-page={i} onClick={onClickPage} className="active">{i + 1}</div>);
       } else {
-        elements.push(<div data-page={i} onClick={onClickPage}>{i + 1}</div>);
+        elements.push(<div key={i} data-page={i} onClick={onClickPage}>{i + 1}</div>);
       }
     }
     return elements;

@@ -5,7 +5,6 @@ export const SECONDARY_GREEN = "#58C247";
 export const MAX_WIDTH = 960;
 export const MOBILE_MAX_WIDTH = 575.98;
 
-export const SLIDES_CNT = 9;
 export const PAGE_CNT = 5;
 
 export const Keys = {
