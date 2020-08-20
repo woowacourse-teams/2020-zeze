@@ -2,7 +2,7 @@ import React, {useRef, useState} from "react";
 import styled from "@emotion/styled";
 import fscreen from "fscreen";
 import {css, Global} from "@emotion/core";
-import {Keys} from "../../domains/constants";
+import {Keys, MOBILE_MAX_WIDTH} from "../../domains/constants";
 import Markdown from "../markdown";
 import {applyTheme, Theme} from "../theme";
 import play from "../../assets/icons/play.svg";
@@ -41,6 +41,10 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
     font-size: 1.75rem;
     display: flex;
     flex-direction: column;
+    
+    @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+      font-size: 2em;
+    }
     
     div.first-page {
       display: flex;

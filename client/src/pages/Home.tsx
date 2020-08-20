@@ -60,6 +60,18 @@ export const Button = styled.a`
   }
 `;
 
+const Slide = styled.div`
+  width: 100%;
+  maxWidth: 960px;
+  margin: 0 auto;
+  height: 30rem;
+  
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+    height: 15rem;
+    font-size: 0.5em !important;
+  }
+`;
+
 const MetaData = styled.div`
   display: flex;
   flex-direction: column;
@@ -69,8 +81,8 @@ const MetaData = styled.div`
   
   h1, h2, h3, h4 {
     border: none;
-    padding-left: 30px;
     margin: 10px;
+    padding: 0 30px;
   }
   
   h1 {
@@ -120,12 +132,7 @@ const Home: React.FC = () => (
         </Layout>
       </Section>
       <Section background={ZEZE_GRAY}>
-        <div style={{
-          width: "100%",
-          maxWidth: "960px",
-          margin: "0 auto",
-          height: "30rem",
-        }}>
+        <Slide>
           <Carousel>
             <MetaData>
               <h1>Hello Limetree!</h1>
@@ -138,7 +145,7 @@ const Home: React.FC = () => (
             <SlideExample
               content={`## Focus on your idea \n\n > No more decorating stuff \n\n > Pixel perfect beautiful slides`}/>
           </Carousel>
-        </div>
+        </Slide>
       </Section>
     </HomeBlock>
   </GlobalLayout>
