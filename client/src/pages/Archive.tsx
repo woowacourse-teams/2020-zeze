@@ -5,22 +5,22 @@ import Cards from "../components/common/Cards";
 import Pagination from "../components/common/Pagination";
 import slideApi, {SlideResponse} from "../api/slide";
 import {googleAnalyticsPageView} from "../utils/googleAnalytics";
+import {SLIDES_CNT} from "../domains/constants";
 
 const ArchiveBlock = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 `;
 
 const Archive: React.FC = () => {
-  const size = 9;
   const [slides, setSlides] = useState<Array<SlideResponse>>([]);
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
 
   useEffect(() => {
-    slideApi.getAll({page, size})
+    slideApi.getAll({page, size: SLIDES_CNT})
       .then(res => {
         setSlides(res.data.slides);
         setTotalPage(res.data.totalPage);
@@ -30,19 +30,19 @@ const Archive: React.FC = () => {
   const onClickPage = (e: React.MouseEvent<HTMLDivElement>) => {
     const page = parseInt(e.currentTarget.getAttribute("data-page")!);
     setPage(page);
-    slideApi.getAll({page, size})
+    slideApi.getAll({page, size: SLIDES_CNT})
       .then(res => setSlides(res.data.slides));
   };
 
   const onClickPrev = (prev: number) => {
     setPage(prev);
-    slideApi.getAll({page, size})
+    slideApi.getAll({page, size: SLIDES_CNT})
       .then(res => setSlides(res.data.slides));
   };
 
   const onClickNext = (next: number) => {
     setPage(next);
-    slideApi.getAll({page, size})
+    slideApi.getAll({page, size: SLIDES_CNT})
       .then(res => setSlides(res.data.slides));
   };
 
@@ -57,7 +57,7 @@ const Archive: React.FC = () => {
         <Pagination page={page}
                     totalPage={totalPage}
                     onClickPage={onClickPage}
-                    onClickPrevious={onClickPrev}
+                    onClickPrev={onClickPrev}
                     onClickNext={onClickNext}/>
       </ArchiveBlock>
     </SidebarLayout>

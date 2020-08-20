@@ -1,7 +1,8 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import styled from "@emotion/styled";
+import {PAGE_CNT} from "../../domains/constants";
 
-const PAGES = styled.div`
+const Pages = styled.div`
   width: 100%;
   height: 30px;
   display: flex;
@@ -41,25 +42,29 @@ interface IProps {
 }
 
 const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev, onClickNext}) => {
-  const pageCnt = 5;
-  const pageGroup = Math.floor(page / pageCnt) + 1;
-  let last = pageGroup * pageCnt;
-  const first = last - pageCnt;
-  if (last > totalPage) {
-    last = totalPage;
-  }
-  const next = last + 1;
-  const prev = first - 1;
+  const [first, setFirst] = useState<number>(0);
+  const [last, setLast] = useState<number>(0);
+
+  useEffect(() => {
+    const pageGroup = Math.floor(page / PAGE_CNT) + 1;
+    let last = pageGroup * PAGE_CNT;
+    const first = last - PAGE_CNT;
+    if (last > totalPage) {
+      last = totalPage;
+    }
+    setFirst(first);
+    setLast(last);
+  }, [page])
 
   const showPrevBtn = () => {
-    if (first > pageCnt) {
-      return <div onClick={() => onClickPrev(prev)}>&laquo;</div>;
+    if (first > PAGE_CNT) {
+      return <div onClick={() => onClickPrev(first - 1)}>&laquo;</div>;
     }
   }
 
   const showNextBtn = () => {
-    if (next > pageCnt && next < totalPage) {
-      return <div onClick={() => onClickNext(next)}>&raquo;</div>
+    if (last + 1 > PAGE_CNT && last + 1 < totalPage) {
+      return <div onClick={() => onClickNext(last + 1)}>&raquo;</div>
     }
   }
 
@@ -76,11 +81,11 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickPrev
   }
 
   return (
-    <PAGES>
+    <Pages>
       {showPrevBtn()}
       {showNumbers()}
       {showNextBtn()}
-    </PAGES>
+    </Pages>
   );
 }
 
