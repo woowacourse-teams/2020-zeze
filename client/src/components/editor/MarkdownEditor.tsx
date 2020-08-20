@@ -60,14 +60,15 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
 
       files.filter(({ type }) => type.split("/")[0] === "image")
         .forEach(async file => {
-          const marker = `![Uploading ${file.name}...]()`;
+          const name = file.name.replace(/[\[|\]]/g, "");
+          const marker = `![Uploading ${name}...]()`;
           editor.replaceRange(`${marker}\n`, editor.getCursor());
 
           const uploadUrl = await onDrop?.(file);
 
           const cursor = editor.getCursor();
           const scroll = editor.getScrollInfo();
-          editor.setValue(editor.getValue().replace(marker, `![${file.name}](${uploadUrl})`));
+          editor.setValue(editor.getValue().replace(marker, `![${name}](${uploadUrl})`));
           editor.setCursor(cursor);
           editor.scrollTo(scroll.left, scroll.top);
         });
@@ -79,7 +80,8 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
       const image = template.querySelector("img");
 
       if (image) {
-        const marker = `![Uploading ${image.alt}...]()`;
+        const name = image.alt.replace(/[\[|\]]/g, "");
+        const marker = `![Uploading ${name}...]()`;
         editor.replaceRange(`${marker}\n`, editor.getCursor());
 
         let uploadUrl;
@@ -99,7 +101,7 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
 
         const cursor = editor.getCursor();
         const scroll = editor.getScrollInfo();
-        editor.setValue(editor.getValue().replace(marker, `![${image.alt}](${uploadUrl})`));
+        editor.setValue(editor.getValue().replace(marker, `![${name}](${uploadUrl})`));
         editor.setCursor(cursor);
         editor.scrollTo(scroll.left, scroll.top);
       }
