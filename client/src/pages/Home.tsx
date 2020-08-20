@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "@emotion/styled";
 import GlobalLayout from "../components/common/GlobalLayout";
 import {GITHUB_AUTH_URL, MAX_WIDTH, MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../domains/constants";
 import Carousel from "../components/common/Carousel";
 import SlideExample from "../components/common/SlideExample";
+import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 export const HomeBlock = styled.div`
   background-color: ${ZEZE_GRAY};
@@ -68,7 +69,7 @@ const Slide = styled.div`
   
   @media (max-width: ${MOBILE_MAX_WIDTH}px) {
     height: 15rem;
-    font-size: 0.5em !important;
+    font-size: 0.5em;
   }
 `;
 
@@ -99,56 +100,63 @@ const MetaData = styled.div`
   }
 `;
 
-const Home: React.FC = () => (
-  <GlobalLayout>
-    <HomeBlock>
-      <Section background={ZEZE_GRAY}>
-        <Layout>
-          <Slogan>Beautiful,</Slogan>
-          <Slogan>Minimal <span style={{color: "#00FF7F"}}>Slides</span></Slogan>
-          <Slogan>With Markdown</Slogan>
-          <Button href={GITHUB_AUTH_URL}>Get Started for Free →</Button>
-        </Layout>
-      </Section>
-      <Section background="#333">
-        <Layout>
-          <code style={{color: "#fff"}}>
-            --- <br/>
-            title: Hello Limetree! <br/>
-            subtitle: Hi! <br/>
-            author: Hodol <br/>
-            createdAt: 2020-07-12 <br/>
-            --- <br/> <br/>
-            ## Works like charm <br/>
-            ### with minimal effort <br/> <br/>
-            - Only need to type <br/>
-            - Supports GFM Markdown <br/>
-            - Youtube, Charts, and more! <br/> <br/>
-            --- <br/> <br/>
-            ## Focus on your idea <br/> <br/>
-            > No more decorating stuff <br/>
-            > Pixel perfect beautiful slides
-          </code>
-        </Layout>
-      </Section>
-      <Section background={ZEZE_GRAY}>
-        <Slide>
-          <Carousel>
-            <MetaData>
-              <h1>Hello Limetree!</h1>
-              <h2>Hi!</h2>
-              <h3>Hodol</h3>
-              <h4>2020-07-12</h4>
-            </MetaData>
-            <SlideExample
-              content={`## Works like charm \n ### with minimal effort \n\n - Only need to type \n - Supports GFM Markdown \n - Youtube, Charts, and more! \n\n`}/>
-            <SlideExample
-              content={`## Focus on your idea \n\n > No more decorating stuff \n\n > Pixel perfect beautiful slides`}/>
-          </Carousel>
-        </Slide>
-      </Section>
-    </HomeBlock>
-  </GlobalLayout>
-);
+const Home: React.FC = () => {
+  useEffect(() => {
+    googleAnalyticsPageView("Landing");
+  }, []);
+
+  return (
+    <GlobalLayout>
+      <HomeBlock>
+        <Section background={ZEZE_GRAY}>
+          <Layout>
+            <Slogan>Beautiful,</Slogan>
+            <Slogan>Minimal <span style={{color: "#00FF7F"}}>Slides</span></Slogan>
+            <Slogan>With Markdown</Slogan>
+            <Button href={GITHUB_AUTH_URL} onClick={() => googleAnalyticsEvent("User", "Get Started")}>Get Started for
+              Free →</Button>
+          </Layout>
+        </Section>
+        <Section background="#333">
+          <Layout>
+            <code style={{color: "#fff"}}>
+              --- <br/>
+              title: Hello Limetree! <br/>
+              subtitle: Hi! <br/>
+              author: Hodol <br/>
+              createAt: 2020-07-12 <br/>
+              --- <br/> <br/>
+              ## Works like charm <br/>
+              ### with minimal effort <br/> <br/>
+              - Only need to type <br/>
+              - Supports GFM Markdown <br/>
+              - Youtube, Charts, and more! <br/> <br/>
+              --- <br/> <br/>
+              ## Focus on your idea <br/> <br/>
+              > No more decorating stuff <br/>
+              > Pixel perfect beautiful slides
+            </code>
+          </Layout>
+        </Section>
+        <Section background={ZEZE_GRAY}>
+          <Slide>
+            <Carousel>
+              <MetaData>
+                <h1>Hello Limetree!</h1>
+                <h2>Hi!</h2>
+                <h3>Hodol</h3>
+                <h4>2020-07-12</h4>
+              </MetaData>
+              <SlideExample
+                content={`## Works like charm \n ### with minimal effort \n\n - Only need to type \n - Supports GFM Markdown \n - Youtube, Charts, and more! \n\n`}/>
+              <SlideExample
+                content={`## Focus on your idea \n\n > No more decorating stuff \n\n > Pixel perfect beautiful slides`}/>
+            </Carousel>
+          </Slide>
+        </Section>
+      </HomeBlock>
+    </GlobalLayout>
+  );
+};
 
 export default Home;
