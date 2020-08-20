@@ -112,6 +112,7 @@ const Editor: React.FC = () => {
       .then(url => resolve(url))
       .catch(() => {
         googleAnalyticsException("파일 업로드 실패");
+        toastFactory.createToast("uploads failure", ToastType.ERROR);
       });
   }), []);
 
@@ -131,6 +132,7 @@ const Editor: React.FC = () => {
       history.replace(`/editor/${slideId}`);
     } catch (error) {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
+      toastFactory.createToast("create failure", ToastType.ERROR);
     }
   }, [history, parsed]);
 
@@ -148,7 +150,6 @@ const Editor: React.FC = () => {
       await slideApi.update(data);
       googleAnalyticsEvent("슬라이드", `#${id} 수정 완료`);
       toastFactory.createToast("save success", ToastType.SUCCESS);
-      alert("성공");
     } catch {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
       toastFactory.createToast("save failure", ToastType.ERROR);
