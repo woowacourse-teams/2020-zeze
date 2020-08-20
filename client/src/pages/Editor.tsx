@@ -109,7 +109,7 @@ const Editor: React.FC = () => {
         author: user!.name
       }));
     }
-  }, [id, toastFactory]);
+  }, [id]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
