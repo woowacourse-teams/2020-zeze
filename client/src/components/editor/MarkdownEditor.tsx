@@ -82,7 +82,20 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
         const marker = `![Uploading ${image.alt}...]()`;
         editor.replaceRange(`${marker}\n`, editor.getCursor());
 
-        const uploadUrl = await onExternalDrop?.(image.src, "external");
+        let uploadUrl;
+
+        const dataUrl = image.src.match(/^data:image/)?.input;
+        if (dataUrl) {
+          const decoded = atob(dataUrl.split(",")[1]);
+          const buffer = new ArrayBuffer(decoded.length);
+          const view = new DataView(buffer);
+          for (let i = 0; i < decoded.length; ++i) {
+            view.setUint8(i, decoded.charCodeAt(i));
+          }
+          uploadUrl = await onDrop?.(new File([buffer], "external"));
+        } else {
+          uploadUrl = await onExternalDrop?.(image.src, "external");
+        }
 
         const cursor = editor.getCursor();
         const scroll = editor.getScrollInfo();
