@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from "react";
-
 import styled from "@emotion/styled";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Cards from "../components/common/Cards";
 import Pagination from "../components/common/Pagination";
 import slideApi, {SlideResponse} from "../api/slide";
+import {googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 const ArchiveBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+height: 100%;
 `;
 
 const Archive: React.FC = () => {
@@ -46,6 +46,10 @@ const Archive: React.FC = () => {
     slideApi.getAll({page, size})
       .then(res => setSlides(res.data.slides));
   };
+
+  useEffect(() => {
+    googleAnalyticsPageView("Archive");
+  }, []);
 
   return (
     <SidebarLayout>

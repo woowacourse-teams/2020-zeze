@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useHistory} from "react-router-dom";
+import {useRecoilValue} from "recoil";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -11,7 +12,9 @@ import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
 import {clear, saveImg} from "../assets/icons";
-import parse, {ParsedData} from "../utils/metadata";
+import {parse, createTemplate, ParsedData} from "../utils/metadata";
+import {userInfoQuery} from "../store/atoms";
+import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -70,11 +73,11 @@ interface Params {
 }
 
 const Editor: React.FC = () => {
+  const user = useRecoilValue(userInfoQuery);
   const params = useParams<Params>();
   const id = parseInt(params?.id ?? "0", 10);
   const history = useHistory();
   const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
-
   const [content, setContent] = useState<string>("");
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
@@ -85,36 +88,51 @@ const Editor: React.FC = () => {
   ), [parsed]);
 
   useEffect(() => {
+    googleAnalyticsPageView("Editor");
+  }, []);
+
+  useEffect(() => {
     id && slideApi.get(id)
       .then(({data}) => {
         codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
+        googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
         alert("데이터를 불러오지 못했습니다.");
       });
 
     if (!id) {
-      codemirrorRef.current?.setValue("");
+      codemirrorRef.current?.setValue(createTemplate({
+        author: user!.name
+      }));
     }
   }, [id]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
       .then(response => response.data.urls[0])
-      .then(url => resolve(url));
+      .then(url => resolve(url))
+      .catch(() => {
+        googleAnalyticsException("파일 업로드 실패");
+      });
   }), []);
 
   const create = useCallback(async () => {
-    const {headers: {location}} = await slideApi.create({
-      data: {
-        title: parsed.metadata?.title ?? "Untitled",
-        content: codemirrorRef.current!.getValue(),
-        accessLevel: AccessLevel.PRIVATE,
-      },
-    });
-    const slideId = location.substring(location.lastIndexOf("/") + 1);
+    try {
+      const {headers: {location}} = await slideApi.create({
+        data: {
+          title: parsed.metadata?.title ?? "Untitled",
+          content: codemirrorRef.current!.getValue(),
+          accessLevel: AccessLevel.PRIVATE,
+        },
+      });
+      const slideId = location.substring(location.lastIndexOf("/") + 1);
 
-    history.replace(`/editor/${slideId}`);
+      googleAnalyticsEvent("슬라이드", `#${slideId} 저장 완료`);
+      history.replace(`/editor/${slideId}`);
+    } catch (error) {
+      googleAnalyticsException("슬라이드 (신규) 저장 실패");
+    }
   }, [history, parsed]);
 
   const update = useCallback(async () => {
@@ -129,8 +147,10 @@ const Editor: React.FC = () => {
 
     try {
       await slideApi.update(data);
+      googleAnalyticsEvent("슬라이드", `#${id} 수정 완료`);
       alert("성공");
     } catch {
+      googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
       alert("실패");
     }
   }, [id, parsed]);
@@ -140,8 +160,13 @@ const Editor: React.FC = () => {
   }, [id, update, create]);
 
   const deleteSlide = useCallback(async () => {
-    id && await slideApi.delete(id);
-    history.push("/archive");
+    try {
+      id && await slideApi.delete(id);
+      googleAnalyticsEvent("슬라이드", `#${id} 삭제 완료`);
+      history.push("/archive");
+    } catch (error) {
+      googleAnalyticsException(`슬라이드 #${id} 삭제 실패`);
+    }
   }, [history, id]);
 
   return (
