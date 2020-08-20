@@ -13,7 +13,7 @@ import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
 import {clear, saveImg} from "../assets/icons";
 import {parse, createTemplate, ParsedData} from "../utils/metadata";
-import ToastFactory, {IToastFactory} from "../domains/ToastFactory";
+import ToastFactory from "../domains/ToastFactory";
 import {userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
