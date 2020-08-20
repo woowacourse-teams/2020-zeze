@@ -8,6 +8,10 @@ import newSlides from "./newSlides.svg";
 import more from "./more.svg";
 import saveImg from "./save.svg";
 import clear from "./clear.svg";
+import checkIcon from "./toast_check.svg";
+import warnIcon from "./toast_warn.svg";
+import infoIcon from "./toast_info.svg";
+import errorIcon from "./toast_error.svg";
 import privateToggle from "./private.svg";
 import publicToggle from "./public.svg";
 
@@ -24,5 +28,9 @@ export {
   clear,
   privateToggle,
   publicToggle,
+  checkIcon,
+  errorIcon,
+  infoIcon,
+  warnIcon,
 };
 

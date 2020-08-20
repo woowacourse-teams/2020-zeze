@@ -71,3 +71,8 @@ operation::slides/delete[snippets='http-request,http-response,request-headers,pa
 === 파일 업로드
 
 operation::files/upload[snippets='http-request,http-response,request-parts,response-fields']
+
+[[resources-files-upload-external]]
+=== 외부 파일 업로드
+
+operation::files/upload-external[snippets='http-request,http-response,request-fields,response-fields']

@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import dotenv from "dotenv";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Auth from "./pages/Auth";
+import ToastAlarm from "./components/common/ToastAlarm";
 import {initializeGoogleAnalytics} from "./utils/googleAnalytics";
 
 const Home = React.lazy(() => import("./pages/Home"));
@@ -17,7 +18,6 @@ const App: React.FC = () => {
   useEffect(() => {
     initializeGoogleAnalytics();
   }, []);
-
   return (
     <Router>
       <Switch>
@@ -29,8 +29,9 @@ const App: React.FC = () => {
         <Auth path="/archive" component={Archive}/>
         <Route component={Error}/>
       </Switch>
+      <ToastAlarm/>
     </Router>
-  );
+  )
 };
 
 export default App;

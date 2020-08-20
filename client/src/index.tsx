@@ -21,6 +21,10 @@ const globalStyle = css`
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
   }
+  
+  div#root {
+    position: relative;
+  }
 `;
 
 ReactDOM.render(

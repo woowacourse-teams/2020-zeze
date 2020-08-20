@@ -10,8 +10,9 @@ import SidebarLayout from "../components/common/SidebarLayout";
 
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
-import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
+import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
 import {createTemplate, parse, ParsedData} from "../utils/metadata";
+import ToastFactory from "../domains/ToastFactory";
 import {userInfoQuery} from "../store/atoms";
 import {clear, privateToggle, publicToggle, saveImg} from "../assets/icons";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
@@ -78,6 +79,8 @@ const Editor: React.FC = () => {
   const id = parseInt(params?.id ?? "0", 10);
   const history = useHistory();
   const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
+  const toastFactory = ToastFactory();
+
   const [content, setContent] = useState<string>("");
   const [accessLevel, setAccessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
   const isInitialMount = useRef(true);
@@ -94,25 +97,6 @@ const Editor: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    id && slideApi.get(id)
-      .then(({data}) => {
-        isInitialMount.current = data.accessLevel === AccessLevel.PUBLIC;
-        setAccessLevel(data.accessLevel);
-        codemirrorRef.current?.setValue(data.content);
-      })
-      .catch(() => {
-        googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
-        alert("데이터를 불러오지 못했습니다.");
-      });
-
-    if (!id) {
-      codemirrorRef.current?.setValue(createTemplate({
-        author: user!.name
-      }));
-    }
-  }, [id]);
-
-  useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
@@ -120,13 +104,41 @@ const Editor: React.FC = () => {
     }
   }, [accessLevel]);
 
+  useEffect(() => {
+    id && slideApi.get(id)
+      .then(({data}) => {
+        if (data.accessLevel === AccessLevel.PUBLIC && !isInitialMount.current) {
+          isInitialMount.current = true;
+          setAccessLevel(AccessLevel.PUBLIC);
+        }
+        codemirrorRef.current?.setValue(data.content);
+      })
+      .catch(() => {
+        googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
+        toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
+      });
+
+    if (!id) {
+      codemirrorRef.current?.setValue(createTemplate({
+        author: user!.name,
+      }));
+    }
+  }, []);
+
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
       .then(response => response.data.urls[0])
       .then(url => resolve(url))
       .catch(() => {
         googleAnalyticsException("파일 업로드 실패");
+        toastFactory.createToast("uploads failure", ToastType.ERROR);
       });
+  }), []);
+
+  const uploadExternalFile = useCallback((url: string, name: string) => new Promise<string>(resolve => {
+    filesApi.uploadExternal(url, name)
+      .then(response => response.data.urls[0])
+      .then(url => resolve(url));
   }), []);
 
   const create = useCallback(async () => {
@@ -141,9 +153,11 @@ const Editor: React.FC = () => {
       const slideId = location.substring(location.lastIndexOf("/") + 1);
 
       googleAnalyticsEvent("슬라이드", `#${slideId} 저장 완료`);
+      toastFactory.createToast("create success", ToastType.SUCCESS);
       history.replace(`/editor/${slideId}`);
     } catch (error) {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
+      toastFactory.createToast("create failure", ToastType.ERROR);
     }
   }, [history, parsed, accessLevel]);
 
@@ -160,12 +174,12 @@ const Editor: React.FC = () => {
     try {
       await slideApi.update(data);
       googleAnalyticsEvent("슬라이드", `#${id} 수정 완료`);
-      alert("성공");
+      toastFactory.createToast("save success", ToastType.SUCCESS);
     } catch {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
-      alert("실패");
+      toastFactory.createToast("save failure", ToastType.ERROR);
     }
-  }, [id, parsed, accessLevel]);
+  }, [id, parsed.metadata, toastFactory, accessLevel]);
 
   const save = useCallback(() => {
     id ? update() : create();
@@ -181,7 +195,7 @@ const Editor: React.FC = () => {
     }
   }, [history, id]);
 
-  const changeAccessLevel = useCallback( () => {
+  const changeAccessLevel = useCallback(() => {
     setAccessLevel(accessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
   }, [accessLevel]);
 
@@ -190,13 +204,19 @@ const Editor: React.FC = () => {
       <EditorBlock>
         <Edit>
           <Menu>
-            <button style={{backgroundImage: `url(${accessLevel === AccessLevel.PUBLIC ? publicToggle : privateToggle})`}}
+            <button
+              style={{backgroundImage: `url(${accessLevel === AccessLevel.PUBLIC ? publicToggle : privateToggle})`}}
               onClick={changeAccessLevel}/>
             <SaveButton onClick={save}/>
             <DeleteButton onClick={deleteSlide}/>
           </Menu>
-          <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile}
-            onSaveKeyDown={save}/>
+          <MarkdownEditor
+            inputRef={codemirrorRef}
+            onChange={setContent}
+            onDrop={uploadFile}
+            onExternalDrop={uploadExternalFile}
+            onSaveKeyDown={save}
+          />
           <FullScreenMode contents={slides}/>
         </Edit>
         <Preview content={content}/>
