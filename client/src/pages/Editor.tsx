@@ -13,7 +13,7 @@ import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
 import {clear, saveImg} from "../assets/icons";
 import {parse, createTemplate, ParsedData} from "../utils/metadata";
-import ToastFactory from "../domains/ToastFactory";
+import ToastFactory, {IToastFactory} from "../domains/ToastFactory";
 import {userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
@@ -109,7 +109,7 @@ const Editor: React.FC = () => {
         author: user!.name
       }));
     }
-  }, [id, toastFactory]);
+  }, [id]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
