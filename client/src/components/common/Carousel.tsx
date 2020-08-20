@@ -22,6 +22,7 @@ const CarouselWarpper = styled.div<IProps>`
   height: 100%;
   transition: 0.5s;
   transform: translateX(-${({cursor}) => cursor * 100}%);
+  
   > * {
     flex: 0 0 100%;
     height: 100%;
@@ -31,7 +32,7 @@ const CarouselWarpper = styled.div<IProps>`
 const Button = styled.button`
   position: absolute;
   top: 50%;
-  width:32px;
+  width: 32px;
   height: 32px;
   border: 0;
   outline: none;
@@ -58,6 +59,7 @@ const Carousel: React.FC = ({children}) => {
     if (cursor === 0) {
       return;
     }
+
     setCursor(cursor - 1);
   }, [cursor]);
 
@@ -74,8 +76,8 @@ const Carousel: React.FC = ({children}) => {
       <CarouselWarpper cursor={cursor}>
         {children}
       </CarouselWarpper>
-      {cursor > 0 && <LeftButton onClick={() => prev()}/>}
-      {cursor < count - 1 && <RightButton onClick={() => next()}/>}
+      {cursor > 0 && <LeftButton onClick={prev}/>}
+      {cursor < count - 1 && <RightButton onClick={next}/>}
     </CarouselBlock>
   );
 };
