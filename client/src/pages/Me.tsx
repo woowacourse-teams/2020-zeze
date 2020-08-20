@@ -5,11 +5,10 @@ import Info from "../components/common/Info";
 import Cards from "../components/common/Cards";
 import usersApi from "../api/user";
 
-import {
-  getAllSlidesQuery,
-  userInfoQuery,
-} from "../store/atoms";
+import {getAllSlidesQuery, userInfoQuery} from "../store/atoms";
 import filesApi from "../api/file";
+import {ToastType} from "../domains/constants";
+import ToastFactory from "../domains/ToastFactory";
 import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 export interface User {
@@ -18,11 +17,13 @@ export interface User {
   profileImage: string
 }
 
+
 const Me: React.FC = () => {
   const slides = useRecoilValue(getAllSlidesQuery);
   const user = useRecoilValue(userInfoQuery);
   const setUser = useResetRecoilState(userInfoQuery);
   const [editedUser, setEditedUser] = useState<User>(user!);
+  const toastFactory = ToastFactory();
 
   useEffect(() => {
     googleAnalyticsPageView("My Page");
@@ -44,9 +45,10 @@ const Me: React.FC = () => {
     usersApi.update(userInfo)
       .then(() => {
         googleAnalyticsEvent("유저", "정보 업데이트 성공");
-        alert("update success");
+        toastFactory.createToast("update success", ToastType.SUCCESS);
       })
-      .then(() => setUser());
+      .then(() => setUser())
+      .catch(() => toastFactory.createToast("update failure", ToastType.ERROR));
   }, [setUser]);
 
   return (

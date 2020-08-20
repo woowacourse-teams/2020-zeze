@@ -10,9 +10,10 @@ import SidebarLayout from "../components/common/SidebarLayout";
 
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
-import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
+import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
 import {clear, saveImg} from "../assets/icons";
 import {parse, createTemplate, ParsedData} from "../utils/metadata";
+import ToastFactory from "../domains/ToastFactory";
 import {userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
@@ -78,6 +79,8 @@ const Editor: React.FC = () => {
   const id = parseInt(params?.id ?? "0", 10);
   const history = useHistory();
   const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
+  const toastFactory = ToastFactory();
+
   const [content, setContent] = useState<string>("");
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
@@ -98,7 +101,7 @@ const Editor: React.FC = () => {
       })
       .catch(() => {
         googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
-        alert("데이터를 불러오지 못했습니다.");
+        toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
       });
 
     if (!id) {
@@ -106,7 +109,7 @@ const Editor: React.FC = () => {
         author: user!.name
       }));
     }
-  }, [id]);
+  }, [id, toastFactory]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -114,6 +117,7 @@ const Editor: React.FC = () => {
       .then(url => resolve(url))
       .catch(() => {
         googleAnalyticsException("파일 업로드 실패");
+        toastFactory.createToast("uploads failure", ToastType.ERROR);
       });
   }), []);
 
@@ -129,9 +133,11 @@ const Editor: React.FC = () => {
       const slideId = location.substring(location.lastIndexOf("/") + 1);
 
       googleAnalyticsEvent("슬라이드", `#${slideId} 저장 완료`);
+      toastFactory.createToast("create success", ToastType.SUCCESS);
       history.replace(`/editor/${slideId}`);
     } catch (error) {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
+      toastFactory.createToast("create failure", ToastType.ERROR);
     }
   }, [history, parsed]);
 
@@ -148,12 +154,12 @@ const Editor: React.FC = () => {
     try {
       await slideApi.update(data);
       googleAnalyticsEvent("슬라이드", `#${id} 수정 완료`);
-      alert("성공");
+      toastFactory.createToast("save success", ToastType.SUCCESS);
     } catch {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
-      alert("실패");
+      toastFactory.createToast("save failure", ToastType.ERROR);
     }
-  }, [id, parsed]);
+  }, [id, parsed.metadata, toastFactory]);
 
   const save = useCallback(() => {
     id ? update() : create();
