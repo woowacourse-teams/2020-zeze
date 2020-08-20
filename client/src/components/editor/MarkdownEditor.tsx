@@ -104,8 +104,8 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
 
   return (
     <>
-      <Global styles={codeMirrorStyle} />
-      <StyledTextArea ref={textareaRef} />
+      <Global styles={codeMirrorStyle}/>
+      <StyledTextArea ref={textareaRef}/>
     </>
   );
 };

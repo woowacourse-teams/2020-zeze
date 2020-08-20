@@ -155,8 +155,8 @@ const Editor: React.FC = () => {
       <EditorBlock>
         <Edit>
           <ButtonMenu>
-            <SaveButton onClick={save} />
-            <DeleteButton onClick={deleteSlide} />
+            <SaveButton onClick={save}/>
+            <DeleteButton onClick={deleteSlide}/>
           </ButtonMenu>
           <MarkdownEditor
             inputRef={codemirrorRef}
@@ -165,9 +165,9 @@ const Editor: React.FC = () => {
             onExternalDrop={uploadExternalFile}
             onSaveKeyDown={save}
           />
-          <FullScreenMode contents={slides} />
+          <FullScreenMode contents={slides}/>
         </Edit>
-        <Preview content={content} />
+        <Preview content={content}/>
       </EditorBlock>
     </SidebarLayout>
   );
