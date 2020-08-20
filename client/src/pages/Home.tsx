@@ -113,8 +113,7 @@ const Home: React.FC = () => {
             <Slogan>Beautiful,</Slogan>
             <Slogan>Minimal <span style={{color: "#00FF7F"}}>Slides</span></Slogan>
             <Slogan>With Markdown</Slogan>
-            <Button href={GITHUB_AUTH_URL} onClick={() => googleAnalyticsEvent("User", "Get Started")}>Get Started for
-              Free →</Button>
+            <Button href={GITHUB_AUTH_URL} onClick={() => googleAnalyticsEvent("User", "Get Started")}>Get Started for Free →</Button>
           </Layout>
         </Section>
         <Section background="#333">
