@@ -11,10 +11,11 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
-import {clear, saveImg} from "../assets/icons";
+import {saveImg} from "../assets/icons";
 import {parse, createTemplate, ParsedData} from "../utils/metadata";
 import {userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
+import EditorButtons from "../components/common/EditorButtons";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -22,7 +23,6 @@ const EditorBlock = styled.main`
   max-height: 100vh;
   
   > div {
-    flex: 1;
     position: relative;
     overflow: auto;
   }
@@ -34,38 +34,21 @@ const EditorBlock = styled.main`
 `;
 
 const Edit = styled.div`
+  flex: 1.5;
   display: flex;
   flex-direction: column;
 `;
 
-const ButtonMenu = styled.div`
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-  background-color: #313335;
-  
-  > button {
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 16px;
-    width: 50px;
-    margin: 5px;
-    border: 0;
-    border-radius: 8px;
-    outline: none;
-    color: #777;
-    font-weight: bold;
-    background-color: transparent;
-    cursor: pointer;
+
+const SaveButton = styled.div`
+  position: absolute;
+  z-index: 3;
+  right: 70px;
+  top: 70px;
+  > img {
+    width: 20px;
+    height: 20px;
   }
-`;
-
-const SaveButton = styled.button`
-  background-image: url(${saveImg});
-`;
-
-const DeleteButton = styled.button`
-  background-image: url(${clear});
 `;
 
 interface Params {
@@ -103,10 +86,10 @@ const Editor: React.FC = () => {
 
     if (!id) {
       codemirrorRef.current?.setValue(createTemplate({
-        author: user!.name
+        author: user!.name,
       }));
     }
-  }, [id]);
+  }, [id, user]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -170,15 +153,14 @@ const Editor: React.FC = () => {
   }, [history, id]);
 
   return (
-    <SidebarLayout fluid>
+    <SidebarLayout fluid toggleable>
       <EditorBlock>
         <Edit>
-          <ButtonMenu>
-            <SaveButton onClick={save}/>
-            <DeleteButton onClick={deleteSlide}/>
-          </ButtonMenu>
+          <EditorButtons/>
+          {/* <DeleteButton onClick={deleteSlide}/>*/}
           <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile}
             onSaveKeyDown={save}/>
+          <SaveButton onClick={save}><img src={saveImg} alt={saveImg}/></SaveButton>
           <FullScreenMode contents={slides}/>
         </Edit>
         <Preview content={content}/>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "@emotion/styled";
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
 import SidebarNav from "./SidebarNav";
@@ -7,6 +7,7 @@ import {userInfoQuery} from "../../store/atoms";
 
 interface SidebarLayoutProps {
   fluid?: boolean
+  toggleable?: boolean
 }
 
 export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
@@ -19,7 +20,7 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
     padding: 30px;
     min-width: 275px; 
     height: 100vh;
-    display: flex;
+    display: ${props => (props.toggleable ? "none" : "flex")};
     flex-direction: column;
     justify-content: space-between;
     position: fixed;
@@ -43,7 +44,7 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
     background-color: ${ZEZE_GRAY};
     flex: 1;
     width: 100%;
-    padding-left: 275px;
+    padding-left: ${props => (props.toggleable ? 0 : 275)}px;
     box-sizing: border-box;
     min-height: 100vh;
     
@@ -60,14 +61,15 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
 
 interface IProps {
   fluid?: boolean,
+  toggleable?: boolean
 }
 
-const SidebarLayout: React.FC<IProps> = ({children, fluid = false}) => {
+const SidebarLayout: React.FC<IProps> = ({children, fluid = false, toggleable = false}) => {
   const user = useRecoilValue(userInfoQuery);
 
   return (
-    <SidebarLayoutBlock fluid={fluid}>
-      <SidebarNav user={user!}/>
+    <SidebarLayoutBlock fluid={fluid} toggleable={toggleable}>
+      <SidebarNav user={user!} />
       <main>
         <div>
           {children}

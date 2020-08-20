@@ -112,11 +112,12 @@ export const FullScreenButton = styled.button`
   background-position: center;
   background-repeat: no-repeat;
   background-color: transparent;
-  width: 18px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   border: none;
   position: absolute;
-  right: 20px;
+  top: 70px;
+  right: 30px;
   z-index: 3;
   cursor: pointer;
   
@@ -150,6 +151,8 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
       break;
     case Keys.ARROW_LEFT:
       slideExists(index - 1) && setIndex(index - 1);
+      break;
+    default:
       break;
     }
   };
