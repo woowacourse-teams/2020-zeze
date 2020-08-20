@@ -89,10 +89,9 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
         const dataUrl = image.src.match(/^data:image/)?.input;
         if (dataUrl) {
           const decoded = atob(dataUrl.split(",")[1]);
-          const buffer = new ArrayBuffer(decoded.length);
-          const view = new DataView(buffer);
+          const buffer = new Uint8Array(decoded.length);
           for (let i = 0; i < decoded.length; ++i) {
-            view.setUint8(i, decoded.charCodeAt(i));
+            buffer[i] = decoded.charCodeAt(i);
           }
           uploadUrl = await onDrop?.(new File([buffer], "external"));
         } else {
