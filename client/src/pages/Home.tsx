@@ -124,7 +124,7 @@ const Home: React.FC = () => {
               title: Hello Limetree! <br/>
               subtitle: Hi! <br/>
               author: Hodol <br/>
-              createAt: 2020-07-12 <br/>
+              createdAt: 2020-07-12 <br/>
               --- <br/> <br/>
               ## Works like charm <br/>
               ### with minimal effort <br/> <br/>
