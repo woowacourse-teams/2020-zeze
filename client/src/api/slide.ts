@@ -47,16 +47,12 @@ const slideApi = {
       headers: {
         authorization: localStorage.getItem("accessToken"),
       },
-      params: {
-        ...page,
-      },
+      params: page,
     });
   },
   getPublic(page: PageProps): Promise<AxiosResponse<SlideResponses>> {
     return slideInstance.get("/", {
-      params: {
-        ...page,
-      },
+      params: page,
     });
   },
   create({data}: SlideRequest): Promise<AxiosResponse<SlideResponse>> {
