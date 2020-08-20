@@ -3,7 +3,9 @@ package dev.minguinho.zeze.domain.file.model;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +28,42 @@ public class S3Uploader {
     private String bucket;
     @Value("${cloud.aws.s3.directory}")
     private String directory;
+    @Value("#{systemProperties['java.io.tmpdir']}")
+    private String tmpDir;
 
-    public String upload(MultipartFile multipartFile) {
+    public String uploadMultiPartFile(MultipartFile multipartFile) {
         File file = convert(multipartFile);
+        return upload(file);
+    }
+
+    public String uploadExternalFile(String url, String fileName) throws IOException {
+        File file = download(url, fileName);
+        return upload(file);
+    }
+
+    private File convert(MultipartFile multipartFile) {
+        File convertedFile = new File(tmpDir + multipartFile.getOriginalFilename());
+        try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
+            fos.write(multipartFile.getBytes());
+        } catch (IOException ie) {
+            throw new FileNotConvertedException(multipartFile.getOriginalFilename());
+        }
+        return convertedFile;
+    }
+
+    private File download(String url, String fileName) throws IOException {
+        InputStream inputStream = new URL(url).openConnection().getInputStream();
+        File file = new File(tmpDir + fileName);
+        OutputStream outputStream = new FileOutputStream(file);
+        int read;
+        byte[] bytes = new byte[1024];
+        while ((read = inputStream.read(bytes)) != -1) {
+            outputStream.write(bytes, 0, read);
+        }
+        return file;
+    }
+
+    private String upload(File file) {
         String path = String.format("%s/%s-%s", directory, createFilePath(), file.getName());
         amazonS3.putObject(
             new PutObjectRequest(bucket, path, file)
@@ -36,16 +71,6 @@ public class S3Uploader {
         );
         file.deleteOnExit();
         return amazonS3.getUrl(bucket, path).toString();
-    }
-
-    private File convert(MultipartFile multipartFile) {
-        File convertedFile = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
-            fos.write(multipartFile.getBytes());
-        } catch (IOException ie) {
-            throw new FileNotConvertedException(multipartFile.getOriginalFilename());
-        }
-        return convertedFile;
     }
 
     private String createFilePath() {

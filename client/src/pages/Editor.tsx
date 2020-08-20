@@ -121,6 +121,12 @@ const Editor: React.FC = () => {
       });
   }), []);
 
+  const uploadExternalFile = useCallback((url: string, name: string) => new Promise<string>(resolve => {
+    filesApi.uploadExternal(url, name)
+      .then(response => response.data.urls[0])
+      .then(url => resolve(url));
+  }), []);
+
   const create = useCallback(async () => {
     try {
       const {headers: {location}} = await slideApi.create({
@@ -183,8 +189,13 @@ const Editor: React.FC = () => {
             <SaveButton onClick={save}/>
             <DeleteButton onClick={deleteSlide}/>
           </ButtonMenu>
-          <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile}
-            onSaveKeyDown={save}/>
+          <MarkdownEditor
+            inputRef={codemirrorRef}
+            onChange={setContent}
+            onDrop={uploadFile}
+            onExternalDrop={uploadExternalFile}
+            onSaveKeyDown={save}
+          />
           <FullScreenMode contents={slides}/>
         </Edit>
         <Preview content={content}/>
