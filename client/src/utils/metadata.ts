@@ -1,5 +1,5 @@
 export interface MetaProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   author?: string;
   createdAt?: string;
@@ -18,7 +18,16 @@ const DEFAULT_PROPS: MetaProps = {
   title: "Untitled",
 };
 
-const parse = (text: string): ParsedData => {
+export const createTemplate = ({title, subtitle, author}: MetaProps) =>
+  `---
+title: ${title ?? "Untitled"}
+subtitle: ${subtitle ?? "Untitled"}
+author: ${author ?? "Anonymous"}
+createdAt: ${new Date().toLocaleDateString()}
+---
+`;
+
+export const parse = (text: string): ParsedData => {
   const matches = text.match(METADATA_REGEX);
   const metadata: MetaProps | undefined = matches?.[1].split(NEW_LINE_SEPARATOR)
     .map(line => {
@@ -51,5 +60,3 @@ const parse = (text: string): ParsedData => {
     content: text.replace(matches?.[0] ?? "", firstPage),
   };
 };
-
-export default parse;

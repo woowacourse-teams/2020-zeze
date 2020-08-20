@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useHistory} from "react-router-dom";
+import {useRecoilValue} from "recoil";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -11,7 +12,8 @@ import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH} from "../domains/constants";
 import {clear, saveImg} from "../assets/icons";
-import parse, {ParsedData} from "../utils/metadata";
+import {parse, createTemplate, ParsedData} from "../utils/metadata";
+import {userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 const EditorBlock = styled.main`
@@ -71,11 +73,11 @@ interface Params {
 }
 
 const Editor: React.FC = () => {
+  const user = useRecoilValue(userInfoQuery);
   const params = useParams<Params>();
   const id = parseInt(params?.id ?? "0", 10);
   const history = useHistory();
   const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
-
   const [content, setContent] = useState<string>("");
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
@@ -100,7 +102,9 @@ const Editor: React.FC = () => {
       });
 
     if (!id) {
-      codemirrorRef.current?.setValue("");
+      codemirrorRef.current?.setValue(createTemplate({
+        author: user!.name
+      }));
     }
   }, [id]);
 
