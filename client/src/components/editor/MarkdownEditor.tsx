@@ -2,6 +2,8 @@ import React, {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 
 import CodeMirror from "codemirror";
+import "codemirror/addon/search/searchcursor";
+import "codemirror/addon/search/search";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
@@ -20,10 +22,19 @@ const StyledTextArea = styled.textarea`
 interface IProps {
   inputRef: React.MutableRefObject<CodeMirror.Editor | null>
   onChange?: (newValue: string) => void;
-  onDrop?: (files: File) => Promise<string>;
-  onExternalDrop?: (url: string, name: string) => Promise<string>;
+  onDrop: (files: File) => Promise<string>;
+  onExternalDrop: (url: string, name: string) => Promise<string>;
   onSaveKeyDown: () => void;
 }
+
+const dataUrlToFile = (dataUrl: string, filename: string): File => {
+  const decoded = atob(dataUrl.split(",")[1]);
+  const buffer = new Uint8Array(decoded.length);
+  for (let i = 0; i < decoded.length; ++i) {
+    buffer[i] = decoded.charCodeAt(i);
+  }
+  return new File([buffer], filename);
+};
 
 const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExternalDrop, onSaveKeyDown}) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -50,60 +61,33 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
     });
 
     codemirror.on("drop", async (editor, e) => {
-      const fileList = e.dataTransfer?.files;
-
-      if (!fileList) {
-        return;
-      }
-
+      const fileList = e.dataTransfer?.files ?? [];
       const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
-
-      files.filter(({ type }) => type.split("/")[0] === "image")
-        .forEach(async file => {
-          const name = file.name.replace(/[\[|\]]/g, "");
-          const marker = `![Uploading ${name}...]()`;
-          editor.replaceRange(`${marker}\n`, editor.getCursor());
-
-          const uploadUrl = await onDrop?.(file);
-
-          const cursor = editor.getCursor();
-          const scroll = editor.getScrollInfo();
-          editor.setValue(editor.getValue().replace(marker, `![${name}](${uploadUrl})`));
-          editor.setCursor(cursor);
-          editor.scrollTo(scroll.left, scroll.top);
-        });
-    });
-
-    codemirror.on("drop", async (editor, e) => {
       const template = document.createElement("div");
       template.innerHTML = e.dataTransfer?.getData("text/html") ?? "";
       const image = template.querySelector("img");
 
-      if (image) {
-        const name = image.alt.replace(/[\[|\]]/g, "");
+      const drop = async (filename: string, promise: Promise<string>) => {
+        const name = filename.replace(/[\[|\]]/g, "");
         const marker = `![Uploading ${name}...]()`;
         editor.replaceRange(`${marker}\n`, editor.getCursor());
+        const uploadUrl = await promise;
+        const searchCursor = editor.getSearchCursor(marker);
+        searchCursor.findNext() && editor.replaceRange(`![${name}](${uploadUrl})`, searchCursor.from(), searchCursor.to());
+      };
 
-        let uploadUrl;
-
+      if (image) {
         const dataUrl = image.src.match(/^data:image/)?.input;
         if (dataUrl) {
-          const decoded = atob(dataUrl.split(",")[1]);
-          const buffer = new Uint8Array(decoded.length);
-          for (let i = 0; i < decoded.length; ++i) {
-            buffer[i] = decoded.charCodeAt(i);
-          }
-          uploadUrl = await onDrop?.(new File([buffer], "external"));
+          drop(image.alt, onDrop(dataUrlToFile(dataUrl, "untitled")));
         } else {
-          uploadUrl = await onExternalDrop?.(image.src, "external");
+          drop(image.alt, onExternalDrop(image.src, "untitled"));
         }
-
-        const cursor = editor.getCursor();
-        const scroll = editor.getScrollInfo();
-        editor.setValue(editor.getValue().replace(marker, `![${name}](${uploadUrl})`));
-        editor.setCursor(cursor);
-        editor.scrollTo(scroll.left, scroll.top);
+        return;
       }
+
+      files.filter(({ type }) => type.split("/")[0] === "image")
+        .forEach(file => drop(file.name, onDrop(file)));
     });
 
     codemirror.setSize("100%", "100%");
