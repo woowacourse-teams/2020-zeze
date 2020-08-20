@@ -143,9 +143,9 @@ const convertOptions = (type: Type, json: any) => {
           },
         }],
       }
-    }
+    };
   }
-}
+};
 
 interface IProps {
   code: string,
