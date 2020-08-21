@@ -25,3 +25,15 @@ export enum AccessLevel {
   PUBLIC = "PUBLIC"
 }
 
+export type Toast = {
+  title: string,
+  backgroundColor: string,
+  icon: string,
+}
+
+export enum ToastType {
+  SUCCESS = "SUCCESS",
+  ERROR = "ERROR",
+  WARN = "WARN",
+  INFO ="INFO",
+}

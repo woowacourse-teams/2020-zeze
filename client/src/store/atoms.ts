@@ -3,6 +3,7 @@ import {AxiosResponse} from "axios";
 import slideApi, {SlideResponses} from "../api/slide";
 import {User} from "../pages/Me";
 import usersApi from "../api/user";
+import {Toast} from "../domains/constants";
 import {googleAnalyticsException} from "../utils/googleAnalytics";
 
 export const getAllSlidesQuery = selector({
@@ -33,4 +34,9 @@ export const userInfoQuery = selector<User | null>({
   set: ({set}) => {
     set(userInfoTrigger, v => v + 1);
   },
+});
+
+export const toastMessages = atom<Array<Toast>>({
+  key: "toastMessages",
+  default: [],
 });

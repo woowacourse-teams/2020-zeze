@@ -7,6 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class FileUrlResponses {
+public class FileUrlResponsesDto {
     private final List<String> urls;
 }

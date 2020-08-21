@@ -2,6 +2,8 @@ import React, {useEffect} from "react";
 import styled from "@emotion/styled";
 import GlobalLayout from "../components/common/GlobalLayout";
 import {GITHUB_AUTH_URL, MAX_WIDTH, MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../domains/constants";
+import Carousel from "../components/common/Carousel";
+import SlideExample from "../components/common/SlideExample";
 import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 export const HomeBlock = styled.div`
@@ -59,6 +61,45 @@ export const Button = styled.a`
   }
 `;
 
+const Slide = styled.div`
+  width: 100%;
+  maxWidth: 960px;
+  margin: 0 auto;
+  height: 30rem;
+  
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+    height: 15rem;
+    font-size: 0.5em;
+  }
+`;
+
+const MetaData = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 80%;
+  padding-top: 30px;
+  
+  h1, h2, h3, h4 {
+    border: none;
+    margin: 10px;
+    padding: 0 30px;
+  }
+  
+  h1 {
+    font-size: 4em;
+  }
+  
+  h2 {
+    font-size: 2.5em;
+    color: #777; 
+  }
+  
+  h3 {
+    margin-top: 1em;
+  }
+`;
+
 const Home: React.FC = () => {
   useEffect(() => {
     googleAnalyticsPageView("Landing");
@@ -80,8 +121,9 @@ const Home: React.FC = () => {
             <code style={{color: "#fff"}}>
               --- <br/>
               title: Hello Limetree! <br/>
+              subtitle: Hi! <br/>
               author: Hodol <br/>
-              created_at: 2020-07-12 <br/>
+              createdAt: 2020-07-12 <br/>
               --- <br/> <br/>
               ## Works like charm <br/>
               ### with minimal effort <br/> <br/>
@@ -96,21 +138,20 @@ const Home: React.FC = () => {
           </Layout>
         </Section>
         <Section background={ZEZE_GRAY}>
-          <div style={{
-            width: "100%",
-            maxWidth: MAX_WIDTH,
-            margin: "0 auto",
-            minHeight: "30rem",
-            backgroundColor: "#fff",
-            fontWeight: "bold",
-            fontSize: 20,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            boxShadow: "1px 1px 1px #aaa",
-          }}>
-            Slide example goes here
-          </div>
+          <Slide>
+            <Carousel>
+              <MetaData>
+                <h1>Hello Limetree!</h1>
+                <h2>Hi!</h2>
+                <h3>Hodol</h3>
+                <h4>2020-07-12</h4>
+              </MetaData>
+              <SlideExample
+                content={`## Works like charm \n ### with minimal effort \n\n - Only need to type \n - Supports GFM Markdown \n - Youtube, Charts, and more! \n\n`}/>
+              <SlideExample
+                content={`## Focus on your idea \n\n > No more decorating stuff \n\n > Pixel perfect beautiful slides`}/>
+            </Carousel>
+          </Slide>
         </Section>
       </HomeBlock>
     </GlobalLayout>
