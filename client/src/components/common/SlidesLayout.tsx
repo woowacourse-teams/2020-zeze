@@ -37,14 +37,8 @@ const SlidesLayout: React.FC<IProps> = ({slidesCnt, title}) => {
       .then(res => setSlides(res.data.slides));
   };
 
-  const onClickPrev = (prev: number) => {
-    setPage(prev);
-    slideApi.getAll({page, size: slidesCnt})
-      .then(res => setSlides(res.data.slides));
-  };
-
-  const onClickNext = (next: number) => {
-    setPage(next);
+  const onClickMove = (pageNum: number) => {
+    setPage(pageNum);
     slideApi.getAll({page, size: slidesCnt})
       .then(res => setSlides(res.data.slides));
   };
@@ -59,8 +53,7 @@ const SlidesLayout: React.FC<IProps> = ({slidesCnt, title}) => {
       <Pagination page={page}
                   totalPage={totalPage}
                   onClickPage={onClickPage}
-                  onClickPrev={onClickPrev}
-                  onClickNext={onClickNext}/>
+                  onClickMove={onClickMove}/>
     </SlidesBlock>
   );
 }
