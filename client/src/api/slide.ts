@@ -1,11 +1,12 @@
 import axios, {AxiosResponse} from "axios";
+import {AccessLevel} from "../domains/constants";
 
 export interface SlideRequest {
   id?: number
   data?: {
     title: string
     content: string
-    accessLevel: string
+    accessLevel: AccessLevel
     createdAt?: string
     updatedAt?: string
   }
@@ -15,7 +16,7 @@ export interface SlideResponse {
   id: number
   title: string
   content: string
-  accessLevel: string
+  accessLevel: AccessLevel
   createdAt: string
   updatedAt: string
 }
@@ -25,7 +26,7 @@ export interface SlideResponses {
   totalPage: number
 }
 
-interface PageProps {
+export interface PageProps {
   page: number
   size: number
 }
@@ -47,9 +48,12 @@ const slideApi = {
       headers: {
         authorization: localStorage.getItem("accessToken"),
       },
-      params: {
-        ...page,
-      },
+      params: page,
+    });
+  },
+  getPublic(page: PageProps): Promise<AxiosResponse<SlideResponses>> {
+    return slideInstance.get("/", {
+      params: page,
     });
   },
   create({data}: SlideRequest): Promise<AxiosResponse<SlideResponse>> {

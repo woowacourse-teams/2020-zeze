@@ -32,6 +32,6 @@ const App: React.FC = () => {
       <ToastAlarm/>
     </Router>
   )
-}
+};
 
 export default App;

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useParams, useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {useRecoilValue} from "recoil";
 import styled from "@emotion/styled";
 
@@ -11,7 +11,7 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
-import {parse, createTemplate, ParsedData} from "../utils/metadata";
+import {createTemplate, parse, ParsedData} from "../utils/metadata";
 import ToastFactory from "../domains/ToastFactory";
 import {userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
@@ -38,7 +38,7 @@ const Edit = styled.div`
   flex-direction: column;
 `;
 
-const ButtonMenu = styled.div`
+const Menu = styled.div`
   display: flex;
   align-items: center;
   padding-left: 15px;
@@ -81,6 +81,8 @@ const Editor: React.FC = () => {
   const toastFactory = ToastFactory();
 
   const [content, setContent] = useState<string>("");
+  const [accessLevel, setAccessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
+  const isInitialMount = useRef(true);
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
 
@@ -94,21 +96,40 @@ const Editor: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      save();
+    }
+  }, [accessLevel]);
+
+  useEffect(() => {
+    if (id) {
+      return;
+    }
+    if (accessLevel === AccessLevel.PUBLIC) {
+      isInitialMount.current = true;
+      setAccessLevel(AccessLevel.PRIVATE);
+    }
+    codemirrorRef.current?.setValue(createTemplate({
+      author: user!.name,
+    }));
+  }, [id, user]);
+
+  useEffect(() => {
     id && slideApi.get(id)
       .then(({data}) => {
+        if (data.accessLevel === AccessLevel.PUBLIC && !isInitialMount.current) {
+          isInitialMount.current = true;
+          setAccessLevel(AccessLevel.PUBLIC);
+        }
         codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
         googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
         toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
       });
-
-    if (!id) {
-      codemirrorRef.current?.setValue(createTemplate({
-        author: user!.name,
-      }));
-    }
-  }, [id, user]);
+  }, []);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -132,7 +153,7 @@ const Editor: React.FC = () => {
         data: {
           title: parsed.metadata?.title ?? "Untitled",
           content: codemirrorRef.current!.getValue(),
-          accessLevel: AccessLevel.PRIVATE,
+          accessLevel,
         },
       });
       const slideId = location.substring(location.lastIndexOf("/") + 1);
@@ -144,7 +165,7 @@ const Editor: React.FC = () => {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
       toastFactory.createToast("create failure", ToastType.ERROR);
     }
-  }, [history, parsed]);
+  }, [history, parsed, accessLevel]);
 
   const update = useCallback(async () => {
     const data = {
@@ -152,7 +173,7 @@ const Editor: React.FC = () => {
       data: {
         title: parsed.metadata?.title ?? "Untitled",
         content: codemirrorRef.current!.getValue(),
-        accessLevel: AccessLevel.PRIVATE,
+        accessLevel,
       },
     };
 
@@ -164,7 +185,7 @@ const Editor: React.FC = () => {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
       toastFactory.createToast("save failure", ToastType.ERROR);
     }
-  }, [id, parsed.metadata, toastFactory]);
+  }, [id, parsed.metadata, toastFactory, accessLevel]);
 
   const save = useCallback(() => {
     id ? update() : create();
@@ -180,14 +201,21 @@ const Editor: React.FC = () => {
     }
   }, [history, id]);
 
+  const changeAccessLevel = useCallback(() => {
+    setAccessLevel(accessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
+  }, [accessLevel]);
+
   return (
     <SidebarLayout fluid>
       <EditorBlock>
         <Edit>
-          <ButtonMenu>
+          <Menu>
+            <button
+              style={{backgroundImage: `url(${accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"})`}}
+              onClick={changeAccessLevel}/>
             <SaveButton onClick={save}/>
             <DeleteButton onClick={deleteSlide}/>
-          </ButtonMenu>
+          </Menu>
           <MarkdownEditor
             inputRef={codemirrorRef}
             onChange={setContent}

@@ -113,7 +113,7 @@ const Info: React.FC<IProps> = ({
     <InfoBlock>
       <UserInfo>
         <Profile>
-          <img src={editedUser.profileImage} alt={undefined}/>
+          <img src={editedUser.profileImage} alt={editedUser.profileImage}/>
           <label htmlFor="profile">CHANGE PROFILE</label>
           <input id="profile" type="file" style={{display: "none"}} onChange={changeProfileImage}/>
         </Profile>
