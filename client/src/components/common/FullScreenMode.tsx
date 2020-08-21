@@ -5,7 +5,6 @@ import {css, Global} from "@emotion/core";
 import {Keys, MOBILE_MAX_WIDTH} from "../../domains/constants";
 import Markdown from "../markdown";
 import {applyTheme, Theme} from "../theme";
-import play from "../../assets/icons/play.svg";
 
 const fullScreenStyle = css`
   :-webkit-full-screen {
@@ -112,7 +111,7 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
 
 
 export const FullScreenButton = styled.button`
-  background-image: url(${play});
+  background-image: url("/assets/icons/play.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-color: transparent;

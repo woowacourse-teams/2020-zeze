@@ -11,7 +11,6 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
-import {clear, saveImg} from "../assets/icons";
 import {parse, createTemplate, ParsedData} from "../utils/metadata";
 import ToastFactory from "../domains/ToastFactory";
 import {userInfoQuery} from "../store/atoms";
@@ -62,11 +61,11 @@ const ButtonMenu = styled.div`
 `;
 
 const SaveButton = styled.button`
-  background-image: url(${saveImg});
+  background-image: url("/assets/icons/save.svg");
 `;
 
 const DeleteButton = styled.button`
-  background-image: url(${clear});
+  background-image: url("/assets/icons/clear.svg");
 `;
 
 interface Params {

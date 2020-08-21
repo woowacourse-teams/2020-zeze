@@ -77,8 +77,6 @@ const MetaData = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 80%;
-  padding-top: 30px;
   
   h1, h2, h3, h4 {
     border: none;

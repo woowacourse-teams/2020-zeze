@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "@emotion/styled";
-import * as S from "../../assets/icons";
 
 const SidebarHeaderBlock = styled.div`
   display: flex;
@@ -50,10 +49,10 @@ interface IProps {
 const SidebarHeader: React.FC<IProps> = ({src, title}) => (
   <SidebarHeaderBlock>
     <div>
-      <img src={src || S.user} alt={title}/><span>{title}</span>
+      <img src={src || "/assets/icons/user.svg"} alt={title}/><span>{title}</span>
     </div>
     <button>
-      <img src={S.more} alt="more"/>
+      <img src="/assets/icons/more.svg" alt="more"/>
     </button>
   </SidebarHeaderBlock>
 );
