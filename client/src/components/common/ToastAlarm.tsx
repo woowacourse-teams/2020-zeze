@@ -120,16 +120,16 @@ const ToastAlarm: React.FC = () => {
     setToasts([...newToasts]);
   };
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (toasts.length) {
-  //       removeToast(toasts[0]);
-  //     }
-  //   }, autoDeleteTime);
-  //   return () => {
-  //     clearInterval(interval);
-  //   }
-  // }, [toasts, removeToast]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (toasts.length) {
+        removeToast(toasts[0]);
+      }
+    }, autoDeleteTime);
+    return () => {
+      clearInterval(interval);
+    }
+  }, [toasts, removeToast]);
   return (
     <ToastNotificationBlock>
       <div className={`notification-container top-center`}>

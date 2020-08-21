@@ -1,7 +1,7 @@
 import axios, {AxiosResponse} from "axios";
 
 export interface SlideRequest {
-  id?: number,
+  id?: number
   data?: {
     title: string
     content: string
@@ -12,7 +12,7 @@ export interface SlideRequest {
 }
 
 export interface SlideResponse {
-  id: number,
+  id: number
   title: string
   content: string
   accessLevel: string
@@ -22,10 +22,11 @@ export interface SlideResponse {
 
 export interface SlideResponses {
   slides: Array<SlideResponse>
+  totalPage: number
 }
 
 interface PageProps {
-  id: number,
+  page: number
   size: number
 }
 

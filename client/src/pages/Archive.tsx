@@ -1,14 +1,13 @@
 import React, {useEffect} from "react";
-import {useRecoilValue, useSetRecoilState} from "recoil";
+import {useSetRecoilState} from "recoil";
 
 import SidebarLayout from "../components/common/SidebarLayout";
-import Cards from "../components/common/Cards";
+import SlidesLayout from "../components/common/SlidesLayout";
 
-import {getAllSlidesQuery, sidebarVisibility} from "../store/atoms";
+import {sidebarVisibility} from "../store/atoms";
 import {googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 const Archive: React.FC = () => {
-  const slides = useRecoilValue(getAllSlidesQuery);
   const setVisibility = useSetRecoilState(sidebarVisibility);
 
   useEffect(() => {
@@ -18,7 +17,7 @@ const Archive: React.FC = () => {
 
   return (
     <SidebarLayout>
-      <Cards title="Archive" slides={slides} author={"zeze"}/>
+      <SlidesLayout slidesCnt={9} title="Archive"/>
     </SidebarLayout>
   );
 };

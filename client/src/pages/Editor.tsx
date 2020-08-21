@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import {useRecoilValue, useSetRecoilState} from "recoil";
@@ -11,7 +12,7 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
-import {saveImg} from "../assets/icons";
+
 import {parse, createTemplate, ParsedData} from "../utils/metadata";
 import ToastFactory from "../domains/ToastFactory";
 import {sidebarVisibility, userInfoQuery} from "../store/atoms";
@@ -22,12 +23,12 @@ const EditorBlock = styled.main`
   display: flex;
   height: 100%;
   max-height: 100vh;
-  
+
   > div {
     position: relative;
     overflow: auto;
   }
-  
+
   @media(max-width: ${MOBILE_MAX_WIDTH}px) {
     flex-direction: column-reverse;
     height: 100vh;
@@ -39,7 +40,6 @@ const Edit = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 
 const SaveButton = styled.div`
   position: absolute;
@@ -80,7 +80,8 @@ const Editor: React.FC = () => {
     return () => {
       setVisibility(true);
     };
-  }, [setVisibility]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     id && slideApi.get(id)
@@ -97,7 +98,8 @@ const Editor: React.FC = () => {
         author: user!.name,
       }));
     }
-  }, [id, toastFactory, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, user]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -107,7 +109,14 @@ const Editor: React.FC = () => {
         googleAnalyticsException("파일 업로드 실패");
         toastFactory.createToast("uploads failure", ToastType.ERROR);
       });
-  }), [toastFactory]);
+  }), []);
+
+  const uploadExternalFile = useCallback((url: string, name: string) => (
+    new Promise<string>(resolve => {
+      filesApi.uploadExternal(url, name)
+        .then(response => response.data.urls[0])
+        .then(fileUrl => resolve(fileUrl));
+    })), []);
 
   const create = useCallback(async () => {
     try {
@@ -127,7 +136,7 @@ const Editor: React.FC = () => {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
       toastFactory.createToast("create failure", ToastType.ERROR);
     }
-  }, [history, parsed.metadata, toastFactory]);
+  }, [history, parsed]);
 
   const update = useCallback(async () => {
     const data = {
@@ -147,7 +156,7 @@ const Editor: React.FC = () => {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
       toastFactory.createToast("save failure", ToastType.ERROR);
     }
-  }, [id, parsed.metadata, toastFactory]);
+  }, [id, parsed]);
 
   const save = useCallback(() => {
     id ? update() : create();
@@ -157,14 +166,15 @@ const Editor: React.FC = () => {
     <SidebarLayout fluid toggleable>
       <EditorBlock>
         <Edit>
-          <EditorButtons/>
+          <EditorButtons inputRef={codemirrorRef}/>
           <MarkdownEditor
             inputRef={codemirrorRef}
             onChange={setContent}
             onDrop={uploadFile}
             onSaveKeyDown={save}
+            onExternalDrop={uploadExternalFile}
           />
-          <SaveButton onClick={save}><img src={saveImg} alt={saveImg}/></SaveButton>
+          <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
           <FullScreenMode contents={slides}/>
         </Edit>
         <Preview content={content}/>

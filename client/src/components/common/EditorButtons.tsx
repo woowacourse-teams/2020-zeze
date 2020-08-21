@@ -1,22 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
+import {useSetRecoilState} from "recoil";
+import CodeMirror from "codemirror";
 
 import EditorButton from "./EditorButton";
 import menu from "../../assets/icons/hamburger.svg";
-import heading from "../../assets/icons/editor/heading.svg";
-import image from "../../assets/icons/editor/image.svg";
-import link from "../../assets/icons/editor/link.svg";
-import bullets from "../../assets/icons/editor/bullets.svg";
-import list from "../../assets/icons/editor/list.svg";
-import table from "../../assets/icons/editor/table.svg";
-import quote from "../../assets/icons/editor/quote.svg";
-import chart from "../../assets/icons/editor/chart.svg";
-import code from "../../assets/icons/editor/code.svg";
-import page from "../../assets/icons/editor/page.svg";
-import youtube from "../../assets/icons/editor/youtube.svg";
 import LastModified from "./LastModified";
 import {sidebarVisibility} from "../../store/atoms";
-import {useRecoilState, useSetRecoilState} from "recoil";
+import templates from "../../domains/templates";
 
 
 const Menu = styled.div`
@@ -45,60 +36,27 @@ const EditorButtonsBlock = styled.div`
   }
 `;
 
-const EditorButtons: React.FC = () => {
+interface IProps {
+  inputRef: React.MutableRefObject<CodeMirror.Editor | null>
+}
+
+const EditorButtons: React.FC<IProps> = ({inputRef}) => {
   const setVisibility = useSetRecoilState(sidebarVisibility);
-  const buttonData = [
-    {
-      title: "Heading",
-      src: heading,
-      template: "# \n",
-    }, {
-      title: "Image",
-      src: image,
-      template: "# \n",
-    }, {
-      title: "Link",
-      src: link,
-      template: "# \n",
-    }, {
-      title: "Bullets",
-      src: bullets,
-      template: "# \n",
-    }, {
-      title: "List",
-      src: list,
-      template: "# \n",
-    }, {
-      title: "Table",
-      src: table,
-      template: "# \n",
-    }, {
-      title: "Quote",
-      src: quote,
-      template: "# \n",
-    }, {
-      title: "Youtube",
-      src: youtube,
-      template: "# \n",
-    }, {
-      title: "Chart",
-      src: chart,
-      template: "# \n",
-    }, {
-      title: "Code",
-      src: code,
-      template: "# \n",
-    }, {
-      title: "Page",
-      src: page,
-      template: "# \n",
-    },
-  ];
+  const insertTemplate = (template: string) => {
+    const editor = inputRef.current!;
+    const cursor = editor.getCursor();
+
+    editor.replaceRange(template, cursor);
+    const searchCursor = editor.getSearchCursor(template, cursor);
+
+    editor.focus();
+    searchCursor.findNext() && editor.setCursor(searchCursor.to());
+  };
 
   return (
     <EditorButtonsBlock>
       <Menu onClick={() => setVisibility(true)}><img src={menu} alt={menu}/></Menu>
-      <div className="container">{buttonData.map(data => <EditorButton {...data}/>)}</div>
+      <div className="container">{templates.map(data => <EditorButton {...data} handleClick={insertTemplate}/>)}</div>
       <LastModified at={new Date().toLocaleTimeString()}></LastModified>
     </EditorButtonsBlock>
   );

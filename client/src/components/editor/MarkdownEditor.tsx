@@ -2,16 +2,18 @@ import React, {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 
 import CodeMirror from "codemirror";
+import "codemirror/addon/search/searchcursor";
+import "codemirror/addon/search/search";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
 import {css, Global} from "@emotion/core";
 
 const codeMirrorStyle = css`
-    .cm-s-darcula.CodeMirror {
-      font-family: "D2 coding", Consolas, Aria, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
-    }
-  `;
+  .cm-s-darcula.CodeMirror {
+    font-family: "D2 coding", Consolas, Aria, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+  }
+`;
 
 const StyledTextArea = styled.textarea`
   display: none;
@@ -20,11 +22,22 @@ const StyledTextArea = styled.textarea`
 interface IProps {
   inputRef: React.MutableRefObject<CodeMirror.Editor | null>
   onChange?: (newValue: string) => void;
-  onDrop?: (files: File) => Promise<string>;
+  onDrop: (files: File) => Promise<string>;
+  onExternalDrop: (url: string, name: string) => Promise<string>;
   onSaveKeyDown: () => void;
 }
 
-const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onSaveKeyDown}) => {
+const dataUrlToFile = (dataUrl: string, filename: string): File => {
+  const decoded = atob(dataUrl.split(",")[1]);
+  const buffer = new Uint8Array(decoded.length);
+
+  for (let i = 0; i < decoded.length; ++i) {
+    buffer[i] = decoded.charCodeAt(i);
+  }
+  return new File([buffer], filename);
+};
+
+const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExternalDrop, onSaveKeyDown}) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [codemirror, setCodeMirror] = useState<CodeMirror.Editor | null>(null);
 
@@ -49,29 +62,37 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onSaveKey
     });
 
     codemirror.on("drop", async (editor, e) => {
-      const fileList = e.dataTransfer?.files;
+      const fileList = e.dataTransfer?.files ?? [];
+      const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
+      const template = document.createElement("div");
 
-      if (!fileList) {
+      template.innerHTML = e.dataTransfer?.getData("text/html") ?? "";
+      const image = template.querySelector("img");
+
+      const drop = async (filename: string, promise: Promise<string>) => {
+        const name = filename.replace(/[\[|\]]/g, "");
+        const marker = `![Uploading ${name}...]()`;
+
+        editor.replaceRange(`${marker}\n`, editor.getCursor());
+        const uploadUrl = await promise;
+        const searchCursor = editor.getSearchCursor(marker);
+
+        searchCursor.findNext() && editor.replaceRange(`![${name}](${uploadUrl})`, searchCursor.from(), searchCursor.to());
+      };
+
+      if (image) {
+        const dataUrl = image.src.match(/^data:image/)?.input;
+
+        if (dataUrl) {
+          drop(image.alt, onDrop(dataUrlToFile(dataUrl, "untitled")));
+        } else {
+          drop(image.alt, onExternalDrop(image.src, "untitled"));
+        }
         return;
       }
 
-      const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
-
       files.filter(({type}) => type.split("/")[0] === "image")
-        .forEach(file => {
-          const setEditor = async () => {
-            const marker = `![Uploading ${file.name}...]()`;
-
-            editor.replaceRange(`${marker}\n`, editor.getCursor());
-            const uploadUrl = await onDrop?.(file);
-            const cursor = editor.getCursor();
-
-            editor.setValue(editor.getValue().replace(marker, `![${file.name}](${uploadUrl})`));
-            editor.setCursor(cursor);
-          };
-
-          setEditor();
-        });
+        .forEach(file => drop(file.name, onDrop(file)));
     });
 
     codemirror.setSize("100%", "100%");

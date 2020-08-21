@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 
 interface IProps {
+  handleClick: (template: string) => void;
   title: string;
   src: string;
   template: string;
@@ -37,8 +38,8 @@ const EditorButtonBlock = styled.button`
   }
 `;
 
-const EditorButton: React.FC<IProps> = ({title, src, template}) => (
-  <EditorButtonBlock onClick={() => alert(template)}>
+const EditorButton: React.FC<IProps> = ({title, src, template, handleClick}) => (
+  <EditorButtonBlock onClick={() => handleClick(template)}>
     <img src={src} alt={src}/>
     <span>{title}</span>
   </EditorButtonBlock>

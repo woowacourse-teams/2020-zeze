@@ -1,7 +1,5 @@
 import React, {useState, useCallback, useMemo, useEffect} from "react";
 import styled from "@emotion/styled";
-import LeftArrow from "../../assets/icons/left-arrow.svg";
-import RightArrow from "../../assets/icons/right-arrow.svg";
 
 const CarouselBlock = styled.div`
   position: relative;
@@ -39,12 +37,12 @@ const Button = styled.button`
 `;
 
 const LeftButton = styled(Button)`
-  background: url(${LeftArrow});
+  background: url("/assets/icons/left-arrow.svg");
 `;
 
 const RightButton = styled(Button)`
   left: calc(100% - 32px);
-  background: url(${RightArrow});
+  background: url("/assets/icons/right-arrow.svg");
 `;
 
 const Carousel: React.FC = ({children}) => {

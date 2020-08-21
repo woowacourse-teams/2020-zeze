@@ -12,6 +12,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -23,7 +24,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import dev.minguinho.zeze.domain.auth.infra.AuthorizationTokenExtractor;
 import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
-import dev.minguinho.zeze.domain.file.api.dto.FileUrlResponses;
+import dev.minguinho.zeze.domain.file.api.dto.FileUploadRequestDto;
+import dev.minguinho.zeze.domain.file.api.dto.FileUrlResponsesDto;
 import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
 import dev.minguinho.zeze.domain.file.service.FileService;
 
@@ -49,18 +51,37 @@ class FileControllerTest {
 
     @Test
     @DisplayName("파일 업로드 요청")
-    void uploadFile() throws Exception {
+    void uploadMultipartFile() throws Exception {
         MockMultipartFile multipartFile = new MockMultipartFile("files", "test-image.png",
             MediaType.IMAGE_PNG_VALUE, "test-data".getBytes());
 
         given(fileService.upload(Arrays.asList(multipartFile, multipartFile))).willReturn(
-            new FileUrlResponses(
+            new FileUrlResponsesDto(
                 Collections.singletonList("https://markdown-ppt-test.s3.ap-northeast-2.amazonaws.com/")));
 
         mvc.perform(multipart("/api/files")
             .file(multipartFile)
             .file(multipartFile)
             .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+        )
+            .andExpect(status().isOk())
+            .andExpect(
+                content().string(
+                    containsString("https://markdown-ppt-test.s3.ap-northeast-2.amazonaws.com/")))
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("외부 자원 업로드 요청")
+    void uploadExternalFile() throws Exception {
+        given(fileService.upload(BDDMockito.any(FileUploadRequestDto.class))).willReturn(
+            new FileUrlResponsesDto(
+                Collections.singletonList("https://markdown-ppt-test.s3.ap-northeast-2.amazonaws.com/")));
+
+        mvc.perform(post("/api/files/external")
+            .content("{\"fileUrl\":\"fileUrl\",\"fileName\":\"fileName\"}")
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
         )
             .andExpect(status().isOk())
             .andExpect(

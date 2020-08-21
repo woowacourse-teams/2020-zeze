@@ -2,7 +2,6 @@ import {useCallback} from "react";
 import {useRecoilState} from "recoil";
 import {Toast, ToastType} from "./constants";
 import {toastMessages} from "../store/atoms";
-import {checkIcon, errorIcon, infoIcon, warnIcon} from "../assets/icons";
 
 export interface IToastFactory {
   createToast(title: string, type: ToastType) : void,
@@ -24,13 +23,13 @@ export const ToastFactory = (): IToastFactory => {
   const generateIcon = useCallback<(type: ToastType) => string>((type: ToastType) => {
     switch (type) {
     case ToastType.SUCCESS:
-      return checkIcon;
+      return "/assets/icons/toast_check.svg";
     case ToastType.INFO:
-      return infoIcon;
+      return "/assets/icons/toast_info.svg";
     case ToastType.WARN:
-      return warnIcon;
+      return "/assets/icons/toast_warn.svg";
     default:
-      return errorIcon;
+      return "/assets/icons/toast_error.svg";
     }
   }, []);
 

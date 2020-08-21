@@ -1,15 +1,22 @@
 import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {useRecoilValue, useResetRecoilState, useSetRecoilState} from "recoil";
+import styled from "@emotion/styled";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Info from "../components/common/Info";
-import Cards from "../components/common/Cards";
 import usersApi from "../api/user";
 
-import {getAllSlidesQuery, sidebarVisibility, userInfoQuery} from "../store/atoms";
+import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import filesApi from "../api/file";
 import {ToastType} from "../domains/constants";
 import ToastFactory from "../domains/ToastFactory";
 import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
+import SlidesLayout from "../components/common/SlidesLayout";
+
+const MeBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
 
 export interface User {
   name: string,
@@ -19,7 +26,6 @@ export interface User {
 
 
 const Me: React.FC = () => {
-  const slides = useRecoilValue(getAllSlidesQuery);
   const user = useRecoilValue(userInfoQuery);
   const setUser = useResetRecoilState(userInfoQuery);
   const setVisibility = useSetRecoilState(sidebarVisibility);
@@ -56,12 +62,14 @@ const Me: React.FC = () => {
   return (
     <SidebarLayout>
       {/* <Cards title="Recent"/>*/}
-      <Info user={user!}
-        editedUser={editedUser}
-        updateInfo={updateInfo}
-        changeInput={changeInput}
-        changeProfileImage={changeProfileImage}/>
-      <Cards title="My Drafts" slides={slides} author={user?.name}/>
+      <MeBlock>
+        <Info user={user!}
+          editedUser={editedUser}
+          updateInfo={updateInfo}
+          changeInput={changeInput}
+          changeProfileImage={changeProfileImage}/>
+        <SlidesLayout slidesCnt={6} title="My Drafts"/>
+      </MeBlock>
     </SidebarLayout>
   );
 };
