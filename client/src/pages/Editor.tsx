@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useHistory} from "react-router-dom";
-import {useRecoilValue} from "recoil";
+import {useRecoilValue, useSetRecoilState} from "recoil";
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -11,10 +11,10 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
-import {clear, saveImg} from "../assets/icons";
+import {saveImg} from "../assets/icons";
 import {parse, createTemplate, ParsedData} from "../utils/metadata";
 import ToastFactory from "../domains/ToastFactory";
-import {userInfoQuery} from "../store/atoms";
+import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 import EditorButtons from "../components/common/EditorButtons";
 
@@ -58,6 +58,7 @@ interface Params {
 
 const Editor: React.FC = () => {
   const user = useRecoilValue(userInfoQuery);
+  const setVisibility = useSetRecoilState(sidebarVisibility);
   const params = useParams<Params>();
   const id = parseInt(params?.id ?? "0", 10);
   const history = useHistory();
@@ -75,7 +76,11 @@ const Editor: React.FC = () => {
 
   useEffect(() => {
     googleAnalyticsPageView("Editor");
-  }, []);
+    setVisibility(false);
+    return () => {
+      setVisibility(true);
+    };
+  }, [setVisibility]);
 
   useEffect(() => {
     id && slideApi.get(id)
@@ -148,24 +153,17 @@ const Editor: React.FC = () => {
     id ? update() : create();
   }, [id, update, create]);
 
-  const deleteSlide = useCallback(async () => {
-    try {
-      id && await slideApi.delete(id);
-      googleAnalyticsEvent("슬라이드", `#${id} 삭제 완료`);
-      history.push("/archive");
-    } catch (error) {
-      googleAnalyticsException(`슬라이드 #${id} 삭제 실패`);
-    }
-  }, [history, id]);
-
   return (
     <SidebarLayout fluid toggleable>
       <EditorBlock>
         <Edit>
           <EditorButtons/>
-          {/* <DeleteButton onClick={deleteSlide}/>*/}
-          <MarkdownEditor inputRef={codemirrorRef} onChange={setContent} onDrop={uploadFile}
-            onSaveKeyDown={save}/>
+          <MarkdownEditor
+            inputRef={codemirrorRef}
+            onChange={setContent}
+            onDrop={uploadFile}
+            onSaveKeyDown={save}
+          />
           <SaveButton onClick={save}><img src={saveImg} alt={saveImg}/></SaveButton>
           <FullScreenMode contents={slides}/>
         </Edit>

@@ -15,11 +15,14 @@ import code from "../../assets/icons/editor/code.svg";
 import page from "../../assets/icons/editor/page.svg";
 import youtube from "../../assets/icons/editor/youtube.svg";
 import LastModified from "./LastModified";
+import {sidebarVisibility} from "../../store/atoms";
+import {useRecoilState, useSetRecoilState} from "recoil";
 
 
 const Menu = styled.div`
   padding: 5px;
   cursor: pointer;
+  margin-right: 15px;
   > img {
     width: 20px;
   }
@@ -38,14 +41,12 @@ const EditorButtonsBlock = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    overflow-x: scroll;
   }
 `;
 
-interface IProps {
-
-}
-
-const EditorButtons: React.FC<IProps> = () => {
+const EditorButtons: React.FC = () => {
+  const setVisibility = useSetRecoilState(sidebarVisibility);
   const buttonData = [
     {
       title: "Heading",
@@ -96,7 +97,7 @@ const EditorButtons: React.FC<IProps> = () => {
 
   return (
     <EditorButtonsBlock>
-      <Menu><img src={menu} alt={menu}/></Menu>
+      <Menu onClick={() => setVisibility(true)}><img src={menu} alt={menu}/></Menu>
       <div className="container">{buttonData.map(data => <EditorButton {...data}/>)}</div>
       <LastModified at={new Date().toLocaleTimeString()}></LastModified>
     </EditorButtonsBlock>

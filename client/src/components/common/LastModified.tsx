@@ -10,6 +10,7 @@ const LastModifiedBlock = styled.div`
   text-align: right;
   color: ${PRIMARY_GREEN};
   font-size: 0.815rem;
+  min-width: 90px;
 `;
 
 const LastModified: React.FC<IProps> = ({at}) => (

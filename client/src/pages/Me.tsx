@@ -1,11 +1,11 @@
 import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
-import {useRecoilValue, useResetRecoilState} from "recoil";
+import {useRecoilValue, useResetRecoilState, useSetRecoilState} from "recoil";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Info from "../components/common/Info";
 import Cards from "../components/common/Cards";
 import usersApi from "../api/user";
 
-import {getAllSlidesQuery, userInfoQuery} from "../store/atoms";
+import {getAllSlidesQuery, sidebarVisibility, userInfoQuery} from "../store/atoms";
 import filesApi from "../api/file";
 import {ToastType} from "../domains/constants";
 import ToastFactory from "../domains/ToastFactory";
@@ -22,12 +22,14 @@ const Me: React.FC = () => {
   const slides = useRecoilValue(getAllSlidesQuery);
   const user = useRecoilValue(userInfoQuery);
   const setUser = useResetRecoilState(userInfoQuery);
+  const setVisibility = useSetRecoilState(sidebarVisibility);
   const [editedUser, setEditedUser] = useState<User>(user!);
   const toastFactory = ToastFactory();
 
   useEffect(() => {
     googleAnalyticsPageView("My Page");
-  }, []);
+    setVisibility(true);
+  }, [setVisibility]);
 
   const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setEditedUser({...editedUser, [event.target.name]: event.target.value});
@@ -49,7 +51,7 @@ const Me: React.FC = () => {
       })
       .then(() => setUser())
       .catch(() => toastFactory.createToast("update failure", ToastType.ERROR));
-  }, [setUser]);
+  }, [setUser, toastFactory]);
 
   return (
     <SidebarLayout>
