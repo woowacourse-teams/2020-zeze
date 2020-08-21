@@ -105,11 +105,16 @@ const Editor: React.FC = () => {
   }, [accessLevel]);
 
   useEffect(() => {
-    if (!id) {
-      codemirrorRef.current?.setValue(createTemplate({
-        author: user!.name,
-      }));
+    if(id) {
+      return;
     }
+    if(accessLevel === AccessLevel.PUBLIC){
+      isInitialMount.current = true;
+      setAccessLevel(AccessLevel.PRIVATE);
+    }
+    codemirrorRef.current?.setValue(createTemplate({
+      author: user!.name,
+    }));
   }, [id]);
 
   useEffect(() => {
@@ -125,12 +130,6 @@ const Editor: React.FC = () => {
         googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
         toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
       });
-
-    if (!id) {
-      codemirrorRef.current?.setValue(createTemplate({
-        author: user!.name,
-      }));
-    }
   }, []);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
