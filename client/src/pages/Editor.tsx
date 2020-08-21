@@ -195,7 +195,7 @@ const Editor: React.FC = () => {
     try {
       id && await slideApi.delete(id);
       googleAnalyticsEvent("슬라이드", `#${id} 삭제 완료`);
-      history.push("/archive");
+      history.push("/me");
     } catch (error) {
       googleAnalyticsException(`슬라이드 #${id} 삭제 실패`);
     }
