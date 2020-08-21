@@ -1,20 +1,19 @@
 import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {useRecoilValue, useResetRecoilState} from "recoil";
+import styled from "@emotion/styled";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Info from "../components/common/Info";
 import usersApi from "../api/user";
-
-import {userInfoQuery,} from "../store/atoms";
+import {userInfoQuery} from "../store/atoms";
 import filesApi from "../api/file";
 import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
 import SlidesLayout from "../components/common/SlidesLayout";
-import styled from "@emotion/styled";
 
 const MeBlock = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-`
+`;
 
 export interface User {
   name: string,

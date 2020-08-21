@@ -103,10 +103,10 @@ const Editor: React.FC = () => {
 
     if (!id) {
       codemirrorRef.current?.setValue(createTemplate({
-        author: user!.name
+        author: user!.name,
       }));
     }
-  }, [id]);
+  }, [id, user]);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
