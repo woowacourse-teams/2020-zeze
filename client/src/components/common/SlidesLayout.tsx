@@ -33,7 +33,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, slidesCnt, title}) => {
       });
   }, [page, slidesCnt, getAllSlides]);
 
-  const onClickPage = useCallback ((e: React.MouseEvent<HTMLDivElement>) => {
+  const onClickPage = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const page = parseInt(e.currentTarget.getAttribute("data-page")!);
     setPage(page);
   }, []);
