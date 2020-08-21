@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
+import {googleAnalyticsException} from "../utils/googleAnalytics";
 
 const Error: React.FC = () => {
   useEffect(() => {

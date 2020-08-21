@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "@emotion/styled";
-import * as S from "../../assets/icons";
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
 
 const HeaderBlock = styled.header`
@@ -37,7 +36,7 @@ const LogoIcon = styled.img`
 const Header: React.FC = () => (
   <HeaderBlock>
     <nav>
-      <div><LogoIcon src={S.logo} alt="logo"/></div>
+      <div><LogoIcon src="/assets/icons/logo.svg" alt="logo" /></div>
     </nav>
   </HeaderBlock>
 );
