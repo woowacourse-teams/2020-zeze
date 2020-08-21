@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AxiosResponse} from "axios";
 import styled from "@emotion/styled";
 
@@ -31,20 +31,16 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, slidesCnt, title}) => {
         setSlides(res.data.slides);
         setTotalPage(res.data.totalPage);
       });
-  }, [page, totalPage]);
+  }, [page, slidesCnt, getAllSlides]);
 
-  const onClickPage = (e: React.MouseEvent<HTMLDivElement>) => {
+  const onClickPage = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const page = parseInt(e.currentTarget.getAttribute("data-page")!);
     setPage(page);
-    getAllSlides({page, size: slidesCnt})
-      .then(res => setSlides(res.data.slides));
-  };
+  }, []);
 
-  const onClickMove = (pageNum: number) => {
+  const onClickMove = useCallback((pageNum: number) => {
     setPage(pageNum);
-    getAllSlides({page, size: slidesCnt})
-      .then(res => setSlides(res.data.slides));
-  };
+  },[]);
 
   useEffect(() => {
     googleAnalyticsPageView("Archive");

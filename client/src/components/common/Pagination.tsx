@@ -57,14 +57,14 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickMove
   }, [page, totalPage]);
 
   const showPrevBtn = () => {
-    if (first > PAGE_CNT) {
-      return <div onClick={() => onClickMove(first - 1)}>&laquo;</div>;
+    if (first + 1 > PAGE_CNT) {
+      return <div onClick={() => onClickMove(first - 1)}>&laquo;</div>
     }
   };
 
   const showNextBtn = () => {
-    if (last + 1 > PAGE_CNT && last + 1 < totalPage) {
-      return <div onClick={() => onClickMove(last + 1)}>&raquo;</div>
+    if (last + 1 > PAGE_CNT && last < totalPage) {
+      return <div onClick={() => onClickMove(last)}>&raquo;</div>
     }
   };
 
