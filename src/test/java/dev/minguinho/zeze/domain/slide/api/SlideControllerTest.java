@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -94,8 +95,11 @@ class SlideControllerTest {
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
             new Slide(secondTitle, secondContent, AccessLevel.PUBLIC));
+        List<SlideResponseDto> responses = slides.stream()
+            .map(SlideResponseDto::from)
+            .collect(Collectors.toList());
         given(slideService.retrieveAll(any(SlidesRequestDto.class), eq(null))).willReturn(
-            SlideResponseDtos.from(slides));
+            new SlideResponseDtos(responses, 0));
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(null);
@@ -115,9 +119,12 @@ class SlideControllerTest {
         String secondTitle = "제목2";
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
-            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE));
-        given(slideService.retrieveAll(any(SlidesRequestDto.class), anyLong())).willReturn(
-            SlideResponseDtos.from(slides));
+            new Slide(secondTitle, secondContent, AccessLevel.PUBLIC));
+        List<SlideResponseDto> responses = slides.stream()
+            .map(SlideResponseDto::from)
+            .collect(Collectors.toList());
+        given(slideService.retrieveAll(any(SlidesRequestDto.class), eq(1L))).willReturn(
+            new SlideResponseDtos(responses, 0));
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);

@@ -68,7 +68,7 @@ class SlideServiceTest {
         given(slideRepository.findAllByAccessLevel(eq(AccessLevel.PUBLIC), any(Pageable.class))).willReturn(page);
         given(page.getContent()).willReturn(slides);
 
-        SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
+        SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0, 5);
         SlideResponseDtos slideResponseDtos = slideService.retrieveAll(slidesRequestDto, null);
 
         assertAll(
@@ -86,10 +86,10 @@ class SlideServiceTest {
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
             new Slide(secondTitle, secondContent, AccessLevel.PRIVATE, 1L));
-        given(slideRepository.findAllByUserIdAndIdGreaterThan(eq(1L), eq(0L), any(Pageable.class))).willReturn(page);
+        given(slideRepository.findAllByUserIdOrderByUpdatedAtDesc(eq(1L), any(Pageable.class))).willReturn(page);
         given(page.getContent()).willReturn(slides);
 
-        SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0L, 5);
+        SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0, 5);
         SlideResponseDtos slideResponseDtos = slideService.retrieveAll(slidesRequestDto, 1L);
 
         assertAll(

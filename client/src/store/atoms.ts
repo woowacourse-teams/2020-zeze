@@ -10,7 +10,7 @@ export const getAllSlidesQuery = selector({
   key: "getAllSlidesQuery",
   get: async () => {
     try {
-      const response: AxiosResponse<SlideResponses> = await slideApi.getAll({id: 0, size: 5});
+      const response: AxiosResponse<SlideResponses> = await slideApi.getAll({page: 0, size: 5});
 
       return response.data.slides;
     } catch (error) {
@@ -23,7 +23,7 @@ export const getAllSlidesQuery = selector({
 export const getPublicSlidesQuery = selector({
   key: "getPublicSlidesQuery",
   get: async () => {
-    const response: AxiosResponse<SlideResponses> = await slideApi.getPublic({id: 0, size: 5});
+    const response: AxiosResponse<SlideResponses> = await slideApi.getPublic({page: 0, size: 5});
 
     return response.data.slides;
   },

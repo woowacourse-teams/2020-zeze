@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class SlidesRequestDto {
-    private Long id;
+    private Integer page;
     private Integer size;
 }

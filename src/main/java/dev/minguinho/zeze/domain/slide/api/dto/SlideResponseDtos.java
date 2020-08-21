@@ -3,6 +3,8 @@ package dev.minguinho.zeze.domain.slide.api.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +17,13 @@ import dev.minguinho.zeze.domain.slide.model.Slide;
 @Getter
 public class SlideResponseDtos {
     private List<SlideResponseDto> slides;
+    private int totalPage;
 
-    public static SlideResponseDtos from(List<Slide> slides) {
-        List<SlideResponseDto> presentationResponses = slides.stream()
+    public static SlideResponseDtos from(Page<Slide> slides) {
+        List<SlideResponseDto> slideResponses = slides.getContent()
+            .stream()
             .map(SlideResponseDto::from)
             .collect(Collectors.toList());
-        return new SlideResponseDtos(presentationResponses);
+        return new SlideResponseDtos(slideResponses, slides.getTotalPages());
     }
 }

@@ -1,22 +1,17 @@
 import React, {useEffect} from "react";
-import {useRecoilValue} from "recoil";
-
 import SidebarLayout from "../components/common/SidebarLayout";
-import Cards from "../components/common/Cards";
-
-import {getPublicSlidesQuery} from "../store/atoms";
 import {googleAnalyticsPageView} from "../utils/googleAnalytics";
+import SlidesLayout from "../components/common/SlidesLayout";
+import slideApi from "../api/slide";
 
 const Archive: React.FC = () => {
-  const slides = useRecoilValue(getPublicSlidesQuery);
-
   useEffect(() => {
     googleAnalyticsPageView("Archive");
   }, []);
 
   return (
     <SidebarLayout>
-      <Cards title="Archive" slides={slides} author={"zeze"}/>
+      <SlidesLayout getAllSlides={slideApi.getPublic} slidesCnt={9} title="Archive"/>
     </SidebarLayout>
   );
 };

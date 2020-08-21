@@ -49,7 +49,7 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
     
     > div {
       height: 100%;
-      padding: ${props => (props.fluid ? 0 : 30)}px;
+      padding: 0 ${props => (props.fluid ? 0 : 30)}px;
     }
     
     @media (max-width: ${MOBILE_MAX_WIDTH}px) {

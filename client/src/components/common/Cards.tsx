@@ -5,11 +5,11 @@ import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 import {SlideResponse} from "../../api/slide";
 
 export const CardsLayout = styled.div`
-  padding-bottom: 3rem;
+  padding-bottom: 2rem;
 
   > h2 {
     color: #fff;
-    margin: 0;
+    margin: 30px 0 0;
     display: inline-block;
     font-size: 2rem;
   }
@@ -57,7 +57,7 @@ const Cards: React.FC<IProps> = ({title, slides, author}) => (
     <hr/>
     <CardsBlock>
       {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author={author}
-        createdAt={slide.createdAt}/>))}
+                                  createdAt={slide.createdAt}/>))}
     </CardsBlock>
   </CardsLayout>
 );

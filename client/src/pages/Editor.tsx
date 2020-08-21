@@ -14,7 +14,6 @@ import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
 import {createTemplate, parse, ParsedData} from "../utils/metadata";
 import ToastFactory from "../domains/ToastFactory";
 import {userInfoQuery} from "../store/atoms";
-import {clear, privateToggle, publicToggle, saveImg} from "../assets/icons";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 
 const EditorBlock = styled.main`
@@ -62,11 +61,11 @@ const Menu = styled.div`
 `;
 
 const SaveButton = styled.button`
-  background-image: url(${saveImg});
+  background-image: url("/assets/icons/save.svg");
 `;
 
 const DeleteButton = styled.button`
-  background-image: url(${clear});
+  background-image: url("/assets/icons/clear.svg");
 `;
 
 interface Params {
@@ -105,17 +104,17 @@ const Editor: React.FC = () => {
   }, [accessLevel]);
 
   useEffect(() => {
-    if(id) {
+    if (id) {
       return;
     }
-    if(accessLevel === AccessLevel.PUBLIC){
+    if (accessLevel === AccessLevel.PUBLIC) {
       isInitialMount.current = true;
       setAccessLevel(AccessLevel.PRIVATE);
     }
     codemirrorRef.current?.setValue(createTemplate({
       author: user!.name,
     }));
-  }, [id]);
+  }, [id, user]);
 
   useEffect(() => {
     id && slideApi.get(id)
@@ -212,7 +211,7 @@ const Editor: React.FC = () => {
         <Edit>
           <Menu>
             <button
-              style={{backgroundImage: `url(${accessLevel === AccessLevel.PUBLIC ? publicToggle : privateToggle})`}}
+              style={{backgroundImage: `url(${accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"})`}}
               onClick={changeAccessLevel}/>
             <SaveButton onClick={save}/>
             <DeleteButton onClick={deleteSlide}/>

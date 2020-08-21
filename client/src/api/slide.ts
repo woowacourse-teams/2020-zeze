@@ -2,7 +2,7 @@ import axios, {AxiosResponse} from "axios";
 import {AccessLevel} from "../domains/constants";
 
 export interface SlideRequest {
-  id?: number,
+  id?: number
   data?: {
     title: string
     content: string
@@ -13,7 +13,7 @@ export interface SlideRequest {
 }
 
 export interface SlideResponse {
-  id: number,
+  id: number
   title: string
   content: string
   accessLevel: AccessLevel
@@ -23,10 +23,11 @@ export interface SlideResponse {
 
 export interface SlideResponses {
   slides: Array<SlideResponse>
+  totalPage: number
 }
 
-interface PageProps {
-  id: number,
+export interface PageProps {
+  page: number
   size: number
 }
 
