@@ -32,7 +32,14 @@ const EditorButtonsBlock = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    overflow-x: scroll;
+    overflow-x: auto;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 `;
 
