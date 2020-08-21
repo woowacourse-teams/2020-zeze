@@ -11,6 +11,7 @@ import {ToastType} from "../domains/constants";
 import ToastFactory from "../domains/ToastFactory";
 import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
 import SlidesLayout from "../components/common/SlidesLayout";
+import slideApi from "../api/slide";
 
 const MeBlock = styled.div`
   display: flex;
@@ -61,14 +62,13 @@ const Me: React.FC = () => {
 
   return (
     <SidebarLayout>
-      {/* <Cards title="Recent"/>*/}
       <MeBlock>
         <Info user={user!}
           editedUser={editedUser}
           updateInfo={updateInfo}
           changeInput={changeInput}
           changeProfileImage={changeProfileImage}/>
-        <SlidesLayout slidesCnt={6} title="My Drafts"/>
+        <SlidesLayout getAllSlides={slideApi.getAll} slidesCnt={6} title="My Drafts"/>
       </MeBlock>
     </SidebarLayout>
   );

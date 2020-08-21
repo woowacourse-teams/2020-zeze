@@ -2,6 +2,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import {useRecoilValue, useSetRecoilState} from "recoil";
+
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -12,12 +13,12 @@ import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
-
-import {parse, createTemplate, ParsedData} from "../utils/metadata";
+import {createTemplate, parse, ParsedData} from "../utils/metadata";
 import ToastFactory from "../domains/ToastFactory";
 import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 import EditorButtons from "../components/common/EditorButtons";
+import {css} from "@emotion/core";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -44,8 +45,19 @@ const Edit = styled.div`
 const SaveButton = styled.div`
   position: absolute;
   z-index: 3;
-  right: 70px;
   top: 70px;
+  right: 70px;
+  > img {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const AccessLevelButton = styled.div`
+  position: absolute;
+  z-index: 3;
+  top: 70px;
+  right: 110px;
   > img {
     width: 20px;
     height: 20px;
@@ -66,6 +78,8 @@ const Editor: React.FC = () => {
   const toastFactory = ToastFactory();
 
   const [content, setContent] = useState<string>("");
+  const [accessLevel, setAccessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
+  const isInitialMount = useRef(true);
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
 
@@ -80,26 +94,43 @@ const Editor: React.FC = () => {
     return () => {
       setVisibility(true);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      save();
+    }
+  }, [accessLevel]);
+
+  useEffect(() => {
+    if (id) {
+      return;
+    }
+    if (accessLevel === AccessLevel.PUBLIC) {
+      isInitialMount.current = true;
+      setAccessLevel(AccessLevel.PRIVATE);
+    }
+    codemirrorRef.current?.setValue(createTemplate({
+      author: user!.name,
+    }));
+  }, [id, user]);
 
   useEffect(() => {
     id && slideApi.get(id)
       .then(({data}) => {
+        if (data.accessLevel === AccessLevel.PUBLIC && !isInitialMount.current) {
+          isInitialMount.current = true;
+          setAccessLevel(AccessLevel.PUBLIC);
+        }
         codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
         googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
         toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
       });
-
-    if (!id) {
-      codemirrorRef.current?.setValue(createTemplate({
-        author: user!.name,
-      }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, user]);
+  }, []);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
     filesApi.upload(file)
@@ -124,7 +155,7 @@ const Editor: React.FC = () => {
         data: {
           title: parsed.metadata?.title ?? "Untitled",
           content: codemirrorRef.current!.getValue(),
-          accessLevel: AccessLevel.PRIVATE,
+          accessLevel,
         },
       });
       const slideId = location.substring(location.lastIndexOf("/") + 1);
@@ -136,7 +167,7 @@ const Editor: React.FC = () => {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
       toastFactory.createToast("create failure", ToastType.ERROR);
     }
-  }, [history, parsed]);
+  }, [history, parsed, accessLevel]);
 
   const update = useCallback(async () => {
     const data = {
@@ -144,7 +175,7 @@ const Editor: React.FC = () => {
       data: {
         title: parsed.metadata?.title ?? "Untitled",
         content: codemirrorRef.current!.getValue(),
-        accessLevel: AccessLevel.PRIVATE,
+        accessLevel,
       },
     };
 
@@ -156,11 +187,15 @@ const Editor: React.FC = () => {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
       toastFactory.createToast("save failure", ToastType.ERROR);
     }
-  }, [id, parsed]);
+  }, [id, parsed.metadata, toastFactory, accessLevel]);
 
   const save = useCallback(() => {
     id ? update() : create();
   }, [id, update, create]);
+
+  const changeAccessLevel = useCallback(() => {
+    setAccessLevel(accessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
+  }, [accessLevel]);
 
   return (
     <SidebarLayout fluid toggleable>
@@ -174,6 +209,9 @@ const Editor: React.FC = () => {
             onSaveKeyDown={save}
             onExternalDrop={uploadExternalFile}
           />
+          <AccessLevelButton onClick={changeAccessLevel}>
+            <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"} alt=""/>
+          </AccessLevelButton>
           <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
           <FullScreenMode contents={slides}/>
         </Edit>

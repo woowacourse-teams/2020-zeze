@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import styled from "@emotion/styled";
+
 import {PAGE_CNT} from "../../domains/constants";
 
 const Pages = styled.div`
@@ -31,7 +32,7 @@ const Pages = styled.div`
     border-radius: 50%;
     cursor: pointer;
   }
-`
+`;
 
 interface IProps {
   page: number
@@ -53,19 +54,19 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickMove
     }
     setFirst(first);
     setLast(last);
-  }, [page, totalPage])
+  }, [page, totalPage]);
 
   const showPrevBtn = () => {
     if (first > PAGE_CNT) {
       return <div onClick={() => onClickMove(first - 1)}>&laquo;</div>;
     }
-  }
+  };
 
   const showNextBtn = () => {
     if (last + 1 > PAGE_CNT && last + 1 < totalPage) {
       return <div onClick={() => onClickMove(last + 1)}>&raquo;</div>
     }
-  }
+  };
 
   const showNumbers = () => {
     const elements: JSX.Element[] = [];
@@ -77,7 +78,7 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickMove
       }
     }
     return elements;
-  }
+  };
 
   return (
     <Pages>
@@ -86,6 +87,6 @@ const Pagination: React.FC<IProps> = ({page, totalPage, onClickPage, onClickMove
       {showNextBtn()}
     </Pages>
   );
-}
+};
 
 export default Pagination;
