@@ -105,6 +105,14 @@ const Editor: React.FC = () => {
   }, [accessLevel]);
 
   useEffect(() => {
+    if (!id) {
+      codemirrorRef.current?.setValue(createTemplate({
+        author: user!.name,
+      }));
+    }
+  }, [id]);
+
+  useEffect(() => {
     id && slideApi.get(id)
       .then(({data}) => {
         if (data.accessLevel === AccessLevel.PUBLIC && !isInitialMount.current) {
