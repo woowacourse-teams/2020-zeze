@@ -10,7 +10,7 @@ export const getAllSlidesQuery = selector({
   key: "getAllSlidesQuery",
   get: async () => {
     try {
-      const response: AxiosResponse<SlideResponses> = await slideApi.getAll({id: 0, size: 5});
+      const response: AxiosResponse<SlideResponses> = await slideApi.getAll({page: 0, size: 5});
 
       return response.data.slides;
     } catch (error) {

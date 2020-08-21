@@ -1,8 +1,8 @@
 package dev.minguinho.zeze.domain.slide.service;
 
-import java.util.List;
 import java.util.Objects;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +22,6 @@ import dev.minguinho.zeze.domain.slide.model.SlideRepository;
 @Service
 @RequiredArgsConstructor
 public class SlideService {
-    public static final int FIRST_PAGE = 0;
-
     private final SlideRepository slideRepository;
 
     @Transactional
@@ -37,8 +35,8 @@ public class SlideService {
     }
 
     public SlideResponseDtos retrieveAll(SlidesRequestDto slidesRequestDto, Long userId) {
-        PageRequest pageRequest = PageRequest.of(FIRST_PAGE, slidesRequestDto.getSize());
-        List<Slide> slides = getSlides(slidesRequestDto, userId, pageRequest);
+        PageRequest pageRequest = PageRequest.of(slidesRequestDto.getPage(), slidesRequestDto.getSize());
+        Page<Slide> slides = getSlides(userId, pageRequest);
         return SlideResponseDtos.from(slides);
     }
 
@@ -60,12 +58,11 @@ public class SlideService {
         slideRepository.delete(persist);
     }
 
-    private List<Slide> getSlides(SlidesRequestDto slidesRequestDto, Long userId, PageRequest pageRequest) {
+    private Page<Slide> getSlides(Long userId, PageRequest pageRequest) {
         if (Objects.isNull(userId)) {
-            return slideRepository.findAllByAccessLevel(Slide.AccessLevel.PUBLIC, pageRequest).getContent();
+            return slideRepository.findAllByAccessLevel(Slide.AccessLevel.PUBLIC, pageRequest);
         }
-        return slideRepository.findAllByUserIdAndIdGreaterThan(userId, slidesRequestDto.getId(),
-            pageRequest).getContent();
+        return slideRepository.findAllByUserIdOrderByUpdatedAtDesc(userId, pageRequest);
     }
 
     private Slide getSlide(Long slideId, Long userId) {

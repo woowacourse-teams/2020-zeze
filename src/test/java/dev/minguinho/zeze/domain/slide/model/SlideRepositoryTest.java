@@ -34,7 +34,7 @@ class SlideRepositoryTest {
 
     @Test
     @DisplayName("슬라이드 list 조회")
-    void findByIdGreaterThan() {
+    void findByIdOrderByUpdatedAtDesc() {
         String firstTitle = "제목1";
         String firstContent = "내용1";
         String secondTitle = "제목2";
@@ -44,13 +44,13 @@ class SlideRepositoryTest {
         slideRepository.saveAll(slides);
 
         PageRequest pageRequest = PageRequest.of(0, 5);
-        List<Slide> persistPresentations = slideRepository.findAllByUserIdAndIdGreaterThan(1L, 0L, pageRequest)
+        List<Slide> persistPresentations = slideRepository.findAllByUserIdOrderByUpdatedAtDesc(1L, pageRequest)
             .getContent();
 
         assertAll(
             () -> assertThat(persistPresentations).hasSize(2),
-            () -> assertThat(persistPresentations.get(0).getTitle()).isEqualTo(firstTitle),
-            () -> assertThat(persistPresentations.get(1).getTitle()).isEqualTo(secondTitle)
+            () -> assertThat(persistPresentations.get(0).getTitle()).isEqualTo(secondTitle),
+            () -> assertThat(persistPresentations.get(1).getTitle()).isEqualTo(firstTitle)
         );
     }
 

@@ -103,7 +103,7 @@ public class SlideDocumentation extends Documentation {
         List<SlideResponseDto> slides = Collections.singletonList(
             new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(), ZonedDateTime.now())
         );
-        SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides);
+        SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides, 0);
         given(slideService.retrieveAll(any(), eq(null))).willReturn(slideResponseDtos);
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
@@ -111,7 +111,7 @@ public class SlideDocumentation extends Documentation {
 
         mockMvc.perform(get(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .param("id", "0")
+            .param("page", "0")
             .param("size", "5")
         )
             .andExpect(status().isOk())
@@ -120,11 +120,12 @@ public class SlideDocumentation extends Documentation {
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestParameters(
-                    parameterWithName("id").description("마지막 슬라이드 id"),
-                    parameterWithName("size").description("페이지 사이즈")
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("size").description("슬라이드 개수")
                 ),
                 responseFields(
                     fieldWithPath("slides").type(JsonFieldType.ARRAY).description("Public 슬라이드 목록"),
+                    fieldWithPath("totalPage").type(JsonFieldType.NUMBER).description("총 페이지 수"),
                     fieldWithPath("slides[0].id").type(JsonFieldType.NUMBER).description("슬라이드 id"),
                     fieldWithPath("slides[0].title").type(JsonFieldType.STRING).description("슬라이드 제목"),
                     fieldWithPath("slides[0].content").type(JsonFieldType.STRING).description("슬라이드 내용"),
@@ -139,7 +140,7 @@ public class SlideDocumentation extends Documentation {
         List<SlideResponseDto> slides = Collections.singletonList(
             new SlideResponseDto(1L, "제목", "내용", "PUBLIC", ZonedDateTime.now(), ZonedDateTime.now())
         );
-        SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides);
+        SlideResponseDtos slideResponseDtos = new SlideResponseDtos(slides, 0);
         given(slideService.retrieveAll(any(), anyLong())).willReturn(slideResponseDtos);
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
@@ -148,7 +149,7 @@ public class SlideDocumentation extends Documentation {
         mockMvc.perform(get(BASE_URL)
             .header("Authorization", "bearer " + authenticationDto.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .param("id", "0")
+            .param("page", "0")
             .param("size", "5")
         )
             .andExpect(status().isOk())
@@ -160,11 +161,12 @@ public class SlideDocumentation extends Documentation {
                     headerWithName("Authorization").description("Bearer auth credentials")
                 ),
                 requestParameters(
-                    parameterWithName("id").description("마지막 슬라이드 id"),
-                    parameterWithName("size").description("페이지 사이즈")
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("size").description("슬라이드 개수")
                 ),
                 responseFields(
                     fieldWithPath("slides").type(JsonFieldType.ARRAY).description("User 슬라이드 목록"),
+                    fieldWithPath("totalPage").type(JsonFieldType.NUMBER).description("총 페이지 수"),
                     fieldWithPath("slides[0].id").type(JsonFieldType.NUMBER).description("슬라이드 id"),
                     fieldWithPath("slides[0].title").type(JsonFieldType.STRING).description("슬라이드 제목"),
                     fieldWithPath("slides[0].content").type(JsonFieldType.STRING).description("슬라이드 내용"),
