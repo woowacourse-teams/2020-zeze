@@ -63,7 +63,7 @@ export const Button = styled.a`
 
 const Slide = styled.div`
   width: 100%;
-  maxWidth: 960px;
+  max-width: 960px;
   margin: 0 auto;
   height: 30rem;
   
