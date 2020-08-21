@@ -30,6 +30,7 @@ interface IProps {
 const dataUrlToFile = (dataUrl: string, filename: string): File => {
   const decoded = atob(dataUrl.split(",")[1]);
   const buffer = new Uint8Array(decoded.length);
+
   for (let i = 0; i < decoded.length; ++i) {
     buffer[i] = decoded.charCodeAt(i);
   }
@@ -64,20 +65,24 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
       const fileList = e.dataTransfer?.files ?? [];
       const files: File[] = Array.prototype.slice.call(fileList, 0, fileList.length);
       const template = document.createElement("div");
+
       template.innerHTML = e.dataTransfer?.getData("text/html") ?? "";
       const image = template.querySelector("img");
 
       const drop = async (filename: string, promise: Promise<string>) => {
         const name = filename.replace(/[\[|\]]/g, "");
         const marker = `![Uploading ${name}...]()`;
+
         editor.replaceRange(`${marker}\n`, editor.getCursor());
         const uploadUrl = await promise;
         const searchCursor = editor.getSearchCursor(marker);
+
         searchCursor.findNext() && editor.replaceRange(`![${name}](${uploadUrl})`, searchCursor.from(), searchCursor.to());
       };
 
       if (image) {
         const dataUrl = image.src.match(/^data:image/)?.input;
+
         if (dataUrl) {
           drop(image.alt, onDrop(dataUrlToFile(dataUrl, "untitled")));
         } else {
@@ -86,7 +91,7 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
         return;
       }
 
-      files.filter(({ type }) => type.split("/")[0] === "image")
+      files.filter(({type}) => type.split("/")[0] === "image")
         .forEach(file => drop(file.name, onDrop(file)));
     });
 

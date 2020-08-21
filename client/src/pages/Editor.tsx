@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useHistory, useParams} from "react-router-dom";
-import {useRecoilValue} from "recoil";
+import {useParams, useHistory} from "react-router-dom";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+
 import styled from "@emotion/styled";
 
 import Preview from "../components/editor/Preview";
@@ -13,20 +15,21 @@ import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
 import {createTemplate, parse, ParsedData} from "../utils/metadata";
 import ToastFactory from "../domains/ToastFactory";
-import {userInfoQuery} from "../store/atoms";
+import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
+import EditorButtons from "../components/common/EditorButtons";
+import {css} from "@emotion/core";
 
 const EditorBlock = styled.main`
   display: flex;
   height: 100%;
   max-height: 100vh;
-  
+
   > div {
-    flex: 1;
     position: relative;
     overflow: auto;
   }
-  
+
   @media(max-width: ${MOBILE_MAX_WIDTH}px) {
     flex-direction: column-reverse;
     height: 100vh;
@@ -34,38 +37,31 @@ const EditorBlock = styled.main`
 `;
 
 const Edit = styled.div`
+  flex: 1.5;
   display: flex;
   flex-direction: column;
 `;
 
-const Menu = styled.div`
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-  background-color: #313335;
-  
-  > button {
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 16px;
-    width: 50px;
-    margin: 5px;
-    border: 0;
-    border-radius: 8px;
-    outline: none;
-    color: #777;
-    font-weight: bold;
-    background-color: transparent;
-    cursor: pointer;
+const SaveButton = styled.div`
+  position: absolute;
+  z-index: 3;
+  top: 70px;
+  right: 70px;
+  > img {
+    width: 20px;
+    height: 20px;
   }
 `;
 
-const SaveButton = styled.button`
-  background-image: url("/assets/icons/save.svg");
-`;
-
-const DeleteButton = styled.button`
-  background-image: url("/assets/icons/clear.svg");
+const AccessLevelButton = styled.div`
+  position: absolute;
+  z-index: 3;
+  top: 70px;
+  right: 110px;
+  > img {
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 interface Params {
@@ -74,6 +70,7 @@ interface Params {
 
 const Editor: React.FC = () => {
   const user = useRecoilValue(userInfoQuery);
+  const setVisibility = useSetRecoilState(sidebarVisibility);
   const params = useParams<Params>();
   const id = parseInt(params?.id ?? "0", 10);
   const history = useHistory();
@@ -93,6 +90,10 @@ const Editor: React.FC = () => {
 
   useEffect(() => {
     googleAnalyticsPageView("Editor");
+    setVisibility(false);
+    return () => {
+      setVisibility(true);
+    };
   }, []);
 
   useEffect(() => {
@@ -141,11 +142,12 @@ const Editor: React.FC = () => {
       });
   }), []);
 
-  const uploadExternalFile = useCallback((url: string, name: string) => new Promise<string>(resolve => {
-    filesApi.uploadExternal(url, name)
-      .then(response => response.data.urls[0])
-      .then(url => resolve(url));
-  }), []);
+  const uploadExternalFile = useCallback((url: string, name: string) => (
+    new Promise<string>(resolve => {
+      filesApi.uploadExternal(url, name)
+        .then(response => response.data.urls[0])
+        .then(fileUrl => resolve(fileUrl));
+    })), []);
 
   const create = useCallback(async () => {
     try {
@@ -191,38 +193,26 @@ const Editor: React.FC = () => {
     id ? update() : create();
   }, [id, update, create]);
 
-  const deleteSlide = useCallback(async () => {
-    try {
-      id && await slideApi.delete(id);
-      googleAnalyticsEvent("슬라이드", `#${id} 삭제 완료`);
-      history.push("/archive");
-    } catch (error) {
-      googleAnalyticsException(`슬라이드 #${id} 삭제 실패`);
-    }
-  }, [history, id]);
-
   const changeAccessLevel = useCallback(() => {
     setAccessLevel(accessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
   }, [accessLevel]);
 
   return (
-    <SidebarLayout fluid>
+    <SidebarLayout fluid toggleable>
       <EditorBlock>
         <Edit>
-          <Menu>
-            <button
-              style={{backgroundImage: `url(${accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"})`}}
-              onClick={changeAccessLevel}/>
-            <SaveButton onClick={save}/>
-            <DeleteButton onClick={deleteSlide}/>
-          </Menu>
+          <EditorButtons inputRef={codemirrorRef}/>
           <MarkdownEditor
             inputRef={codemirrorRef}
             onChange={setContent}
             onDrop={uploadFile}
-            onExternalDrop={uploadExternalFile}
             onSaveKeyDown={save}
+            onExternalDrop={uploadExternalFile}
           />
+          <AccessLevelButton onClick={changeAccessLevel}>
+            <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"} alt=""/>
+          </AccessLevelButton>
+          <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
           <FullScreenMode contents={slides}/>
         </Edit>
         <Preview content={content}/>
