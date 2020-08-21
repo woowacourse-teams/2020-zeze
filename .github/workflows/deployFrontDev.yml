@@ -1,0 +1,62 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Development Server Front Side Deployment
+
+on:
+  workflow_dispatch:
+
+env:
+  BUCKET: 'slidemd-build'
+  BUILD_DIR: 'static'
+  LATEST: 'latest'
+  BACKUP: 'backup'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: yarn install
+        run: |
+          cd client
+          yarn install
+      - name: yarn build
+        run: |
+          cd client
+          yarn build:dev
+        env:
+          CI: 'false'
+      - name: zip artifacts
+        run: |
+          cd client/build
+          zip -r ${LATEST}.zip ./*
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      - name: Check S3
+        uses: tuler/s3-check-action@master
+        id: check_S3
+        env:
+          FILE: front/${{ env.LATEST }}.zip
+          AWS_REGION: 'ap-northeast-2'
+          AWS_S3_BUCKET: ${{ env.BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Create back up build
+        if: steps.check_S3.outputs.exists == 'true'
+        run: aws s3 mv s3://${BUCKET}/front/${LATEST}.zip s3://${BUCKET}/front/${BACKUP}.zip
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./client/build/${LATEST}.zip s3://${BUCKET}/front/${LATEST}.zip --acl public-read-write
