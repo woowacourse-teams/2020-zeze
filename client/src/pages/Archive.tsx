@@ -12,7 +12,8 @@ const Archive: React.FC = () => {
   useEffect(() => {
     googleAnalyticsPageView("Archive");
     setVisibility(true);
-  }, [setVisibility]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <SidebarLayout>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import styled from "@emotion/styled";
 import {useSetRecoilState} from "recoil";
 import CodeMirror from "codemirror";
@@ -42,7 +42,7 @@ interface IProps {
 
 const EditorButtons: React.FC<IProps> = ({inputRef}) => {
   const setVisibility = useSetRecoilState(sidebarVisibility);
-  const insertTemplate = (template: string) => {
+  const insertTemplate = useCallback((template: string) => {
     const editor = inputRef.current!;
     const cursor = editor.getCursor();
 
@@ -51,7 +51,8 @@ const EditorButtons: React.FC<IProps> = ({inputRef}) => {
 
     editor.focus();
     searchCursor.findNext() && editor.setCursor(searchCursor.to());
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <EditorButtonsBlock>

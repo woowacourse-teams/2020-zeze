@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {useRecoilValue, useResetRecoilState, useSetRecoilState} from "recoil";
 import styled from "@emotion/styled";
@@ -36,7 +37,7 @@ const Me: React.FC = () => {
   useEffect(() => {
     googleAnalyticsPageView("My Page");
     setVisibility(true);
-  }, [setVisibility]);
+  }, []);
 
   const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setEditedUser({...editedUser, [event.target.name]: event.target.value});
@@ -58,7 +59,7 @@ const Me: React.FC = () => {
       })
       .then(() => setUser())
       .catch(() => toastFactory.createToast("update failure", ToastType.ERROR));
-  }, [setUser, toastFactory]);
+  }, [toastFactory]);
 
   return (
     <SidebarLayout>
