@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
-import {useRecoilValue, useResetRecoilState} from "recoil";
+import {useRecoilValue, useResetRecoilState, useSetRecoilState} from "recoil";
 import styled from "@emotion/styled";
 import SidebarLayout from "../components/common/SidebarLayout";
 import Info from "../components/common/Info";
 import usersApi from "../api/user";
-import {userInfoQuery} from "../store/atoms";
+
+import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import filesApi from "../api/file";
 import {ToastType} from "../domains/constants";
 import ToastFactory from "../domains/ToastFactory";
@@ -28,11 +30,13 @@ export interface User {
 const Me: React.FC = () => {
   const user = useRecoilValue(userInfoQuery);
   const setUser = useResetRecoilState(userInfoQuery);
+  const setVisibility = useSetRecoilState(sidebarVisibility);
   const [editedUser, setEditedUser] = useState<User>(user!);
   const toastFactory = ToastFactory();
 
   useEffect(() => {
     googleAnalyticsPageView("My Page");
+    setVisibility(true);
   }, []);
 
   const changeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -55,11 +59,10 @@ const Me: React.FC = () => {
       })
       .then(() => setUser())
       .catch(() => toastFactory.createToast("update failure", ToastType.ERROR));
-  }, [setUser]);
+  }, [toastFactory]);
 
   return (
     <SidebarLayout>
-      {/* <Cards title="Recent"/>*/}
       <MeBlock>
         <Info user={user!}
           editedUser={editedUser}

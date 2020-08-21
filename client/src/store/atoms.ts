@@ -23,3 +23,8 @@ export const toastMessages = atom<Array<Toast>>({
   key: "toastMessages",
   default: [],
 });
+
+export const sidebarVisibility = atom<boolean>({
+  key: "sidebarVisibility",
+  default: false,
+});

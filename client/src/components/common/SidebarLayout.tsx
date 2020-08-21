@@ -1,12 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "@emotion/styled";
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
 import SidebarNav from "./SidebarNav";
-import {useRecoilValue} from "recoil";
-import {userInfoQuery} from "../../store/atoms";
+import {useRecoilState, useRecoilValue} from "recoil";
+import {sidebarVisibility, userInfoQuery} from "../../store/atoms";
 
 interface SidebarLayoutProps {
   fluid?: boolean
+  toggleable?: boolean
+  visible?: boolean
 }
 
 export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
@@ -19,11 +21,11 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
     padding: 30px;
     min-width: 275px; 
     height: 100vh;
-    display: flex;
+    display: ${props => (props.visible ? "flex" : "none")};
+    z-index: ${props => (props.toggleable ? 99999 : 1)};
     flex-direction: column;
     justify-content: space-between;
     position: fixed;
-    z-index: 1;
     
     a {
       color: #fff;
@@ -43,11 +45,23 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
     background-color: ${ZEZE_GRAY};
     flex: 1;
     width: 100%;
-    padding-left: 275px;
+    padding-left: ${({toggleable}) => (toggleable ? 0 : 275)}px;
     box-sizing: border-box;
     min-height: 100vh;
+    position: relative;
     
-    > div {
+    > div.dropback {
+      display: ${({toggleable, visible}) => (toggleable && visible ? "block" : "none")};
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 4;
+      background-color: rgba(0,0,0,0.9);
+    }
+    
+    > div.content {
       height: 100%;
       padding: 0 ${props => (props.fluid ? 0 : 30)}px;
     }
@@ -59,17 +73,20 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
 `;
 
 interface IProps {
-  fluid?: boolean,
+  fluid?: boolean;
+  toggleable?: boolean;
 }
 
-const SidebarLayout: React.FC<IProps> = ({children, fluid = false}) => {
+const SidebarLayout: React.FC<IProps> = ({children, fluid = false, toggleable = false}) => {
   const user = useRecoilValue(userInfoQuery);
+  const [visibility, setVisibility] = useRecoilState(sidebarVisibility);
 
   return (
-    <SidebarLayoutBlock fluid={fluid}>
-      <SidebarNav user={user!}/>
+    <SidebarLayoutBlock fluid={fluid} toggleable={toggleable} visible={visibility}>
+      <SidebarNav user={user!} />
       <main>
-        <div>
+        <div className="dropback" onClick={() => setVisibility(false)}/>
+        <div className="content">
           {children}
         </div>
       </main>
