@@ -37,11 +37,12 @@ const Button = styled.button`
 `;
 
 const LeftButton = styled(Button)`
+  left: 20px;
   background: url("/assets/icons/left-arrow.svg");
 `;
 
 const RightButton = styled(Button)`
-  left: calc(100% - 32px);
+  left: calc(100% - 52px);
   background: url("/assets/icons/right-arrow.svg");
 `;
 
