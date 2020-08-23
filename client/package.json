@@ -24,6 +24,7 @@
     "chart.js": "^2.9.3",
     "codemirror": "^5.56.0",
     "dotenv": "^8.2.0",
+    "env-cmd": "^10.1.0",
     "fscreen": "^1.0.2",
     "moment": "^2.27.0",
     "react": "^16.13.1",
@@ -38,6 +39,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "build:dev": "env-cmd -f .env.staging react-scripts build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

@@ -3,6 +3,8 @@ import axios from "axios";
 import GlobalLayout from "../components/common/GlobalLayout";
 import Spinner from "../components/common/Spinner";
 import {googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
+import ToastFactory from "../domains/ToastFactory";
+import {ToastType} from "../domains/constants";
 
 interface props {
   location: string,
@@ -11,6 +13,7 @@ interface props {
 
 const Callback: React.FC<props> = ({location, history}: props) => {
   const githubBaseUrl = `/api/signin/github`;
+  const toastFactory = ToastFactory();
 
   useEffect(() => {
     googleAnalyticsPageView("Github Login Callback");
@@ -31,7 +34,7 @@ const Callback: React.FC<props> = ({location, history}: props) => {
       .then(() => history.push("/me"))
       .catch(() => {
         googleAnalyticsException("로그인 실패");
-        alert("login failed");
+        toastFactory.createToast("login failure", ToastType.ERROR);
         history.push("/");
       });
   }, [location, history, githubBaseUrl]);
