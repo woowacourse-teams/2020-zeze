@@ -2,8 +2,8 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useHistory} from "react-router-dom";
 import {useRecoilValue, useSetRecoilState} from "recoil";
-
 import styled from "@emotion/styled";
+import moment from "moment";
 
 import Preview from "../components/editor/Preview";
 import MarkdownEditor from "../components/editor/MarkdownEditor";
@@ -18,7 +18,6 @@ import ToastFactory from "../domains/ToastFactory";
 import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 import EditorButtons from "../components/common/EditorButtons";
-import {css} from "@emotion/core";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -77,6 +76,7 @@ const Editor: React.FC = () => {
   const codemirrorRef = useRef<CodeMirror.Editor | null>(null);
   const toastFactory = ToastFactory();
 
+  const [updatedAt, setUpdatedAt] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [accessLevel, setAccessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
   const isInitialMount = useRef(true);
@@ -108,6 +108,7 @@ const Editor: React.FC = () => {
     if (id) {
       return;
     }
+    setUpdatedAt("");
     if (accessLevel === AccessLevel.PUBLIC) {
       isInitialMount.current = true;
       setAccessLevel(AccessLevel.PRIVATE);
@@ -124,6 +125,7 @@ const Editor: React.FC = () => {
           isInitialMount.current = true;
           setAccessLevel(AccessLevel.PUBLIC);
         }
+        setUpdatedAt(moment(data.updatedAt).fromNow());
         codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
@@ -163,6 +165,7 @@ const Editor: React.FC = () => {
       googleAnalyticsEvent("슬라이드", `#${slideId} 저장 완료`);
       toastFactory.createToast("create success", ToastType.SUCCESS);
       history.replace(`/editor/${slideId}`);
+      setUpdatedAt(moment().fromNow());
     } catch (error) {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
       toastFactory.createToast("create failure", ToastType.ERROR);
@@ -183,6 +186,7 @@ const Editor: React.FC = () => {
       await slideApi.update(data);
       googleAnalyticsEvent("슬라이드", `#${id} 수정 완료`);
       toastFactory.createToast("save success", ToastType.SUCCESS);
+      setUpdatedAt(moment().fromNow());
     } catch {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
       toastFactory.createToast("save failure", ToastType.ERROR);
@@ -201,7 +205,7 @@ const Editor: React.FC = () => {
     <SidebarLayout fluid toggleable>
       <EditorBlock>
         <Edit>
-          <EditorButtons inputRef={codemirrorRef}/>
+          <EditorButtons inputRef={codemirrorRef} updatedAt={updatedAt}/>
           <MarkdownEditor
             inputRef={codemirrorRef}
             onChange={setContent}

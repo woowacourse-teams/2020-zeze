@@ -44,10 +44,11 @@ const EditorButtonsBlock = styled.div`
 `;
 
 interface IProps {
-  inputRef: React.MutableRefObject<CodeMirror.Editor | null>
+  inputRef: React.MutableRefObject<CodeMirror.Editor | null>;
+  updatedAt: string;
 }
 
-const EditorButtons: React.FC<IProps> = ({inputRef}) => {
+const EditorButtons: React.FC<IProps> = ({inputRef, updatedAt}) => {
   const setVisibility = useSetRecoilState(sidebarVisibility);
   const insertTemplate = useCallback((template: string) => {
     const editor = inputRef.current!;
@@ -65,7 +66,7 @@ const EditorButtons: React.FC<IProps> = ({inputRef}) => {
     <EditorButtonsBlock>
       <Menu onClick={() => setVisibility(true)}><img src={menu} alt={menu}/></Menu>
       <div className="container">{templates.map(data => <EditorButton {...data} handleClick={insertTemplate}/>)}</div>
-      <LastModified at={new Date().toLocaleTimeString()}></LastModified>
+      <LastModified at={updatedAt}></LastModified>
     </EditorButtonsBlock>
   );
 };
