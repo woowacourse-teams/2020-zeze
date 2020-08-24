@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import {AccessLevel} from "../domains/constants";
+import {MetaProps} from "../utils/metadata";
 
 export interface SlideRequest {
   id?: number
@@ -21,8 +22,16 @@ export interface SlideResponse {
   updatedAt: string
 }
 
-export interface SlideResponses {
-  slides: Array<SlideResponse>
+export interface MetaDataResponse {
+  id: number;
+  title?: string;
+  subtitle?: string;
+  author?: string;
+  createdAt: string;
+}
+
+export interface MetaDataResponses {
+  slides: Array<MetaDataResponse>
   totalPage: number
 }
 
@@ -43,7 +52,7 @@ const slideApi = {
       },
     });
   },
-  getAll(page: PageProps): Promise<AxiosResponse<SlideResponses>> {
+  getAll(page: PageProps): Promise<AxiosResponse<MetaDataResponses>> {
     return slideInstance.get("/", {
       headers: {
         authorization: localStorage.getItem("accessToken"),
@@ -51,7 +60,7 @@ const slideApi = {
       params: page,
     });
   },
-  getPublic(page: PageProps): Promise<AxiosResponse<SlideResponses>> {
+  getPublic(page: PageProps): Promise<AxiosResponse<MetaDataResponses>> {
     return slideInstance.get("/", {
       params: page,
     });

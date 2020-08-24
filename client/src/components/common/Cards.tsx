@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import Card from "./Card";
 import {MOBILE_MAX_WIDTH} from "../../domains/constants";
-import {SlideResponse} from "../../api/slide";
+import {MetaDataResponse} from "../../api/slide";
 
 export const CardsLayout = styled.div`
   padding-bottom: 2rem;
@@ -47,16 +47,15 @@ const CardsBlock = styled.div`
 
 interface IProps {
   title: string,
-  slides: SlideResponse[],
-  author?: string
+  slides: MetaDataResponse[],
 }
 
-const Cards: React.FC<IProps> = ({title, slides, author}) => (
+const Cards: React.FC<IProps> = ({title, slides}) => (
   <CardsLayout>
     <h2>{title}</h2>
     <hr/>
     <CardsBlock>
-      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author={author}
+      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle={slide.subtitle} author={slide.author}
                                   createdAt={slide.createdAt}/>))}
     </CardsBlock>
   </CardsLayout>

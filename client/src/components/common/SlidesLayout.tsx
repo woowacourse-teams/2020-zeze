@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 
 import Pagination from "./Pagination";
 import Cards from "./Cards";
-import {PageProps, SlideResponse, SlideResponses} from "../../api/slide";
+import {PageProps, MetaDataResponses, MetaDataResponse} from "../../api/slide";
 import {googleAnalyticsPageView} from "../../utils/googleAnalytics";
 
 const SlidesBlock = styled.div`
@@ -15,13 +15,13 @@ const SlidesBlock = styled.div`
 `;
 
 interface IProps {
-  getAllSlides: (page: PageProps) => Promise<AxiosResponse<SlideResponses>>
+  getAllSlides: (page: PageProps) => Promise<AxiosResponse<MetaDataResponses>>
   slidesCnt: number
   title: string
 }
 
 const SlidesLayout: React.FC<IProps> = ({getAllSlides, slidesCnt, title}) => {
-  const [slides, setSlides] = useState<Array<SlideResponse>>([]);
+  const [slides, setSlides] = useState<Array<MetaDataResponse>>([]);
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
 
@@ -48,7 +48,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, slidesCnt, title}) => {
 
   return (
     <SlidesBlock>
-      <Cards title={title} slides={slides} author={"zeze"}/>
+      <Cards title={title} slides={slides}/>
       <Pagination page={page}
                   totalPage={totalPage}
                   onClickPage={onClickPage}

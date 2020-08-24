@@ -54,8 +54,8 @@ const CardBlock = styled.div`
 
 interface IProps {
   id: number,
-  title: string,
-  subtitle: string,
+  title?: string,
+  subtitle?: string,
   author?: string,
   createdAt: string
 }
@@ -68,14 +68,14 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => {
       <CardBlock>
         <header/>
         <main>
-          <div className="title">{title}</div>
-          <div className="subtitle">{subtitle}</div>
+          <div className="title">{title || "Title"}</div>
+          <div className="subtitle">{subtitle || "Subtitle"}</div>
           <div className="author">{author || "author"}</div>
           <div className="created_at">{parsedTime}</div>
         </main>
       </CardBlock>
     </Link>
   );
-}
+};
 
 export default Card;
