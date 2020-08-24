@@ -18,10 +18,10 @@ const SidebarNav: React.FC<IProps> = ({user}: IProps) => {
       <div>
         <SidebarHeader src={user.profileImage} title={user.name} />
         <NavLink to="/me" activeClassName="current">
-          <SidebarMenu src="/assets/icons/slide.svg" title="All Slides" />
+          <SidebarMenu src="/assets/icons/slide.svg" title="My Slides" />
         </NavLink>
         <NavLink to="/archive" activeClassName="current">
-          <SidebarMenu src="/assets/icons/archive.svg" title="Archive" />
+          <SidebarMenu src="/assets/icons/publicSlides.svg" title="Public Slides" />
         </NavLink>
       </div>
       <Link to="/editor" onClick={() => setVisibility(false)}>
