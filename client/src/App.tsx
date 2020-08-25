@@ -8,7 +8,7 @@ import {initializeGoogleAnalytics} from "./utils/googleAnalytics";
 const Home = React.lazy(() => import("./pages/Home"));
 const Me = React.lazy(() => import("./pages/Me"));
 const Editor = React.lazy(() => import("./pages/Editor"));
-const Archive = React.lazy(() => import("./pages/Archive"));
+const PublicSlides = React.lazy(() => import("./pages/PublicSlides"));
 const Callback = React.lazy(() => import("./pages/Callback"));
 const Error = React.lazy(() => import("./pages/Error"));
 
@@ -26,7 +26,7 @@ const App: React.FC = () => {
         <Auth path="/me" component={Me}/>
         <Auth exact path="/editor" component={Editor}/>
         <Auth path="/editor/:id" component={Editor}/>
-        <Auth path="/archive" component={Archive}/>
+        <Auth path="/archive" component={PublicSlides}/>
         <Route component={Error}/>
       </Switch>
       <ToastAlarm/>

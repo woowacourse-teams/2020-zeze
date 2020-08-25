@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.service.SlideService;
 import dev.minguinho.zeze.domain.user.config.LoginUserId;
@@ -38,12 +38,12 @@ public class SlideController {
     }
 
     @GetMapping
-    public ResponseEntity<SlideResponseDtos> retrieveSlides(
+    public ResponseEntity<SlideMetadataDtos> retrieveSlides(
         @ModelAttribute SlidesRequestDto slidesRequestDto,
         @LoginUserId Long userId
     ) {
-        SlideResponseDtos slideResponseDtos = slideService.retrieveAll(slidesRequestDto, userId);
-        return ResponseEntity.ok(slideResponseDtos);
+        SlideMetadataDtos slideMetadataDtos = slideService.retrieveAll(slidesRequestDto, userId);
+        return ResponseEntity.ok(slideMetadataDtos);
     }
 
     @GetMapping("/{id}")

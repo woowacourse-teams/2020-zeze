@@ -6,20 +6,20 @@ import SlidesLayout from "../components/common/SlidesLayout";
 import slideApi from "../api/slide";
 import {sidebarVisibility} from "../store/atoms";
 
-const Archive: React.FC = () => {
+const PublicSlides: React.FC = () => {
   const setVisibility = useSetRecoilState(sidebarVisibility);
 
   useEffect(() => {
-    googleAnalyticsPageView("Archive");
+    googleAnalyticsPageView("Public Slides");
     setVisibility(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <SidebarLayout>
-      <SlidesLayout getAllSlides={slideApi.getPublic} slidesCnt={9} title="Archive"/>
+      <SlidesLayout getAllSlides={slideApi.getPublic} slidesCnt={9} title="Public Slides"/>
     </SidebarLayout>
   );
 };
 
-export default Archive;
+export default PublicSlides;

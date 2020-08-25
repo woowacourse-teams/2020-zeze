@@ -15,15 +15,15 @@ import dev.minguinho.zeze.domain.slide.model.Slide;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class SlideResponseDtos {
-    private List<SlideResponseDto> slides;
+public class SlideMetadataDtos {
+    private List<SlideMetadataDto> slides;
     private int totalPage;
 
-    public static SlideResponseDtos from(Page<Slide> slides) {
-        List<SlideResponseDto> slideResponses = slides.getContent()
+    public static SlideMetadataDtos from(Page<Slide> slides) {
+        List<SlideMetadataDto> slideResponses = slides.getContent()
             .stream()
-            .map(SlideResponseDto::from)
+            .map(SlideMetadataDto::from)
             .collect(Collectors.toList());
-        return new SlideResponseDtos(slideResponses, slides.getTotalPages());
+        return new SlideMetadataDtos(slideResponses, slides.getTotalPages());
     }
 }

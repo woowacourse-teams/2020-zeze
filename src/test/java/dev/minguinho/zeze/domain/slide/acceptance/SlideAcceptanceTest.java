@@ -27,9 +27,10 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
 import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.model.SlideRepository;
 import dev.minguinho.zeze.domain.user.config.LoginUserIdMethodArgumentResolver;
 
@@ -73,28 +74,36 @@ public class SlideAcceptanceTest {
         return Stream.of(
             dynamicTest("추가", () -> {
                 String title = "제목";
+                String subtitle = "부제목";
+                String author = "작성자";
+                String presentedAt = "2020-07-21";
                 String content = "내용";
                 String accessLevel = "PUBLIC";
-                SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+                SlideRequestDto slideRequestDto = new SlideRequestDto(title, subtitle, author, presentedAt, content,
+                    accessLevel);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
                     .willReturn(1L);
 
                 createSlide(slideRequestDto);
 
-                SlideResponseDtos slideResponseDtos = retrieveSlides();
-                List<SlideResponseDto> slides = slideResponseDtos.getSlides();
+                SlideMetadataDtos slideMetadataDtos = retrieveSlides();
+                List<SlideMetadataDto> slides = slideMetadataDtos.getSlides();
                 assertAll(
                     () -> assertThat(slides.get(0).getTitle()).isEqualTo(title),
-                    () -> assertThat(slides.get(0).getContent()).isEqualTo(content),
-                    () -> assertThat(slides.get(0).getAccessLevel()).isEqualTo(accessLevel)
+                    () -> assertThat(slides.get(0).getSubtitle()).isEqualTo(subtitle),
+                    () -> assertThat(slides.get(0).getAuthor()).isEqualTo(author)
                 );
             }),
             dynamicTest("list 조회", () -> {
                 String title = "두번째 제목";
+                String subtitle = "두번째 부제목";
+                String author = "두번째 작성자";
+                String presentedAt = "2020-07-22";
                 String content = "두번째 내용";
                 String accessLevel = "PRIVATE";
-                SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+                SlideRequestDto slideRequestDto = new SlideRequestDto(title, subtitle, author, presentedAt, content,
+                    accessLevel);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
                     .willReturn(1L);
@@ -104,8 +113,8 @@ public class SlideAcceptanceTest {
                 BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
                     .willReturn(null);
 
-                SlideResponseDtos slideResponseDtos = retrieveSlides();
-                List<SlideResponseDto> slides = slideResponseDtos.getSlides();
+                SlideMetadataDtos slideMetadataDtos = retrieveSlides();
+                List<SlideMetadataDto> slides = slideMetadataDtos.getSlides();
                 assertAll(
                     () -> assertThat(slides).hasSize(1),
                     () -> assertThat(slides.get(0).getTitle()).isEqualTo("제목")
@@ -115,9 +124,9 @@ public class SlideAcceptanceTest {
                 BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
                     .willReturn(1L);
-                SlideResponseDtos slideResponseDtos = retrieveSlides();
+                SlideMetadataDtos slideMetadataDtos = retrieveSlides();
 
-                List<SlideResponseDto> slides = slideResponseDtos.getSlides();
+                List<SlideMetadataDto> slides = slideMetadataDtos.getSlides();
                 assertAll(
                     () -> assertThat(slides.get(0).getTitle()).isEqualTo("두번째 제목"),
                     () -> assertThat(slides.get(1).getTitle()).isEqualTo("제목")
@@ -127,13 +136,12 @@ public class SlideAcceptanceTest {
                 BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
                     .willReturn(null);
-                SlideResponseDtos slideResponseDtos = retrieveSlides();
-                Long id = slideResponseDtos.getSlides().get(0).getId();
+                SlideMetadataDtos slideMetadataDtos = retrieveSlides();
+                Long id = slideMetadataDtos.getSlides().get(0).getId();
 
                 SlideResponseDto slideResponseDto = retrieveSlide(id);
 
                 assertAll(
-                    () -> assertThat(slideResponseDto.getTitle()).isEqualTo("제목"),
                     () -> assertThat(slideResponseDto.getContent()).isEqualTo("내용"),
                     () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PUBLIC")
                 );
@@ -142,55 +150,58 @@ public class SlideAcceptanceTest {
                 BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
                     .willReturn(1L);
-                SlideResponseDtos slideResponseDtos = retrieveSlides();
-                Long id = slideResponseDtos.getSlides().get(1).getId();
+                SlideMetadataDtos slideMetadataDtos = retrieveSlides();
+                Long id = slideMetadataDtos.getSlides().get(1).getId();
 
                 SlideResponseDto slideResponseDto = retrieveSlide(id);
 
                 assertAll(
-                    () -> assertThat(slideResponseDto.getTitle()).isEqualTo("제목"),
                     () -> assertThat(slideResponseDto.getContent()).isEqualTo("내용"),
                     () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PUBLIC")
                 );
             }),
             dynamicTest("업데이트", () -> {
                 String title = "새 제목";
+                String subTitle = "부제목";
+                String author = "작성자";
+                String presentedAt = "2020-07-21";
                 String content = "내용";
                 String accessLevel = "PUBLIC";
-                SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+                SlideRequestDto slideRequestDto = new SlideRequestDto(title, subTitle, author, presentedAt, content,
+                    accessLevel);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
                     .willReturn(1L);
-                SlideResponseDtos slideResponseDtos = retrieveSlides();
-                List<SlideResponseDto> slides = slideResponseDtos.getSlides();
+                SlideMetadataDtos slideMetadataDtos = retrieveSlides();
+                List<SlideMetadataDto> slides = slideMetadataDtos.getSlides();
                 Long id = slides.get(0).getId();
 
                 updateSlide(id, slideRequestDto);
 
-                SlideResponseDtos result = retrieveSlides();
-                List<SlideResponseDto> resultSlides = result.getSlides();
+                SlideMetadataDtos result = retrieveSlides();
+                List<SlideMetadataDto> resultSlides = result.getSlides();
                 assertAll(
                     () -> assertThat(resultSlides.get(0).getTitle()).isEqualTo(title),
-                    () -> assertThat(resultSlides.get(0).getContent()).isEqualTo("내용"),
-                    () -> assertThat(resultSlides.get(0).getAccessLevel()).isEqualTo("PUBLIC")
+                    () -> assertThat(resultSlides.get(0).getSubtitle()).isEqualTo(subTitle),
+                    () -> assertThat(resultSlides.get(0).getAuthor()).isEqualTo(author)
                 );
             }),
             dynamicTest("삭제", () -> {
                 BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
                 BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
                     .willReturn(1L);
-                SlideResponseDtos slideResponseDtos = retrieveSlides();
-                List<SlideResponseDto> values = slideResponseDtos.getSlides();
+                SlideMetadataDtos slideMetadataDtos = retrieveSlides();
+                List<SlideMetadataDto> values = slideMetadataDtos.getSlides();
                 Long id = values.get(0).getId();
 
                 deleteSlide(id);
 
-                SlideResponseDtos result = retrieveSlides();
-                List<SlideResponseDto> resultSlides = result.getSlides();
+                SlideMetadataDtos result = retrieveSlides();
+                List<SlideMetadataDto> resultSlides = result.getSlides();
                 assertAll(
                     () -> assertThat(resultSlides.get(0).getTitle()).isEqualTo("제목"),
-                    () -> assertThat(resultSlides.get(0).getContent()).isEqualTo("내용"),
-                    () -> assertThat(resultSlides.get(0).getAccessLevel()).isEqualTo("PUBLIC")
+                    () -> assertThat(resultSlides.get(0).getSubtitle()).isEqualTo("부제목"),
+                    () -> assertThat(resultSlides.get(0).getAuthor()).isEqualTo("작성자")
                 );
             })
         );
@@ -206,7 +217,7 @@ public class SlideAcceptanceTest {
             .statusCode(HttpStatus.CREATED.value());
     }
 
-    private SlideResponseDtos retrieveSlides() {
+    private SlideMetadataDtos retrieveSlides() {
         Map<String, String> params = new HashMap<>();
         params.put("page", "0");
         params.put("size", "5");
@@ -218,7 +229,7 @@ public class SlideAcceptanceTest {
             .then()
             .log().all()
             .statusCode(HttpStatus.OK.value())
-            .extract().as(SlideResponseDtos.class);
+            .extract().as(SlideMetadataDtos.class);
     }
 
     private SlideResponseDto retrieveSlide(Long slideId) {
