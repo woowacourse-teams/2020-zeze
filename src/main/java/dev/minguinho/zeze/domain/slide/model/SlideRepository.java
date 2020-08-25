@@ -6,10 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.ZonedDateTime;
-
 public interface SlideRepository extends JpaRepository<Slide, Long> {
-    Page<Slide> findAllByAccessLevelAndDeletedAt(AccessLevel accessLevel, ZonedDateTime zonedDateTime, Pageable pageable);
+    Page<Slide> findAllByAccessLevelAndDeletedAtIsNull(AccessLevel accessLevel, Pageable pageable);
 
-    Page<Slide> findAllByUserIdAndDeletedAtOrderByUpdatedAtDesc(Long userId, ZonedDateTime zonedDateTime, Pageable pageable);
+    Page<Slide> findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(Long userId, Pageable pageable);
 }

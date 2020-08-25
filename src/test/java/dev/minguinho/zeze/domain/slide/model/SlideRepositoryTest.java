@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 
-import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
-
 @DataJpaTest
 class SlideRepositoryTest {
     @Autowired
@@ -44,7 +42,7 @@ class SlideRepositoryTest {
         slideRepository.saveAll(slides);
 
         PageRequest pageRequest = PageRequest.of(0, 5);
-        List<Slide> persistPresentations = slideRepository.findAllByUserIdAndDeletedAtOrderByUpdatedAtDesc(1L, null, pageRequest)
+        List<Slide> persistPresentations = slideRepository.findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(1L, pageRequest)
             .getContent();
 
         assertAll(
