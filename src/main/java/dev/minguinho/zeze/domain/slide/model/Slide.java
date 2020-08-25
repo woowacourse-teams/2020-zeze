@@ -60,6 +60,10 @@ public class Slide extends BaseEntity {
         this.deletedAt = ZonedDateTime.now();
     }
 
+    public boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+
     public enum AccessLevel {
         PRIVATE,
         PUBLIC
