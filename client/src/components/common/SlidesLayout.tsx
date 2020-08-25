@@ -65,7 +65,6 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
 
   return (
     <SlidesBlock>
-      <Cards title={title} slides={slides}/>
       <Cards onClone={onCloneSlide} onDelete={onDeleteSlide} title={title} slides={slides}/>
       <Pagination page={page}
                   totalPage={totalPage}
