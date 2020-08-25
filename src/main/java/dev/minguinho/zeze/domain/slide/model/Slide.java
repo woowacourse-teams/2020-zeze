@@ -1,11 +1,12 @@
 package dev.minguinho.zeze.domain.slide.model;
 
+import java.time.ZonedDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Lob;
 
-import com.sun.istack.Nullable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,6 @@ import lombok.NoArgsConstructor;
 
 import dev.minguinho.zeze.domain.common.model.BaseEntity;
 
-import java.time.ZonedDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -29,7 +29,6 @@ public class Slide extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AccessLevel accessLevel;
     private Long userId;
-    @Nullable
     private ZonedDateTime deletedAt = null;
 
     public Slide(String title, String subtitle, String author, String presentedAt, String content,
@@ -49,7 +48,15 @@ public class Slide extends BaseEntity {
         this.userId = userId;
     }
 
-    public Slide(String title, String subtitle, String author, String presentedAt, String content, AccessLevel accessLevel, Long userId) {
+    public Slide(
+        String title,
+        String subtitle,
+        String author,
+        String presentedAt,
+        String content,
+        AccessLevel accessLevel,
+        Long userId
+    ) {
         this.title = title;
         this.subtitle = subtitle;
         this.author = author;

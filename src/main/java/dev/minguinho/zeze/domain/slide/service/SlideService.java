@@ -93,7 +93,7 @@ public class SlideService {
     }
 
     private void validateDeletedSlide(Slide slide) {
-        if(slide.isDeleted()) {
+        if (slide.isDeleted()) {
             throw new SlideNotFoundException(slide.getId());
         }
     }
