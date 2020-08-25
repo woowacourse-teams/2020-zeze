@@ -75,6 +75,19 @@ class SlideRepositoryTest {
     }
 
     @Test
+    @DisplayName("슬라이드 소프트 삭제")
+    void updateDeletedAt() {
+        String title = "제목";
+        String content = "내용";
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+
+        slide.delete();
+        Slide deletedSlide = slideRepository.save(slide);
+
+        assertThat(deletedSlide.getDeletedAt()).isNotNull();
+    }
+
+    @Test
     @DisplayName("슬라이드 삭제")
     void delete() {
         String title = "제목";
