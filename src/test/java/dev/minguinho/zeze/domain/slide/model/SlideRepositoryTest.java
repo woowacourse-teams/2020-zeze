@@ -53,7 +53,8 @@ class SlideRepositoryTest {
         slideRepository.saveAll(slides);
 
         PageRequest pageRequest = PageRequest.of(0, 5);
-        List<Slide> persistPresentations = slideRepository.findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(1L, pageRequest)
+        List<Slide> persistPresentations = slideRepository.findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(1L,
+            pageRequest)
             .getContent();
 
         assertAll(
