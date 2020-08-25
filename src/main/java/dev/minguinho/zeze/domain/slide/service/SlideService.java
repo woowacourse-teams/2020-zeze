@@ -66,25 +66,24 @@ public class SlideService {
     }
 
     private Slide getSlide(Long slideId, Long userId) {
-        if (Objects.isNull(userId)) {
-            return findSlideIfPublic(slideId);
+        Slide slide = slideRepository.findById(slideId)
+            .orElseThrow(() -> new SlideNotFoundException(slideId));
+        if (Objects.isNull(userId) || !slide.isOwner(userId)) {
+            validatePublic(slide);
         }
-        return findSlideIfAuthorized(slideId, userId);
+        return slide;
+    }
+
+    private void validatePublic(Slide slide) {
+        if (!slide.isPublic()) {
+            throw new SlideNotAuthorizedException();
+        }
     }
 
     private Slide findSlideIfAuthorized(Long slideId, Long userId) {
         Slide slide = slideRepository.findById(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
         if (!slide.isOwner(userId)) {
-            throw new SlideNotAuthorizedException();
-        }
-        return slide;
-    }
-
-    private Slide findSlideIfPublic(Long slideId) {
-        Slide slide = slideRepository.findById(slideId)
-            .orElseThrow(() -> new SlideNotFoundException(slideId));
-        if (!slide.isPublic()) {
             throw new SlideNotAuthorizedException();
         }
         return slide;
