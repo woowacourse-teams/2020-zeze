@@ -6,6 +6,7 @@ import Pagination from "./Pagination";
 import Cards from "./Cards";
 import {PageProps, MetaDataResponses, MetaDataResponse, SlideResponse} from "../../api/slide";
 import {googleAnalyticsPageView} from "../../utils/googleAnalytics";
+import ConfirmModal from './ConfirmModal';
 
 const SlidesBlock = styled.div`
   display: flex;
@@ -26,6 +27,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
   const [slides, setSlides] = useState<Array<MetaDataResponse>>([]);
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
+  const [selectedId, setSelectedId] = useState<number>(0);
 
   useEffect(() => {
     getAllSlides({page, size: slidesCnt})
@@ -44,11 +46,15 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
     setPage(pageNum);
   },[]);
 
-  const onDeleteSlide = useCallback((id: number) => {
-    deleteSlide?.(id).then(() => {
-      setSlides(slides.filter(slide => slide.id !== id));
+  const confirmDelete = useCallback((id: number) => {
+    setSelectedId(id);
+  }, []);
+
+  const onDeleteSlide = useCallback(() => {
+    deleteSlide?.(selectedId).then(() => {
+      setSlides(slides.filter(slide => slide.id !== selectedId));
     });
-  }, [deleteSlide, slides]);
+  }, [deleteSlide, slides, selectedId]);
 
   const onCloneSlide = useCallback((id: number) => {
     cloneSlide?.(id).then(res => {
@@ -65,11 +71,14 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
 
   return (
     <SlidesBlock>
-      <Cards onClone={onCloneSlide} onDelete={onDeleteSlide} title={title} slides={slides}/>
+      <Cards onClone={onCloneSlide} onDelete={confirmDelete} title={title} slides={slides}/>
       <Pagination page={page}
                   totalPage={totalPage}
                   onClickPage={onClickPage}
                   onClickMove={onClickMove}/>
+      <ConfirmModal visibility={selectedId !== 0} onBackdropClick={() => setSelectedId(0)} onSubmit={onDeleteSlide} onCancel={() => setSelectedId(0)}>
+        Are you sure to delete?
+      </ConfirmModal>
     </SlidesBlock>
   );
 };
