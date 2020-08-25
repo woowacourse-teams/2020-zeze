@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "@emotion/styled";
 import {css, Global} from "@emotion/core";
 
@@ -11,7 +11,7 @@ const FullScreen = styled.div<FullScreenProps>`
   top: 0;
   left: 0;
   z-index: 99999999;
-  display: ${({ visibility }) => visibility ? "flex" : "none"};
+  display: ${({visibility}) => visibility ? "flex" : "none"};
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.3);
@@ -41,8 +41,12 @@ export interface IProps extends FullScreenProps {
 }
 
 const Modal: React.FC<IProps> = ({children, visibility, onBackdropClick}) => {
+  const handleClick = useCallback(({currentTarget, target}: React.MouseEvent) => {
+    target === currentTarget && onBackdropClick();
+  }, [onBackdropClick]);
+
   return (
-    <FullScreen visibility={visibility} onClick={onBackdropClick}>
+    <FullScreen visibility={visibility} onClick={handleClick}>
         <ModalWindow>
           {children}
         </ModalWindow>
