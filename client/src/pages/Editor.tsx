@@ -42,6 +42,7 @@ const Edit = styled.div`
 `;
 
 const SaveButton = styled.div`
+  cursor: pointer;
   position: absolute;
   z-index: 3;
   top: 70px;
@@ -53,6 +54,7 @@ const SaveButton = styled.div`
 `;
 
 const AccessLevelButton = styled.div`
+  cursor: pointer; 
   position: absolute;
   z-index: 3;
   top: 70px;
