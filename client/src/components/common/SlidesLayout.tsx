@@ -53,6 +53,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
   const onDeleteSlide = useCallback(() => {
     deleteSlide?.(selectedId).then(() => {
       setSlides(slides.filter(slide => slide.id !== selectedId));
+      setSelectedId(0);
     });
   }, [deleteSlide, slides, selectedId]);
 
