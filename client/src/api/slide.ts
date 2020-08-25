@@ -19,6 +19,7 @@ export interface SlideResponse {
   content: string
   accessLevel: AccessLevel
   updatedAt: string
+  ownedByMe: boolean
 }
 
 export interface MetaDataResponse {
@@ -85,6 +86,13 @@ const slideApi = {
         authorization: localStorage.getItem("accessToken"),
       },
     });
+  },
+  ownSlide(id: number): Promise<AxiosResponse<boolean>> {
+    return slideInstance.get(`${id}/own`, {
+      headers: {
+        authorization: localStorage.getItem("accessToken"),
+      },
+    })
   },
 };
 

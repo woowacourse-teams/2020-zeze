@@ -83,6 +83,8 @@ const Editor: React.FC = () => {
   const [accessLevel, setAccessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
   const isInitialMount = useRef(true);
 
+  const [isOwner, setIsOwner] = useState<boolean>(false);
+
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
 
   const slides = useMemo<string[]>(() => (
@@ -133,7 +135,14 @@ const Editor: React.FC = () => {
       .catch(() => {
         googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
         toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
-      });
+      })
+    && slideApi.ownSlide(id)
+      .then(({data}) => {
+        setIsOwner(data);
+      })
+      .catch(() => {
+        toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
+      })
   }, []);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
@@ -221,11 +230,14 @@ const Editor: React.FC = () => {
             onSaveKeyDown={save}
             onExternalDrop={uploadExternalFile}
           />
-          <AccessLevelButton onClick={changeAccessLevel}>
-            <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"}
-              alt=""/>
-          </AccessLevelButton>
-          <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save"/></SaveButton>
+          {(!id || isOwner) &&
+            <>
+              <AccessLevelButton onClick={changeAccessLevel}>
+                <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"} alt="access level"/>
+              </AccessLevelButton>
+              <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
+            </>
+          }
           <FullScreenMode contents={slides}/>
         </Edit>
         <Preview content={content}/>
