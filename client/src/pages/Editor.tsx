@@ -160,7 +160,7 @@ const Editor: React.FC = () => {
           title: parsed.metadata?.title ?? "Untitled",
           subtitle: parsed.metadata?.subtitle ?? "Untitled",
           author: parsed.metadata?.author ?? "Anonymous",
-          presentedAt: parsed.metadata?.presentedAt ?? moment().format('YYYY-MM-DD'),
+          presentedAt: parsed.metadata?.presentedAt ?? moment().format("YYYY-MM-DD"),
           content: codemirrorRef.current!.getValue(),
           accessLevel,
         },
@@ -184,7 +184,7 @@ const Editor: React.FC = () => {
         title: parsed.metadata?.title ?? "Untitled",
         subtitle: parsed.metadata?.subtitle ?? "Untitled",
         author: parsed.metadata?.author ?? "Anonymous",
-        presentedAt: parsed.metadata?.presentedAt ?? moment().format('YYYY-MM-DD'),
+        presentedAt: parsed.metadata?.presentedAt ?? moment().format("YYYY-MM-DD"),
         content: codemirrorRef.current!.getValue(),
         accessLevel,
       },
@@ -223,7 +223,7 @@ const Editor: React.FC = () => {
           />
           <AccessLevelButton onClick={changeAccessLevel}>
             <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"}
-                 alt=""/>
+              alt=""/>
           </AccessLevelButton>
           <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save"/></SaveButton>
           <FullScreenMode contents={slides}/>

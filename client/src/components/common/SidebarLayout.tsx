@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
 import SidebarNav from "./SidebarNav";

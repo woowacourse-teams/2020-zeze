@@ -19,7 +19,7 @@ const fullScreenStyle = css`
 
 interface FullScreenProps {
   slideTheme: Theme;
-  cursor?: boolean;
+  showCursor?: boolean;
 }
 
 export const FullScreenBlock = styled.div<FullScreenProps>`
@@ -27,7 +27,7 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
   top: -9999px;
   left: -9999px;
   font-size: 100%;
-  cursor: ${({cursor}) => (cursor ? "default" : "none")};
+  cursor: ${({showCursor}) => (showCursor ? "default" : "none")};
   &:focus {
     outline: none;
   }
@@ -177,7 +177,7 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         slideTheme={Theme.GITHUB}
         ref={slideReference}
         tabIndex={-1}
-        cursor={showCursor}
+        showCursor={showCursor}
         onKeyDown={handleKeyDown}
         onMouseMove={() => setShowCursor(true)}
       ><Markdown value={contents[index]}/></FullScreenBlock>

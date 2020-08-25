@@ -15,6 +15,12 @@ const ToastBlock = styled.div<ToastProps>`
   font-size: 1.25rem;
   font-weight: 600;
   word-spacing: 4px;
+  line-height: 1.6;
+  
+  @media (max-width: 600px) {
+    font-size: 1rem;
+    word-spacing: normal;
+  }
   
   ::before {
     content: "⚠️";
