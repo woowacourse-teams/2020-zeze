@@ -53,9 +53,10 @@ public class SlideService {
     }
 
     @Transactional
-    public void delete(Long slideId, Long userId) {
+    public void softDelete(Long slideId, Long userId) {
         Slide persist = findSlideIfAuthorized(slideId, userId);
-        slideRepository.delete(persist);
+        persist.delete();
+        slideRepository.save(persist);
     }
 
     private Page<Slide> getSlides(Long userId, PageRequest pageRequest) {

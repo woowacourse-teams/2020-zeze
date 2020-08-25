@@ -70,7 +70,7 @@ public class SlideController {
         @PathVariable("id") Long slideId,
         @LoginUserId Long userId
     ) {
-        slideService.delete(slideId, userId);
+        slideService.softDelete(slideId, userId);
         return ResponseEntity.noContent().build();
     }
 }

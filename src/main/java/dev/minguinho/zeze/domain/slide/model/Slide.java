@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import dev.minguinho.zeze.domain.common.model.BaseEntity;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.ZonedDateTime;
 

@@ -86,21 +86,4 @@ class SlideRepositoryTest {
 
         assertThat(deletedSlide.getDeletedAt()).isNotNull();
     }
-
-    @Test
-    @DisplayName("슬라이드 삭제")
-    void delete() {
-        String title = "제목";
-        String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
-        Slide persist = slideRepository.save(slide);
-
-        slideRepository.deleteById(persist.getId());
-
-        assertThatThrownBy(() -> slideRepository.findById(persist.getId())
-            .orElseThrow(() -> new SlideNotFoundException(persist.getId()))
-        )
-            .isInstanceOf(SlideNotFoundException.class)
-            .hasMessageContaining("해당 슬라이드는 존재하지 않습니다.");
-    }
 }

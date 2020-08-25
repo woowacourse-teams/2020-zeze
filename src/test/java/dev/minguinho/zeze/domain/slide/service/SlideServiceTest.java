@@ -156,14 +156,16 @@ class SlideServiceTest {
     }
 
     @Test
-    @DisplayName("슬라이드 삭제")
-    void deleteSlide() {
+    @DisplayName("슬라이드 소프트 삭제")
+    void softDeleteSlide() {
         Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
-        slideService.delete(1L, 1L);
+        slideService.softDelete(1L, 1L);
 
-        verify(slideRepository, times(1)).delete(slide);
+        verify(slideRepository, times(1)).save(any(Slide.class));
+
+        assertThat(slide.getDeletedAt()).isNotNull();
     }
 
     @Test
@@ -171,7 +173,7 @@ class SlideServiceTest {
         Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
-        assertThatThrownBy(() -> slideService.delete(1L, 2L))
+        assertThatThrownBy(() -> slideService.softDelete(1L, 2L))
             .isInstanceOf(SlideNotAuthorizedException.class)
             .hasMessage("사용자의 슬라이드가 아닙니다.");
     }
