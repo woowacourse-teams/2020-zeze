@@ -18,9 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotAuthorizedException;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
@@ -46,9 +46,13 @@ class SlideServiceTest {
     @DisplayName("슬라이드 생성")
     void createSlide() {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
         String accessLevel = "PUBLIC";
-        SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, subtitle, author, presentedAt, content,
+            accessLevel);
         given(slideRepository.save(any(Slide.class))).willReturn(slideRequestDto.toEntity());
 
         slideService.create(slideRequestDto, 1L);
@@ -60,20 +64,28 @@ class SlideServiceTest {
     @DisplayName("슬라이드 list 조회")
     void retrieveSlides() {
         String firstTitle = "제목1";
+        String firstSubtitle = "부제목1";
+        String firstAuthor = "작성자1";
+        String firstPresentedAt = "2020-07-21";
         String firstContent = "내용1";
         String secondTitle = "제목2";
+        String secondSubtitle = "부제목2";
+        String secondAuthor = "작성자2";
+        String secondPresentedAt = "2020-07-22";
         String secondContent = "내용2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
-            new Slide(secondTitle, secondContent, AccessLevel.PUBLIC, 1L));
+        List<Slide> slides = Arrays.asList(
+            new Slide(firstTitle, firstSubtitle, firstAuthor, firstPresentedAt, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondSubtitle, secondAuthor, secondPresentedAt, secondContent, AccessLevel.PRIVATE,
+                1L));
         given(slideRepository.findAllByAccessLevel(eq(AccessLevel.PUBLIC), any(Pageable.class))).willReturn(page);
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0, 5);
-        SlideResponseDtos slideResponseDtos = slideService.retrieveAll(slidesRequestDto, null);
+        SlideMetadataDtos slideMetadataDtos = slideService.retrieveAll(slidesRequestDto, null);
 
         assertAll(
-            () -> assertThat(slideResponseDtos.getSlides().get(0).getTitle()).isEqualTo(firstTitle),
-            () -> assertThat(slideResponseDtos.getSlides().get(1).getTitle()).isEqualTo(secondTitle)
+            () -> assertThat(slideMetadataDtos.getSlides().get(0).getTitle()).isEqualTo(firstTitle),
+            () -> assertThat(slideMetadataDtos.getSlides().get(1).getTitle()).isEqualTo(secondTitle)
         );
     }
 
@@ -81,20 +93,28 @@ class SlideServiceTest {
     @DisplayName("User 슬라이드 list 조회")
     void retrieveMySlides() {
         String firstTitle = "제목1";
+        String firstSubtitle = "부제목1";
+        String firstAuthor = "작성자1";
+        String firstPresentedAt = "2020-07-21";
         String firstContent = "내용1";
         String secondTitle = "제목2";
+        String secondSubtitle = "부제목2";
+        String secondAuthor = "작성자2";
+        String secondPresentedAt = "2020-07-22";
         String secondContent = "내용2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
-            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE, 1L));
+        List<Slide> slides = Arrays.asList(
+            new Slide(firstTitle, firstSubtitle, firstAuthor, firstPresentedAt, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondSubtitle, secondAuthor, secondPresentedAt, secondContent, AccessLevel.PRIVATE,
+                1L));
         given(slideRepository.findAllByUserIdOrderByUpdatedAtDesc(eq(1L), any(Pageable.class))).willReturn(page);
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0, 5);
-        SlideResponseDtos slideResponseDtos = slideService.retrieveAll(slidesRequestDto, 1L);
+        SlideMetadataDtos slideMetadataDtos = slideService.retrieveAll(slidesRequestDto, 1L);
 
         assertAll(
-            () -> assertThat(slideResponseDtos.getSlides().get(0).getTitle()).isEqualTo(firstTitle),
-            () -> assertThat(slideResponseDtos.getSlides().get(1).getTitle()).isEqualTo(secondTitle)
+            () -> assertThat(slideMetadataDtos.getSlides().get(0).getTitle()).isEqualTo(firstTitle),
+            () -> assertThat(slideMetadataDtos.getSlides().get(1).getTitle()).isEqualTo(secondTitle)
         );
     }
 
@@ -102,13 +122,16 @@ class SlideServiceTest {
     @DisplayName("특정 슬라이드 조회")
     void retrieveSlide() {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
-        given(slideRepository.findById(1L)).willReturn(Optional.of(new Slide(title, content, AccessLevel.PUBLIC)));
+        given(slideRepository.findById(1L)).willReturn(
+            Optional.of(new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC)));
 
         SlideResponseDto slideResponseDto = slideService.retrieve(1L, null);
 
         assertAll(
-            () -> assertThat(slideResponseDto.getTitle()).isEqualTo(title),
             () -> assertThat(slideResponseDto.getContent()).isEqualTo(content),
             () -> assertThat(slideResponseDto.getAccessLevel()).isEqualTo("PUBLIC")
         );
@@ -118,12 +141,16 @@ class SlideServiceTest {
     @DisplayName("슬라이드 업데이트")
     void updateSlide() {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC, 1L);
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
         String newTitle = "새 제목";
 
-        SlideRequestDto slideRequestDto = new SlideRequestDto(newTitle, content, "PUBLIC");
+        SlideRequestDto slideRequestDto = new SlideRequestDto(newTitle, subtitle, author, presentedAt, content,
+            "PUBLIC");
         slideService.update(1L, slideRequestDto, 1L);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
@@ -147,7 +174,12 @@ class SlideServiceTest {
     @Test
     @DisplayName("자신의 슬라이드가 아닌 경우")
     void updateWithUnauthorizedUser() {
-        Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
+        String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
+        String content = "내용";
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
         assertThatThrownBy(() -> slideService.update(1L, null, 2L))
@@ -158,7 +190,12 @@ class SlideServiceTest {
     @Test
     @DisplayName("슬라이드 삭제")
     void deleteSlide() {
-        Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
+        String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
+        String content = "내용";
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
         slideService.delete(1L, 1L);
@@ -168,7 +205,12 @@ class SlideServiceTest {
 
     @Test
     void deleteSlideWithUnauthorized() {
-        Slide slide = new Slide("제목", "내용", AccessLevel.PUBLIC, 1L);
+        String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
+        String content = "내용";
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
         given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
 
         assertThatThrownBy(() -> slideService.delete(1L, 2L))
