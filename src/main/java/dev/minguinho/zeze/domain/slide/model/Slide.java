@@ -21,6 +21,9 @@ import java.time.ZonedDateTime;
 @Getter
 public class Slide extends BaseEntity {
     private String title;
+    private String subtitle;
+    private String author;
+    private String presentedAt;
     @Lob
     private String content;
     @Enumerated(EnumType.STRING)
@@ -29,8 +32,12 @@ public class Slide extends BaseEntity {
     @Nullable
     private ZonedDateTime deletedAt = null;
 
-    public Slide(String title, String content, AccessLevel accessLevel) {
+    public Slide(String title, String subtitle, String author, String presentedAt, String content,
+        AccessLevel accessLevel) {
         this.title = title;
+        this.subtitle = subtitle;
+        this.author = author;
+        this.presentedAt = presentedAt;
         this.content = content;
         this.accessLevel = accessLevel;
     }
@@ -42,8 +49,21 @@ public class Slide extends BaseEntity {
         this.userId = userId;
     }
 
+    public Slide(String title, String subtitle, String author, String presentedAt, String content, AccessLevel accessLevel, Long userId) {
+        this.title = title;
+        this.subtitle = subtitle;
+        this.author = author;
+        this.presentedAt = presentedAt;
+        this.content = content;
+        this.accessLevel = accessLevel;
+        this.userId = userId;
+    }
+
     public void update(Slide slide) {
         this.title = slide.title;
+        this.subtitle = slide.subtitle;
+        this.author = slide.author;
+        this.presentedAt = slide.presentedAt;
         this.content = slide.content;
         this.accessLevel = slide.accessLevel;
     }

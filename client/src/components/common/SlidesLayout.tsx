@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 
 import Pagination from "./Pagination";
 import Cards from "./Cards";
-import {PageProps, SlideResponse, SlideResponses} from "../../api/slide";
+import {PageProps, MetaDataResponses, MetaDataResponse, SlideResponse} from "../../api/slide";
 import {googleAnalyticsPageView} from "../../utils/googleAnalytics";
 
 const SlidesBlock = styled.div`
@@ -15,7 +15,7 @@ const SlidesBlock = styled.div`
 `;
 
 interface IProps {
-  getAllSlides: (page: PageProps) => Promise<AxiosResponse<SlideResponses>>
+  getAllSlides: (page: PageProps) => Promise<AxiosResponse<MetaDataResponses>>
   cloneSlide?: (id: number) => Promise<AxiosResponse<SlideResponse>>
   deleteSlide?: (id: number) => Promise<AxiosResponse<SlideResponse>>
   slidesCnt: number
@@ -23,7 +23,7 @@ interface IProps {
 }
 
 const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, slidesCnt, title}) => {
-  const [slides, setSlides] = useState<Array<SlideResponse>>([]);
+  const [slides, setSlides] = useState<Array<MetaDataResponse>>([]);
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
 
@@ -53,8 +53,8 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
   const onCloneSlide = useCallback((id: number) => {
     cloneSlide?.(id).then(res => {
       setSlides([
-        ...slides,
-        res.data
+        // ...slides,
+        // res.data
       ]);
     });
   }, [cloneSlide, slides]);
@@ -65,7 +65,8 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
 
   return (
     <SlidesBlock>
-      <Cards onClone={onCloneSlide} onDelete={onDeleteSlide} title={title} slides={slides} author={"zeze"}/>
+      <Cards title={title} slides={slides}/>
+      <Cards onClone={onCloneSlide} onDelete={onDeleteSlide} title={title} slides={slides}/>
       <Pagination page={page}
                   totalPage={totalPage}
                   onClickPage={onClickPage}

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import Card from "./Card";
 import {MOBILE_MAX_WIDTH} from "../../domains/constants";
-import {SlideResponse} from "../../api/slide";
+import {MetaDataResponse} from "../../api/slide";
 
 export const CardsLayout = styled.div`
   padding-bottom: 2rem;
@@ -47,19 +47,20 @@ const CardsBlock = styled.div`
 
 interface IProps {
   title: string,
-  slides: SlideResponse[],
+  slides: MetaDataResponse[],
   author?: string,
   onClone?: (id: number) => void,
   onDelete?: (id: number) => void,
 }
 
-const Cards: React.FC<IProps> = ({title, slides, author, onClone, onDelete}) => (
+const Cards: React.FC<IProps> = ({title, slides, onClone, onDelete}) => (
   <CardsLayout>
     <h2>{title}</h2>
     <hr/>
     <CardsBlock>
-      {slides.map(slide => (<Card key={slide.id} id={slide.id} title={slide.title} subtitle="subtitle" author={author}
-                                  createdAt={slide.createdAt} onClone={onClone} onDelete={onDelete}/>))}
+      {slides.map(slide => (
+        <Card key={slide.id} id={slide.id} title={slide.title} subtitle={slide.subtitle} author={slide.author}
+              presentedAt={slide.presentedAt} createdAt={slide.createdAt} onClone={onClone} onDelete={onDelete}/>))}
     </CardsBlock>
   </CardsLayout>
 );

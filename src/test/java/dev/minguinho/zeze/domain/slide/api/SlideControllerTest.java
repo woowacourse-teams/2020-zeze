@@ -27,9 +27,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.minguinho.zeze.domain.auth.infra.AuthorizationTokenExtractor;
 import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDto;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.service.SlideService;
@@ -67,9 +68,13 @@ class SlideControllerTest {
     @DisplayName("슬라이드 생성 요청")
     void createSlide() throws Exception {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
         String accessLevel = "PUBLIC";
-        SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, subtitle, author, presentedAt, content,
+            accessLevel);
         String body = objectMapper.writeValueAsString(slideRequestDto);
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
@@ -90,16 +95,24 @@ class SlideControllerTest {
     @DisplayName("슬라이드 list 요청")
     void retrieveSlides() throws Exception {
         String firstTitle = "제목1";
+        String firstSubtitle = "부제목1";
+        String firstAuthor = "작성자1";
+        String firstPresentedAt = "2020-07-21";
         String firstContent = "내용1";
         String secondTitle = "제목2";
+        String secondSubtitle = "부제목2";
+        String secondAuthor = "작성자2";
+        String secondPresentedAt = "2020-07-22";
         String secondContent = "내용2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
-            new Slide(secondTitle, secondContent, AccessLevel.PUBLIC));
-        List<SlideResponseDto> responses = slides.stream()
-            .map(SlideResponseDto::from)
+        List<Slide> slides = Arrays.asList(
+            new Slide(firstTitle, firstSubtitle, firstAuthor, firstPresentedAt, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondSubtitle, secondAuthor, secondPresentedAt, secondContent, AccessLevel.PRIVATE,
+                1L));
+        List<SlideMetadataDto> responses = slides.stream()
+            .map(SlideMetadataDto::from)
             .collect(Collectors.toList());
         given(slideService.retrieveAll(any(SlidesRequestDto.class), eq(null))).willReturn(
-            new SlideResponseDtos(responses, 0));
+            new SlideMetadataDtos(responses, 0));
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(null);
@@ -115,16 +128,24 @@ class SlideControllerTest {
     @DisplayName("User 슬라이드 list 요청")
     void retrieveMySlides() throws Exception {
         String firstTitle = "제목1";
+        String firstSubtitle = "부제목1";
+        String firstAuthor = "작성자1";
+        String firstPresentedAt = "2020-07-21";
         String firstContent = "내용1";
         String secondTitle = "제목2";
+        String secondSubtitle = "부제목2";
+        String secondAuthor = "작성자2";
+        String secondPresentedAt = "2020-07-22";
         String secondContent = "내용2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC),
-            new Slide(secondTitle, secondContent, AccessLevel.PUBLIC));
-        List<SlideResponseDto> responses = slides.stream()
-            .map(SlideResponseDto::from)
+        List<Slide> slides = Arrays.asList(
+            new Slide(firstTitle, firstSubtitle, firstAuthor, firstPresentedAt, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondSubtitle, secondAuthor, secondPresentedAt, secondContent, AccessLevel.PRIVATE,
+                1L));
+        List<SlideMetadataDto> responses = slides.stream()
+            .map(SlideMetadataDto::from)
             .collect(Collectors.toList());
         given(slideService.retrieveAll(any(SlidesRequestDto.class), eq(1L))).willReturn(
-            new SlideResponseDtos(responses, 0));
+            new SlideMetadataDtos(responses, 0));
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
@@ -140,8 +161,11 @@ class SlideControllerTest {
     @DisplayName("특정 슬라이드 조회")
     void retrieveSlide() throws Exception {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC);
         given(slideService.retrieve(1L, null)).willReturn(SlideResponseDto.from(slide));
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
@@ -149,7 +173,6 @@ class SlideControllerTest {
 
         mvc.perform(get(BASE_URL + "1"))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString(title)))
             .andExpect(content().string(containsString(content)))
             .andExpect(content().string(containsString("PUBLIC")))
             .andDo(print());
@@ -159,8 +182,11 @@ class SlideControllerTest {
     @DisplayName("특정 User 슬라이드 조회")
     void retrieveUserSlide() throws Exception {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC);
         given(slideService.retrieve(1L, 1L)).willReturn(SlideResponseDto.from(slide));
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
@@ -168,7 +194,6 @@ class SlideControllerTest {
 
         mvc.perform(get(BASE_URL + "1"))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString(title)))
             .andExpect(content().string(containsString(content)))
             .andExpect(content().string(containsString("PUBLIC")))
             .andDo(print());
@@ -178,9 +203,13 @@ class SlideControllerTest {
     @DisplayName("슬라이드 업데이트 요청")
     void updateSlide() throws Exception {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
         String accessLevel = "PUBLIC";
-        SlideRequestDto slideRequestDto = new SlideRequestDto(title, content, accessLevel);
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, subtitle, author, presentedAt, content,
+            accessLevel);
         String body = objectMapper.writeValueAsString(slideRequestDto);
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);

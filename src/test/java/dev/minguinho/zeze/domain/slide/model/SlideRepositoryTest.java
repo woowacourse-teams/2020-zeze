@@ -22,8 +22,11 @@ class SlideRepositoryTest {
     @DisplayName("슬라이드 저장")
     void save() {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC, 1L);
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
 
         Slide persist = slideRepository.save(slide);
 
@@ -34,11 +37,19 @@ class SlideRepositoryTest {
     @DisplayName("슬라이드 list 조회")
     void findAllByUserIdAndDeletedAtOrderByUpdatedAtDesc() {
         String firstTitle = "제목1";
+        String firstSubtitle = "부제목1";
+        String firstAuthor = "작성자1";
+        String firstPresentedAt = "2020-07-21";
         String firstContent = "내용1";
         String secondTitle = "제목2";
+        String secondSubtitle = "부제목2";
+        String secondAuthor = "작성자2";
+        String secondPresentedAt = "2020-07-22";
         String secondContent = "내용2";
-        List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
-            new Slide(secondTitle, secondContent, AccessLevel.PRIVATE, 1L));
+        List<Slide> slides = Arrays.asList(
+            new Slide(firstTitle, firstSubtitle, firstAuthor, firstPresentedAt, firstContent, AccessLevel.PUBLIC, 1L),
+            new Slide(secondTitle, secondSubtitle, secondAuthor, secondPresentedAt, secondContent, AccessLevel.PRIVATE,
+                1L));
         slideRepository.saveAll(slides);
 
         PageRequest pageRequest = PageRequest.of(0, 5);
@@ -58,12 +69,15 @@ class SlideRepositoryTest {
     @DisplayName("슬라이드 내용 변경")
     void update() {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
         Slide persist = slideRepository.save(slide);
 
         String newTitle = "새 제목";
-        Slide request = new Slide(newTitle, content, AccessLevel.PUBLIC);
+        Slide request = new Slide(newTitle, subtitle, author, presentedAt, content, AccessLevel.PUBLIC);
         persist.update(request);
         Slide newSlide = slideRepository.save(persist);
 
@@ -78,8 +92,11 @@ class SlideRepositoryTest {
     @DisplayName("슬라이드 소프트 삭제")
     void updateDeletedAt() {
         String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
         String content = "내용";
-        Slide slide = new Slide(title, content, AccessLevel.PUBLIC);
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
 
         slide.delete();
         Slide deletedSlide = slideRepository.save(slide);
