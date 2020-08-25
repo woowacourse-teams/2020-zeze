@@ -58,6 +58,13 @@ public class SlideService {
         slideRepository.delete(persist);
     }
 
+    @Transactional
+    public Boolean checkSlideOwnedBy(Long slideId, Long userId) {
+        Slide slide = slideRepository.findById(slideId)
+            .orElseThrow(() -> new SlideNotFoundException(slideId));
+        return slide.isOwner(userId);
+    }
+
     private Page<Slide> getSlides(Long userId, PageRequest pageRequest) {
         if (Objects.isNull(userId)) {
             return slideRepository.findAllByAccessLevel(Slide.AccessLevel.PUBLIC, pageRequest);
