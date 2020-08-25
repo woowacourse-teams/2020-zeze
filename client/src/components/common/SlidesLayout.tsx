@@ -16,11 +16,13 @@ const SlidesBlock = styled.div`
 
 interface IProps {
   getAllSlides: (page: PageProps) => Promise<AxiosResponse<SlideResponses>>
+  cloneSlide?: (id: number) => Promise<AxiosResponse<SlideResponse>>
+  deleteSlide?: (id: number) => Promise<AxiosResponse<SlideResponse>>
   slidesCnt: number
   title: string
 }
 
-const SlidesLayout: React.FC<IProps> = ({getAllSlides, slidesCnt, title}) => {
+const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, slidesCnt, title}) => {
   const [slides, setSlides] = useState<Array<SlideResponse>>([]);
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
@@ -42,13 +44,28 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, slidesCnt, title}) => {
     setPage(pageNum);
   },[]);
 
+  const onDeleteSlide = useCallback((id: number) => {
+    deleteSlide?.(id).then(() => {
+      setSlides(slides.filter(slide => slide.id !== id));
+    });
+  }, [deleteSlide, slides]);
+
+  const onCloneSlide = useCallback((id: number) => {
+    cloneSlide?.(id).then(res => {
+      setSlides([
+        ...slides,
+        res.data
+      ]);
+    });
+  }, [cloneSlide, slides]);
+
   useEffect(() => {
     googleAnalyticsPageView("Archive");
   }, []);
 
   return (
     <SlidesBlock>
-      <Cards title={title} slides={slides} author={"zeze"}/>
+      <Cards onClone={onCloneSlide} onDelete={onDeleteSlide} title={title} slides={slides} author={"zeze"}/>
       <Pagination page={page}
                   totalPage={totalPage}
                   onClickPage={onClickPage}
