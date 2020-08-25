@@ -61,9 +61,9 @@ public class SlideService {
 
     private Page<Slide> getSlides(Long userId, PageRequest pageRequest) {
         if (Objects.isNull(userId)) {
-            return slideRepository.findAllByAccessLevel(Slide.AccessLevel.PUBLIC, pageRequest);
+            return slideRepository.findAllByAccessLevelAndDeletedAt(Slide.AccessLevel.PUBLIC, null, pageRequest);
         }
-        return slideRepository.findAllByUserIdOrderByUpdatedAtDesc(userId, pageRequest);
+        return slideRepository.findAllByUserIdAndDeletedAtOrderByUpdatedAtDesc(userId, null, pageRequest);
     }
 
     private Slide getSlide(Long slideId, Long userId) {

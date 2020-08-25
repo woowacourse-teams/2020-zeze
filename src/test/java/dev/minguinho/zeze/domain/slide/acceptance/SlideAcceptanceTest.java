@@ -188,7 +188,7 @@ public class SlideAcceptanceTest {
                 SlideResponseDtos result = retrieveSlides();
                 List<SlideResponseDto> resultSlides = result.getSlides();
                 assertAll(
-                    () -> assertThat(resultSlides.get(0).getTitle()).isEqualTo("새 제목"),
+                    () -> assertThat(resultSlides.get(0).getTitle()).isEqualTo("제목"),
                     () -> assertThat(resultSlides.get(0).getContent()).isEqualTo("내용"),
                     () -> assertThat(resultSlides.get(0).getAccessLevel()).isEqualTo("PUBLIC")
                 );

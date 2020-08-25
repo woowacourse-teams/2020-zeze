@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +66,7 @@ class SlideServiceTest {
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
             new Slide(secondTitle, secondContent, AccessLevel.PUBLIC, 1L));
-        given(slideRepository.findAllByAccessLevel(eq(AccessLevel.PUBLIC), any(Pageable.class))).willReturn(page);
+        given(slideRepository.findAllByAccessLevelAndDeletedAt(eq(AccessLevel.PUBLIC), nullable(ZonedDateTime.class), any(Pageable.class))).willReturn(page);
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0, 5);
@@ -86,7 +87,7 @@ class SlideServiceTest {
         String secondContent = "내용2";
         List<Slide> slides = Arrays.asList(new Slide(firstTitle, firstContent, AccessLevel.PUBLIC, 1L),
             new Slide(secondTitle, secondContent, AccessLevel.PRIVATE, 1L));
-        given(slideRepository.findAllByUserIdOrderByUpdatedAtDesc(eq(1L), any(Pageable.class))).willReturn(page);
+        given(slideRepository.findAllByUserIdAndDeletedAtOrderByUpdatedAtDesc(eq(1L), nullable(ZonedDateTime.class), any(Pageable.class))).willReturn(page);
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0, 5);
