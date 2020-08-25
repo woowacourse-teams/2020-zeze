@@ -19,6 +19,7 @@ export interface SlideResponse {
   accessLevel: AccessLevel
   createdAt: string
   updatedAt: string
+  ownedByMe: boolean
 }
 
 export interface SlideResponses {
@@ -76,6 +77,13 @@ const slideApi = {
         authorization: localStorage.getItem("accessToken"),
       },
     });
+  },
+  ownSlide(id: number): Promise<AxiosResponse<boolean>> {
+    return slideInstance.get(`${id}/own`, {
+      headers: {
+        authorization: localStorage.getItem("accessToken"),
+      }
+    })
   },
 };
 

@@ -73,4 +73,13 @@ public class SlideController {
         slideService.delete(slideId, userId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/own")
+    public ResponseEntity<Boolean> ownSlide(
+        @PathVariable("id") Long slideId,
+        @LoginUserId Long userId
+    ) {
+        Boolean ownedBy = slideService.checkSlideOwnedBy(slideId, userId);
+        return ResponseEntity.ok(ownedBy);
+    }
 }
