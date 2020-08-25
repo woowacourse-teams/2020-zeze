@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useParams, useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import styled from "@emotion/styled";
 import moment from "moment";
@@ -156,6 +156,9 @@ const Editor: React.FC = () => {
       const {headers: {location}} = await slideApi.create({
         data: {
           title: parsed.metadata?.title ?? "Untitled",
+          subtitle: parsed.metadata?.subtitle ?? "Untitled",
+          author: parsed.metadata?.author ?? "Anonymous",
+          presentedAt: parsed.metadata?.presentedAt ?? moment(new Date().toLocaleDateString()).format('YYYY-MM-DD'),
           content: codemirrorRef.current!.getValue(),
           accessLevel,
         },
@@ -177,6 +180,9 @@ const Editor: React.FC = () => {
       id,
       data: {
         title: parsed.metadata?.title ?? "Untitled",
+        subtitle: parsed.metadata?.subtitle ?? "Untitled",
+        author: parsed.metadata?.author ?? "Anonymous",
+        presentedAt: parsed.metadata?.presentedAt ?? moment(new Date().toLocaleDateString()).format('YYYY-MM-DD'),
         content: codemirrorRef.current!.getValue(),
         accessLevel,
       },
@@ -214,9 +220,10 @@ const Editor: React.FC = () => {
             onExternalDrop={uploadExternalFile}
           />
           <AccessLevelButton onClick={changeAccessLevel}>
-            <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"} alt=""/>
+            <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"}
+                 alt=""/>
           </AccessLevelButton>
-          <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
+          <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save"/></SaveButton>
           <FullScreenMode contents={slides}/>
         </Edit>
         <Preview content={content}/>

@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import dev.minguinho.zeze.domain.auth.exception.NotAuthorizedException;
+import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
-import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotAuthorizedException;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
@@ -34,10 +34,10 @@ public class SlideService {
         return persist.getId();
     }
 
-    public SlideResponseDtos retrieveAll(SlidesRequestDto slidesRequestDto, Long userId) {
+    public SlideMetadataDtos retrieveAll(SlidesRequestDto slidesRequestDto, Long userId) {
         PageRequest pageRequest = PageRequest.of(slidesRequestDto.getPage(), slidesRequestDto.getSize());
         Page<Slide> slides = getSlides(userId, pageRequest);
-        return SlideResponseDtos.from(slides);
+        return SlideMetadataDtos.from(slides);
     }
 
     public SlideResponseDto retrieve(Long slideId, Long userId) {

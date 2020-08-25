@@ -1,5 +1,7 @@
 package dev.minguinho.zeze.domain.slide.api.dto;
 
+import java.time.ZonedDateTime;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,19 +12,17 @@ import dev.minguinho.zeze.domain.slide.model.Slide;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class SlideRequestDto {
+public class SlideMetadataDto {
+    private Long id;
     private String title;
     private String subtitle;
     private String author;
     private String presentedAt;
-    private String content;
-    private String accessLevel;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
 
-    public Slide toEntity(Long userId) {
-        return new Slide(title, subtitle, author, presentedAt, content, Slide.AccessLevel.valueOf(accessLevel), userId);
-    }
-
-    public Slide toEntity() {
-        return new Slide(title, subtitle, author, presentedAt, content, Slide.AccessLevel.valueOf(accessLevel));
+    public static SlideMetadataDto from(Slide slide) {
+        return new SlideMetadataDto(slide.getId(), slide.getTitle(), slide.getSubtitle(), slide.getAuthor(),
+            slide.getPresentedAt(), slide.getCreatedAt(), slide.getUpdatedAt());
     }
 }

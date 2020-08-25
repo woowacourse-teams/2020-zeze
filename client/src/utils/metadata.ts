@@ -1,8 +1,10 @@
+import moment from "moment";
+
 export interface MetaProps {
   title?: string;
   subtitle?: string;
   author?: string;
-  createdAt?: string;
+  presentedAt?: string;
 }
 
 export interface ParsedData {
@@ -23,7 +25,7 @@ export const createTemplate = ({title, subtitle, author}: MetaProps) =>
 title: ${title ?? "Untitled"}
 subtitle: ${subtitle ?? "Untitled"}
 author: ${author ?? "Anonymous"}
-createdAt: ${new Date().toLocaleDateString()}
+presentedAt: ${moment(new Date().toLocaleDateString()).format('YYYY-MM-DD')}
 ---
 `;
 
@@ -43,14 +45,14 @@ export const parse = (text: string): ParsedData => {
   let firstPage = "";
 
   if (metadata) {
-    const {author, title, subtitle, createdAt} = metadata;
+    const {author, title, subtitle, presentedAt} = metadata;
 
     firstPage = firstPage
       .concat(`<div class="first-page">`)
       .concat(title ? `<h1 class="title">${title}</h1>` : "")
       .concat(subtitle ? `<h2 class="subtitle">${subtitle}</h2>` : "")
       .concat(author ? `<h3 class="author">${author}</h3>` : "")
-      .concat(createdAt ? `<h4 class="created-at">${createdAt}</h4>` : "")
+      .concat(presentedAt ? `<h4 class=presented-at">${presentedAt}</h4>` : "")
       .concat("</div>")
       .concat("\n\n---\n\n");
   }

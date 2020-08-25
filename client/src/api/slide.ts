@@ -1,11 +1,13 @@
 import axios, {AxiosResponse} from "axios";
 import {AccessLevel} from "../domains/constants";
-import {MetaProps} from "../utils/metadata";
 
 export interface SlideRequest {
   id?: number
   data?: {
     title: string
+    subtitle: string
+    author: string
+    presentedAt: string
     content: string
     accessLevel: AccessLevel
     createdAt?: string
@@ -14,11 +16,8 @@ export interface SlideRequest {
 }
 
 export interface SlideResponse {
-  id: number
-  title: string
   content: string
   accessLevel: AccessLevel
-  createdAt: string
   updatedAt: string
 }
 
@@ -27,6 +26,7 @@ export interface MetaDataResponse {
   title?: string;
   subtitle?: string;
   author?: string;
+  presentedAt?: string;
   createdAt: string;
 }
 

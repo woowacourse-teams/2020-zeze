@@ -44,6 +44,10 @@ const CardBlock = styled.div`
       font-size: 0.815rem;
     }
     
+    > div.presented_at {  
+      font-size: 0.8rem;
+    }
+    
     > div.created_at {
       font-size: 0.815rem;
       color: gray;
@@ -57,10 +61,11 @@ interface IProps {
   title?: string,
   subtitle?: string,
   author?: string,
+  presentedAt?: string,
   createdAt: string
 }
 
-const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => {
+const Card: React.FC<IProps> = ({id, title, subtitle, author, presentedAt, createdAt}) => {
   const parsedTime = moment(createdAt).format('YYYY-MM-DD HH:mm:ss');
 
   return (
@@ -70,7 +75,8 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt}) => {
         <main>
           <div className="title">{title || "Title"}</div>
           <div className="subtitle">{subtitle || "Subtitle"}</div>
-          <div className="author">{author || "author"}</div>
+          <div className="author">{author || "Author"}</div>
+          <div className="presented_at">{presentedAt || "Presentation Date"}</div>
           <div className="created_at">{parsedTime}</div>
         </main>
       </CardBlock>
