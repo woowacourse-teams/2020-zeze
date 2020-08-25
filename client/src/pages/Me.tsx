@@ -65,7 +65,7 @@ const Me: React.FC = () => {
   return (
     <SidebarLayout>
       <MeBlock>
-        <Toast type="warn">Still in development. Please report bugs to our <a href="https://github.com/woowacourse-teams/2020-zeze/issues/new?assignees=&labels=🐞%20bug%20report&template=bug_report.md">Github Issues</a> !</Toast>
+        <Toast type="warn">Still in development. Please report bugs to our <a href="https://github.com/woowacourse-teams/2020-zeze/issues/new?assignees=&labels=🐞%20bug%20report&template=bug_report.md" target="_blank" rel="noopener noreferrer">Github Issues</a> !</Toast>
         <Info user={user!}
           editedUser={editedUser}
           updateInfo={updateInfo}
