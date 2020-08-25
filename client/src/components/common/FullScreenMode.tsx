@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "@emotion/styled";
 import fscreen from "fscreen";
 import {css, Global} from "@emotion/core";
@@ -19,6 +19,7 @@ const fullScreenStyle = css`
 
 interface FullScreenProps {
   slideTheme: Theme;
+  cursor?: boolean;
 }
 
 export const FullScreenBlock = styled.div<FullScreenProps>`
@@ -26,7 +27,7 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
   top: -9999px;
   left: -9999px;
   font-size: 100%;
-  cursor: none;
+  cursor: ${({cursor}) => (cursor ? "default" : "none")};
   &:focus {
     outline: none;
   }
@@ -135,6 +136,15 @@ interface IProps {
 
 const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const [index, setIndex] = useState<number>(0);
+  const [showCursor, setShowCursor] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (showCursor) {
+      setTimeout(() => {
+        setShowCursor(false);
+      }, 2000);
+    }
+  }, [showCursor]);
 
   const slideReference = useRef<HTMLDivElement>(null);
 
@@ -167,7 +177,9 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         slideTheme={Theme.GITHUB}
         ref={slideReference}
         tabIndex={-1}
+        cursor={showCursor}
         onKeyDown={handleKeyDown}
+        onMouseMove={() => setShowCursor(true)}
       ><Markdown value={contents[index]}/></FullScreenBlock>
       <FullScreenButton onClick={toggleFullScreen}/>
     </>
