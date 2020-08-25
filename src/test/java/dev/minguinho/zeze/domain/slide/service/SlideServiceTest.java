@@ -77,7 +77,8 @@ class SlideServiceTest {
             new Slide(firstTitle, firstSubtitle, firstAuthor, firstPresentedAt, firstContent, AccessLevel.PUBLIC, 1L),
             new Slide(secondTitle, secondSubtitle, secondAuthor, secondPresentedAt, secondContent, AccessLevel.PRIVATE,
                 1L));
-        given(slideRepository.findAllByAccessLevelAndDeletedAtIsNull(eq(AccessLevel.PUBLIC), any(Pageable.class))).willReturn(page);
+        given(slideRepository.findAllByAccessLevelAndDeletedAtIsNull(eq(AccessLevel.PUBLIC), any(Pageable.class)))
+            .willReturn(page);
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0, 5);
@@ -106,7 +107,8 @@ class SlideServiceTest {
             new Slide(firstTitle, firstSubtitle, firstAuthor, firstPresentedAt, firstContent, AccessLevel.PUBLIC, 1L),
             new Slide(secondTitle, secondSubtitle, secondAuthor, secondPresentedAt, secondContent, AccessLevel.PRIVATE,
                 1L));
-        given(slideRepository.findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(eq(1L), any(Pageable.class))).willReturn(page);
+        given(slideRepository.findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(eq(1L), any(Pageable.class)))
+            .willReturn(page);
         given(page.getContent()).willReturn(slides);
 
         SlidesRequestDto slidesRequestDto = new SlidesRequestDto(0, 5);
