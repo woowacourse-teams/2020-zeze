@@ -16,5 +16,5 @@ assignees: ''
 
 ### Non-technical Feature
 
-- [ ] 제약사항 1
-- [ ] 제약사항 2
+- [ ] feat 1
+- [ ] feat 2
