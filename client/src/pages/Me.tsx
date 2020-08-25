@@ -69,7 +69,7 @@ const Me: React.FC = () => {
           updateInfo={updateInfo}
           changeInput={changeInput}
           changeProfileImage={changeProfileImage}/>
-        <SlidesLayout getAllSlides={slideApi.getAll} slidesCnt={6} title="My Drafts"/>
+        <SlidesLayout deleteSlide={slideApi.delete} getAllSlides={slideApi.getAll} slidesCnt={6} title="My Drafts"/>
       </MeBlock>
     </SidebarLayout>
   );
