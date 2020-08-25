@@ -5,6 +5,7 @@ import {css, Global} from "@emotion/core";
 import {Keys, MOBILE_MAX_WIDTH} from "../../domains/constants";
 import Markdown from "../markdown";
 import {applyTheme, Theme} from "../theme";
+import MobileSlidesButtons from "./MobileSlidesButtons";
 
 const fullScreenStyle = css`
   :-webkit-full-screen {
@@ -20,6 +21,7 @@ const fullScreenStyle = css`
 interface FullScreenProps {
   slideTheme: Theme;
   showCursor?: boolean;
+  mobileVisible?: boolean;
 }
 
 export const FullScreenBlock = styled.div<FullScreenProps>`
@@ -28,8 +30,19 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
   left: -9999px;
   font-size: 100%;
   cursor: ${({showCursor}) => (showCursor ? "default" : "none")};
+  
   &:focus {
     outline: none;
+  }
+  
+  @media (max-width: 600px) {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: #fff;
+    display: ${({mobileVisible}) => (mobileVisible ? "block" : "none")};
   }
   
   > div#themed {
@@ -43,7 +56,7 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
     flex-direction: column;
     
     @media (max-width: ${MOBILE_MAX_WIDTH}px) {
-      font-size: 2em;
+      font-size: 1rem;
     }
     
     div.first-page {
@@ -100,16 +113,20 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
       &:only-child {
         position: absolute;
         left: 0;
-        top: 0;
+        top: 5%;
         width: 100%;
-        height: 100%;
+        height: 90%;
+        
+        @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+          top: 15%;
+          height: 70%;
+        }
       }
     }
     
     ${({slideTheme}) => applyTheme(slideTheme)}
   }
 `;
-
 
 export const FullScreenButton = styled.button`
   background-image: url("/assets/icons/play.svg");
@@ -137,6 +154,7 @@ interface IProps {
 const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const [index, setIndex] = useState<number>(0);
   const [showCursor, setShowCursor] = useState<boolean>(false);
+  const [mobileVisible, setMobileVisible] = useState<boolean>(false);
 
   useEffect(() => {
     if (showCursor) {
@@ -151,23 +169,38 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const slideExists = (_index: number) => !!contents[_index];
 
   const toggleFullScreen = () => {
+    if (mobileVisible) {
+      setMobileVisible(false);
+      return;
+    }
     if (slideReference.current) {
       fscreen.requestFullscreen(slideReference.current);
       slideReference.current.focus();
+      setMobileVisible(true);
     }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     switch (event.key) {
     case Keys.ARROW_RIGHT:
-      slideExists(index + 1) && setIndex(index + 1);
+    case Keys.SPACE_BAR:
+    case Keys.ENTER:
+      next();
       break;
     case Keys.ARROW_LEFT:
-      slideExists(index - 1) && setIndex(index - 1);
+      prev();
       break;
     default:
       break;
     }
+  };
+
+  const next = () => {
+    slideExists(index + 1) && setIndex(index + 1);
+  };
+
+  const prev = () => {
+    slideExists(index - 1) && setIndex(index - 1);
   };
 
   return (
@@ -180,8 +213,15 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         showCursor={showCursor}
         onKeyDown={handleKeyDown}
         onMouseMove={() => setShowCursor(true)}
+        mobileVisible={mobileVisible}
       ><Markdown value={contents[index]}/></FullScreenBlock>
       <FullScreenButton onClick={toggleFullScreen}/>
+      <MobileSlidesButtons
+        visible={mobileVisible}
+        next={next}
+        prev={prev}
+        exit={() => setMobileVisible(false)}
+      />
     </>
   );
 };
