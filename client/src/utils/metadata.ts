@@ -25,7 +25,7 @@ export const createTemplate = ({title, subtitle, author}: MetaProps) =>
 title: ${title ?? "Untitled"}
 subtitle: ${subtitle ?? "Untitled"}
 author: ${author ?? "Anonymous"}
-presentedAt: ${moment(new Date().toLocaleDateString()).format('YYYY-MM-DD')}
+presentedAt: ${moment().format('YYYY-MM-DD')}
 ---
 `;
 
