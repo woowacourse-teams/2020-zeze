@@ -30,7 +30,7 @@ const EditorBlock = styled.main`
   }
 
   @media(max-width: ${MOBILE_MAX_WIDTH}px) {
-    flex-direction: column-reverse;
+    flex-direction: column;
     height: 100vh;
   }
 `;

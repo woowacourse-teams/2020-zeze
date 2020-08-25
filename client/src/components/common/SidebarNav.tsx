@@ -14,7 +14,7 @@ const SidebarNav: React.FC<IProps> = ({user}: IProps) => {
   const setVisibility = useSetRecoilState(sidebarVisibility);
 
   return (
-    <nav>
+    <nav className="sidebar">
       <div>
         <SidebarHeader src={user.profileImage} title={user.name} />
         <NavLink to="/me" activeClassName="current">

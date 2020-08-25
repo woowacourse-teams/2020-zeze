@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import {PRIMARY_GREEN} from "../../domains/constants";
+import {MOBILE_MAX_WIDTH, PRIMARY_GREEN} from "../../domains/constants";
 
 interface ToastProps {
   type: string;
@@ -17,7 +17,7 @@ const ToastBlock = styled.div<ToastProps>`
   word-spacing: 4px;
   line-height: 1.6;
   
-  @media (max-width: 600px) {
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
     font-size: 1rem;
     word-spacing: normal;
   }
