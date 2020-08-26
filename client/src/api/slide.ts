@@ -94,6 +94,13 @@ const slideApi = {
       },
     })
   },
+  clone(id: number): Promise<AxiosResponse<SlideResponse>> {
+    return slideInstance.post(`${id}`, null, {
+      headers: {
+        authorization: localStorage.getItem("accessToken"),
+      },
+    });
+  },
 };
 
 export default slideApi;

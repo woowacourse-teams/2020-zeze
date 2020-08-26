@@ -238,4 +238,21 @@ class SlideControllerTest {
 
         verify(slideService, times(1)).softDelete(eq(1L), anyLong());
     }
+
+    @Test
+    @DisplayName("슬라이드 복제 요청")
+    void cloneSlide() throws Exception {
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
+        mvc.perform(post(BASE_URL + "1")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+        )
+            .andExpect(status().isCreated())
+            .andDo(print());
+
+        verify(slideService, times(1)).clone(eq(1L), eq(1L));
+    }
 }

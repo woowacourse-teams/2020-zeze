@@ -221,4 +221,21 @@ class SlideServiceTest {
             .isInstanceOf(SlideNotAuthorizedException.class)
             .hasMessage("사용자의 슬라이드가 아닙니다.");
     }
+
+    @Test
+    @DisplayName("슬라이드 복제")
+    void cloneSlide() {
+        String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
+        String content = "내용";
+        Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
+        given(slideRepository.findByIdAndDeletedAtIsNull(1L)).willReturn(Optional.of(slide));
+        given(slideRepository.save(any(Slide.class))).willReturn(slide);
+
+        slideService.clone(1L, 1L);
+
+        verify(slideRepository, times(1)).save(any(Slide.class));
+    }
 }

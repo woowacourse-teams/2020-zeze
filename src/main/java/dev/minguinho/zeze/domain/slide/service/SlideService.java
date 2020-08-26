@@ -66,6 +66,16 @@ public class SlideService {
         return slide.isOwner(userId);
     }
 
+    @Transactional
+    public Long clone(Long slideId, Long userId) {
+        if (Objects.isNull(userId)) {
+            throw new NotAuthorizedException();
+        }
+        Slide slide = getSlide(slideId, userId);
+        Slide persist = slideRepository.save(slide.clone(userId));
+        return persist.getId();
+    }
+
     private Page<Slide> getSlides(Long userId, PageRequest pageRequest) {
         if (Objects.isNull(userId)) {
             return slideRepository.findAllByAccessLevelAndDeletedAtIsNull(Slide.AccessLevel.PUBLIC, pageRequest);

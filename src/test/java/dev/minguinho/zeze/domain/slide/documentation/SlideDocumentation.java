@@ -99,7 +99,6 @@ public class SlideDocumentation extends Documentation {
                     headerWithName("Location").description("생성된 슬라이드 URI")
                 ))
             );
-
     }
 
     @Test
@@ -294,6 +293,34 @@ public class SlideDocumentation extends Documentation {
                 ),
                 requestHeaders(
                     headerWithName("Authorization").description("Bearer auth credentials")))
+            );
+    }
+
+    @Test
+    void cloneSlide() throws Exception {
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        given(slideService.clone(anyLong(), anyLong())).willReturn(2L);
+
+        mockMvc.perform(post(BASE_URL + "{id}", 1)
+            .header("Authorization", "bearer " + authenticationDto.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+        )
+            .andExpect(status().isCreated())
+            .andDo(print())
+            .andDo(document("slides/clone",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestHeaders(
+                    headerWithName("Authorization").description("Bearer auth credentials")
+                ),
+                pathParameters(
+                    parameterWithName("id").description("슬라이드 id")
+                ),
+                responseHeaders(
+                    headerWithName("Location").description("복제된 슬라이드 URI")
+                ))
             );
     }
 }

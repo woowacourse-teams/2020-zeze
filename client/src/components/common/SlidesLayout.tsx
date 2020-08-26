@@ -7,8 +7,8 @@ import Cards from "./Cards";
 import {PageProps, MetaDataResponses, MetaDataResponse, SlideResponse} from "../../api/slide";
 import {googleAnalyticsPageView} from "../../utils/googleAnalytics";
 import ConfirmModal from './ConfirmModal';
-import {ToastType} from "../../domains/constants";
-import ToastFactory from "../../domains/ToastFactory";
+import ToastFactory from '../../domains/ToastFactory';
+import {ToastType, AccessLevel} from '../../domains/constants';
 
 const SlidesBlock = styled.div`
   display: flex;
@@ -23,9 +23,10 @@ interface IProps {
   deleteSlide?: (id: number) => Promise<AxiosResponse<SlideResponse>>
   slidesCnt: number
   title: string
+  accessLevel?: AccessLevel
 }
 
-const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, slidesCnt, title}) => {
+const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, slidesCnt, title, accessLevel = AccessLevel.PUBLIC}) => {
   const [slides, setSlides] = useState<Array<MetaDataResponse>>([]);
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
@@ -47,29 +48,43 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
 
   const onClickMove = useCallback((pageNum: number) => {
     setPage(pageNum);
-  },[]);
+  }, []);
 
   const confirmDelete = useCallback((id: number) => {
     setSelectedId(id);
   }, []);
 
   const onDeleteSlide = useCallback(() => {
+    const selectedSlide = slides.find(slide => slide.id === selectedId);
+    if (!selectedSlide) {
+      return;
+    }
     deleteSlide?.(selectedId).then(() => {
-      setSlides(slides.filter(slide => slide.id !== selectedId));
+      setSlides(slides.filter(slide => slide !== selectedSlide));
       setSelectedId(0);
-    })
-      .then(() => toastFactory.createToast("delete success", ToastType.SUCCESS))
-      .catch(() => toastFactory.createToast("delete failure", ToastType.ERROR));
-  }, [deleteSlide, slides, selectedId]);
+      toastFactory.createToast(`delete ${selectedSlide.title}!`, ToastType.SUCCESS);
+    });
+  }, [deleteSlide, slides, selectedId, toastFactory]);
 
   const onCloneSlide = useCallback((id: number) => {
-    cloneSlide?.(id).then(res => {
-      setSlides([
-        // ...slides,
-        // res.data
+    const slide = slides.find(slide => slide.id === id);
+    if (!slide) {
+      return;
+    }
+    cloneSlide?.(id).then(({headers: {location}}) => {
+      const slideId = parseInt(location.substring(location.lastIndexOf("/") + 1));
+       accessLevel === AccessLevel.PRIVATE && setSlides([
+        {
+          ...slide,
+          id: slideId,
+          title: `${slide.title} (clone)`,
+          createdAt: new Date().toString(),
+        },
+        ...slides,
       ]);
+      toastFactory.createToast(`clone ${slide.title}!`, ToastType.SUCCESS);
     });
-  }, [cloneSlide, slides]);
+  }, [cloneSlide, slides, toastFactory, accessLevel]);
 
   useEffect(() => {
     googleAnalyticsPageView("Archive");
@@ -77,7 +92,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
 
   return (
     <SlidesBlock>
-      <Cards onClone={onCloneSlide} onDelete={deleteSlide ? confirmDelete : undefined} title={title} slides={slides}/>
+      <Cards onClone={cloneSlide && onCloneSlide} onDelete={deleteSlide && confirmDelete} title={title} slides={slides}/>
       <Pagination page={page}
                   totalPage={totalPage}
                   onClickPage={onClickPage}
