@@ -50,6 +50,7 @@ const Profile = styled.div`
   > label {
     cursor: pointer;
     color: #777;
+    font-size: 12px;
     
     &:hover {
       color: #fff;
@@ -101,12 +102,12 @@ interface IProps {
 }
 
 const Info: React.FC<IProps> = ({
-  user,
-  editedUser,
-  updateInfo,
-  changeProfileImage,
-  changeInput,
-}: IProps) => (
+                                  user,
+                                  editedUser,
+                                  updateInfo,
+                                  changeProfileImage,
+                                  changeInput,
+                                }: IProps) => (
   <CardsLayout>
     <h2>{user.name}'s Info</h2>
     <hr/>
