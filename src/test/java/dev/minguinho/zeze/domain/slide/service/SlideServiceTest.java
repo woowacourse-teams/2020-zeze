@@ -77,7 +77,7 @@ class SlideServiceTest {
             new Slide(firstTitle, firstSubtitle, firstAuthor, firstPresentedAt, firstContent, AccessLevel.PUBLIC, 1L),
             new Slide(secondTitle, secondSubtitle, secondAuthor, secondPresentedAt, secondContent, AccessLevel.PRIVATE,
                 1L));
-        given(slideRepository.findAllByAccessLevelAndDeletedAtIsNull(eq(AccessLevel.PUBLIC), any(Pageable.class)))
+        given(slideRepository.findAllByAccessLevelAndDeletedAtIsNullOrderByUpdatedAtDesc(eq(AccessLevel.PUBLIC), any(Pageable.class)))
             .willReturn(page);
         given(page.getContent()).willReturn(slides);
 
