@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 import Card from "./Card";
 import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 import {MetaDataResponse} from "../../api/slide";
+import {Link} from "react-router-dom";
+import Logo from "../../assets/logo192.png";
 
 export const CardsLayout = styled.div`
   padding-bottom: 2rem;
@@ -19,6 +21,35 @@ export const CardsLayout = styled.div`
     width: 7rem;
     margin: 1rem 0 2rem;
   }
+  
+  a {
+    display: flex;
+    flex-direction: column;
+    text-decoration-line: none;
+    width: 300px;
+    border: 1px #777 dashed;
+    padding: 50px 0;
+    border-radius: 10px;
+    
+    &:hover {
+      opacity: 75%;
+    }
+    @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+      margin: auto;
+    }
+  }
+  
+  span {
+    display: flex;
+    color: #fff;
+    margin: 10px auto;
+  }
+  
+  img {
+    display: flex;
+    width: 40px;
+    margin: auto;
+  }
 `;
 
 const CardsBlock = styled.div`
@@ -28,7 +59,15 @@ const CardsBlock = styled.div`
   
   a {
     text-decoration: none;
-    color: #000;  
+    color: #000;
+    width: auto;
+    border: none;
+    padding: 0;
+    margin: 0;
+    
+    &:hover {
+      opacity: 100%;
+    }
   }
   
   @media (max-width: 1440px) {
@@ -44,7 +83,6 @@ const CardsBlock = styled.div`
   }
 `;
 
-
 interface IProps {
   title: string,
   slides: MetaDataResponse[],
@@ -57,11 +95,16 @@ const Cards: React.FC<IProps> = ({title, slides, onClone, onDelete}) => (
   <CardsLayout>
     <h2>{title}</h2>
     <hr/>
-    <CardsBlock>
-      {slides.map(slide => (
-        <Card key={slide.id} id={slide.id} title={slide.title} subtitle={slide.subtitle} author={slide.author}
-              presentedAt={slide.presentedAt} createdAt={slide.createdAt} onClone={onClone} onDelete={onDelete}/>))}
-    </CardsBlock>
+    {slides.length === 0 ?
+      <Link to="/editor">
+        <img src={Logo} alt={"NEW SLIDES"}/><span>CREATE NEW SLIDES!</span>
+      </Link> :
+      <CardsBlock>
+        {slides.map(slide => (
+          <Card key={slide.id} id={slide.id} title={slide.title} subtitle={slide.subtitle} author={slide.author}
+                presentedAt={slide.presentedAt} createdAt={slide.createdAt} onClone={onClone} onDelete={onDelete}/>))}
+      </CardsBlock>
+    }
   </CardsLayout>
 );
 
