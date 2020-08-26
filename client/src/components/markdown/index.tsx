@@ -1,6 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown/with-html";
-import {Code, Image, Paragraph} from "./renderers";
+import {Code, Image, Link, Paragraph} from "./renderers";
 import {parse} from "../../utils/metadata";
 
 interface IProps {
@@ -12,6 +12,7 @@ const renderers = {
   code: Code,
   image: Image,
   paragraph: Paragraph,
+  link: Link,
 };
 
 const Markdown: React.FC<IProps> = ({value = ""}) => {

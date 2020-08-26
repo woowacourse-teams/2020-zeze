@@ -70,7 +70,7 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
       const image = template.querySelector("img");
 
       const drop = async (filename: string, promise: Promise<string>) => {
-        const name = filename.replace(/[\[|\]]/g, "");
+        const name = filename.replace(/[[|\]]/g, "");
         const marker = `![Uploading ${name}...]()`;
 
         editor.replaceRange(`${marker}\n`, editor.getCursor());

@@ -51,9 +51,9 @@ const SidebarHeader: React.FC<IProps> = ({src, title}) => (
     <div>
       <img src={src || "/assets/icons/user.svg"} alt={title}/><span>{title}</span>
     </div>
-    <button>
-      <img src="/assets/icons/more.svg" alt="more"/>
-    </button>
+    {/* <button>*/}
+    {/*  <img src="/assets/icons/more.svg" alt="more"/>*/}
+    {/* </button>*/}
   </SidebarHeaderBlock>
 );
 

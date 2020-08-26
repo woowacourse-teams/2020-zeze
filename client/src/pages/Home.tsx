@@ -118,8 +118,8 @@ const Home: React.FC = () => {
           <Layout>
             <code style={{color: "#fff"}}>
               --- <br/>
-              title: Hello Limetree! <br/>
-              subtitle: Hi! <br/>
+              title: Hello Slide.md! <br/>
+              subtitle: Introducing markdown slides <br/>
               author: Hodol <br/>
               createdAt: 2020-07-12 <br/>
               --- <br/> <br/>
@@ -139,8 +139,8 @@ const Home: React.FC = () => {
           <Slide>
             <Carousel>
               <MetaData>
-                <h1>Hello Limetree!</h1>
-                <h2>Hi!</h2>
+                <h1>Hello Slide.md!</h1>
+                <h2>Introducing markdown slides!</h2>
                 <h3>Hodol</h3>
                 <h4>2020-07-12</h4>
               </MetaData>

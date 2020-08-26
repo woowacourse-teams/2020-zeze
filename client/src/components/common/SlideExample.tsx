@@ -8,11 +8,11 @@ interface IProps {
 }
 
 const SlideExample: React.FC<IProps> = ({content}) => (
-  <FullScreenBlock style={{
+  <FullScreenBlock mobileVisible={true} style={{
     position: "unset",
     top: 0,
     left: 0,
-    cursor: "auto"
+    cursor: "auto",
   }} slideTheme={Theme.GITHUB}>
     <Markdown value={content}/>
   </FullScreenBlock>

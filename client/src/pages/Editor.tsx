@@ -30,7 +30,7 @@ const EditorBlock = styled.main`
   }
 
   @media(max-width: ${MOBILE_MAX_WIDTH}px) {
-    flex-direction: column-reverse;
+    flex-direction: column;
     height: 100vh;
   }
 `;
@@ -42,6 +42,7 @@ const Edit = styled.div`
 `;
 
 const SaveButton = styled.div`
+  cursor: pointer;
   position: absolute;
   z-index: 3;
   top: 70px;
@@ -53,6 +54,7 @@ const SaveButton = styled.div`
 `;
 
 const AccessLevelButton = styled.div`
+  cursor: pointer; 
   position: absolute;
   z-index: 3;
   top: 70px;
@@ -167,7 +169,7 @@ const Editor: React.FC = () => {
           title: parsed.metadata?.title ?? "Untitled",
           subtitle: parsed.metadata?.subtitle ?? "Untitled",
           author: parsed.metadata?.author ?? "Anonymous",
-          presentedAt: parsed.metadata?.presentedAt ?? moment().format('YYYY-MM-DD'),
+          presentedAt: parsed.metadata?.presentedAt ?? moment().format("YYYY-MM-DD"),
           content: codemirrorRef.current!.getValue(),
           accessLevel,
         },
@@ -191,7 +193,7 @@ const Editor: React.FC = () => {
         title: parsed.metadata?.title ?? "Untitled",
         subtitle: parsed.metadata?.subtitle ?? "Untitled",
         author: parsed.metadata?.author ?? "Anonymous",
-        presentedAt: parsed.metadata?.presentedAt ?? moment().format('YYYY-MM-DD'),
+        presentedAt: parsed.metadata?.presentedAt ?? moment().format("YYYY-MM-DD"),
         content: codemirrorRef.current!.getValue(),
         accessLevel,
       },
@@ -231,7 +233,7 @@ const Editor: React.FC = () => {
           {(!id || isOwner) &&
             <>
               <AccessLevelButton onClick={changeAccessLevel}>
-                <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"} alt=""/>
+                <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"} alt="access level"/>
               </AccessLevelButton>
               <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
             </>

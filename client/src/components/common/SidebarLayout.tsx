@@ -1,9 +1,11 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "@emotion/styled";
+import {useRecoilState, useRecoilValue} from "recoil";
+
 import {MOBILE_MAX_WIDTH, ZEZE_GRAY} from "../../domains/constants";
 import SidebarNav from "./SidebarNav";
-import {useRecoilState, useRecoilValue} from "recoil";
 import {sidebarVisibility, userInfoQuery} from "../../store/atoms";
+import MobileHeader from "./MobileHeader";
 
 interface SidebarLayoutProps {
   fluid?: boolean
@@ -14,15 +16,19 @@ interface SidebarLayoutProps {
 export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
   display: flex;
   
-  > nav {
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+    flex-direction: column;
+  }
+  
+  > nav.sidebar {
     background-color: #222;
     color: #fff;
     box-sizing: border-box;
     padding: 30px;
     min-width: 275px; 
     height: 100vh;
-    display: ${props => (props.visible ? "flex" : "none")};
-    z-index: ${props => (props.toggleable ? 99999 : 1)};
+    display: ${({visible}) => (visible ? "flex" : "none")};
+    z-index: ${({toggleable}) => (toggleable ? 99999 : 1)};
     flex-direction: column;
     justify-content: space-between;
     position: fixed;
@@ -37,7 +43,7 @@ export const SidebarLayoutBlock = styled.div<SidebarLayoutProps>`
     }
     
     @media(max-width: ${MOBILE_MAX_WIDTH}px ) {
-      display: none;
+      display: ${({toggleable, visible}) => (toggleable && visible ? "block" : "none")};
     }
   }
   
@@ -84,6 +90,7 @@ const SidebarLayout: React.FC<IProps> = ({children, fluid = false, toggleable = 
   return (
     <SidebarLayoutBlock fluid={fluid} toggleable={toggleable} visible={visibility}>
       <SidebarNav user={user!} />
+      {!toggleable && <MobileHeader/>}
       <main>
         <div className="dropback" onClick={() => setVisibility(false)}/>
         <div className="content">

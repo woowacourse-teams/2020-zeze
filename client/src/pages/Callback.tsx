@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect} from "react";
 import axios from "axios";
 import GlobalLayout from "../components/common/GlobalLayout";

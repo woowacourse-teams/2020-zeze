@@ -65,7 +65,7 @@ const EditorButtons: React.FC<IProps> = ({inputRef, updatedAt}) => {
   return (
     <EditorButtonsBlock>
       <Menu onClick={() => setVisibility(true)}><img src={menu} alt={menu}/></Menu>
-      <div className="container">{templates.map(data => <EditorButton {...data} handleClick={insertTemplate}/>)}</div>
+      <div className="container">{templates.map(data => <EditorButton key={data.title} {...data} handleClick={insertTemplate}/>)}</div>
       <LastModified at={updatedAt}></LastModified>
     </EditorButtonsBlock>
   );

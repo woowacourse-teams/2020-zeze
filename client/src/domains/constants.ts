@@ -10,6 +10,8 @@ export const PAGE_CNT = 5;
 export const Keys = {
   ARROW_RIGHT: "ArrowRight",
   ARROW_LEFT: "ArrowLeft",
+  SPACE_BAR: " ",
+  ENTER: "Enter",
 };
 
 const GithubAuth = {

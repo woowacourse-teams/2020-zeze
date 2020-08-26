@@ -114,22 +114,23 @@ const ToastNotificationBlock = styled.div`
 
 const ToastAlarm: React.FC = () => {
   const [toasts, setToasts] = useRecoilState<Array<Toast>>(toastMessages);
-  const removeToast = (toast : Toast) => {
-    const newToasts = toasts.filter(value => value !== toast);
-
-    setToasts([...newToasts]);
-  };
 
   useEffect(() => {
+    const removeToast = (toast : Toast) => {
+      const newToasts = toasts.filter(value => value !== toast);
+
+      setToasts([...newToasts]);
+    };
     const interval = setInterval(() => {
       if (toasts.length) {
         removeToast(toasts[0]);
       }
     }, autoDeleteTime);
+
     return () => {
       clearInterval(interval);
-    }
-  }, [toasts, removeToast]);
+    };
+  }, [toasts, setToasts]);
   return (
     <ToastNotificationBlock>
       <div className={`notification-container top-center`}>

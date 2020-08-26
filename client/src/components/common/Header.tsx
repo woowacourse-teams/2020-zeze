@@ -9,7 +9,7 @@ const HeaderBlock = styled.header`
   border-bottom: 0.5px solid ${ZEZE_GRAY};
   
   @media (max-width: ${MOBILE_MAX_WIDTH}px) {
-    height: 50px;
+    height: 65px;
   }
   
   nav {
@@ -28,7 +28,7 @@ const LogoIcon = styled.img`
   padding: 20px;
   
   @media (max-width: ${MOBILE_MAX_WIDTH}px) {
-    padding: 10px;
+    padding: 15px;
   }
 `;
 
