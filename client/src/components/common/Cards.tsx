@@ -48,16 +48,19 @@ const CardsBlock = styled.div`
 interface IProps {
   title: string,
   slides: MetaDataResponse[],
+  author?: string,
+  onClone?: (id: number) => void,
+  onDelete?: (id: number) => void,
 }
 
-const Cards: React.FC<IProps> = ({title, slides}) => (
+const Cards: React.FC<IProps> = ({title, slides, onClone, onDelete}) => (
   <CardsLayout>
     <h2>{title}</h2>
     <hr/>
     <CardsBlock>
       {slides.map(slide => (
         <Card key={slide.id} id={slide.id} title={slide.title} subtitle={slide.subtitle} author={slide.author}
-              presentedAt={slide.presentedAt} createdAt={slide.createdAt}/>))}
+              presentedAt={slide.presentedAt} createdAt={slide.createdAt} onClone={onClone} onDelete={onDelete}/>))}
     </CardsBlock>
   </CardsLayout>
 );

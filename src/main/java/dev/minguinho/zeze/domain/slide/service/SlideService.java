@@ -53,9 +53,10 @@ public class SlideService {
     }
 
     @Transactional
-    public void delete(Long slideId, Long userId) {
+    public void softDelete(Long slideId, Long userId) {
         Slide persist = findSlideIfAuthorized(slideId, userId);
-        slideRepository.delete(persist);
+        persist.delete();
+        slideRepository.save(persist);
     }
 
     @Transactional
@@ -67,13 +68,13 @@ public class SlideService {
 
     private Page<Slide> getSlides(Long userId, PageRequest pageRequest) {
         if (Objects.isNull(userId)) {
-            return slideRepository.findAllByAccessLevel(Slide.AccessLevel.PUBLIC, pageRequest);
+            return slideRepository.findAllByAccessLevelAndDeletedAtIsNull(Slide.AccessLevel.PUBLIC, pageRequest);
         }
-        return slideRepository.findAllByUserIdOrderByUpdatedAtDesc(userId, pageRequest);
+        return slideRepository.findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(userId, pageRequest);
     }
 
     private Slide getSlide(Long slideId, Long userId) {
-        Slide slide = slideRepository.findById(slideId)
+        Slide slide = slideRepository.findByIdAndDeletedAtIsNull(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
         if (Objects.isNull(userId) || !slide.isOwner(userId)) {
             validatePublic(slide);
@@ -88,7 +89,7 @@ public class SlideService {
     }
 
     private Slide findSlideIfAuthorized(Long slideId, Long userId) {
-        Slide slide = slideRepository.findById(slideId)
+        Slide slide = slideRepository.findByIdAndDeletedAtIsNull(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
         if (!slide.isOwner(userId)) {
             throw new SlideNotAuthorizedException();

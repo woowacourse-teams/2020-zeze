@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {Link} from "react-router-dom";
 import moment from 'moment';
 import styled from "@emotion/styled";
@@ -18,12 +18,34 @@ const CardBlock = styled.div`
   &:hover {
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
     cursor: pointer;
+
+    > header > img {
+      opacity: 1;
+    }
   }
   
   > header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     border-radius: 5px 5px 0 0;
-    height: 12px;
+    height: 28px;
     background-color: #747d8c;
+
+    > img {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      padding: 4px;
+      background-color: rgb(0, 0, 0, 0.05);
+      margin: 3px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      
+      &:hover {
+        background-color: rgb(0, 0, 0, 0.2);
+      }
+    }
   }
   
   > main {
@@ -61,17 +83,32 @@ interface IProps {
   title?: string,
   subtitle?: string,
   author?: string,
+  createdAt: string,
   presentedAt?: string,
-  createdAt: string
+  onClone?: (id: number) => void,
+  onDelete?: (id: number) => void,
 }
 
-const Card: React.FC<IProps> = ({id, title, subtitle, author, presentedAt, createdAt}) => {
+const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, presentedAt, onClone, onDelete}) => {
   const parsedTime = moment(createdAt).format('YYYY-MM-DD HH:mm:ss');
+
+  const handleClickClone = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    onClone?.(id);
+  }, [onDelete]);
+
+  const handleClickDelete = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    onDelete?.(id);
+  }, [onDelete]);
 
   return (
     <Link to={`/editor/${id}`}>
       <CardBlock>
-        <header/>
+        <header>
+          {onClone && <img onClick={handleClickClone} src="/assets/icons/save.svg" alt="clone"/>}
+          {onDelete && <img onClick={handleClickDelete} src="/assets/icons/clear.svg" alt="delete"/>}
+        </header>
         <main>
           <div className="title">{title || "Title"}</div>
           <div className="subtitle">{subtitle || "Subtitle"}</div>

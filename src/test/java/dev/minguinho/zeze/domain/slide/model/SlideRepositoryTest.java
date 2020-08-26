@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 
-import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
-
 @DataJpaTest
 class SlideRepositoryTest {
     @Autowired
@@ -37,7 +35,7 @@ class SlideRepositoryTest {
 
     @Test
     @DisplayName("슬라이드 list 조회")
-    void findByIdOrderByUpdatedAtDesc() {
+    void findAllByUserIdAndDeletedAtOrderByUpdatedAtDesc() {
         String firstTitle = "제목1";
         String firstSubtitle = "부제목1";
         String firstAuthor = "작성자1";
@@ -55,13 +53,16 @@ class SlideRepositoryTest {
         slideRepository.saveAll(slides);
 
         PageRequest pageRequest = PageRequest.of(0, 5);
-        List<Slide> persistPresentations = slideRepository.findAllByUserIdOrderByUpdatedAtDesc(1L, pageRequest)
+        List<Slide> persistPresentations = slideRepository.findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(1L,
+            pageRequest)
             .getContent();
 
         assertAll(
             () -> assertThat(persistPresentations).hasSize(2),
             () -> assertThat(persistPresentations.get(0).getTitle()).isEqualTo(secondTitle),
-            () -> assertThat(persistPresentations.get(1).getTitle()).isEqualTo(firstTitle)
+            () -> assertThat(persistPresentations.get(1).getTitle()).isEqualTo(firstTitle),
+            () -> assertThat(persistPresentations.get(0).getDeletedAt()).isNull(),
+            () -> assertThat(persistPresentations.get(1).getDeletedAt()).isNull()
         );
     }
 
@@ -89,22 +90,18 @@ class SlideRepositoryTest {
     }
 
     @Test
-    @DisplayName("슬라이드 삭제")
-    void delete() {
+    @DisplayName("슬라이드 소프트 삭제")
+    void updateDeletedAt() {
         String title = "제목";
         String subtitle = "부제목";
         String author = "작성자";
         String presentedAt = "2020-07-21";
         String content = "내용";
         Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
-        Slide persist = slideRepository.save(slide);
 
-        slideRepository.deleteById(persist.getId());
+        slide.delete();
+        Slide deletedSlide = slideRepository.save(slide);
 
-        assertThatThrownBy(() -> slideRepository.findById(persist.getId())
-            .orElseThrow(() -> new SlideNotFoundException(persist.getId()))
-        )
-            .isInstanceOf(SlideNotFoundException.class)
-            .hasMessageContaining("해당 슬라이드는 존재하지 않습니다.");
+        assertThat(deletedSlide.getDeletedAt()).isNotNull();
     }
 }

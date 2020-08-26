@@ -227,7 +227,7 @@ class SlideControllerTest {
 
     @Test
     @DisplayName("슬라이드 삭제 요청")
-    void deleteSlide() throws Exception {
+    void softDeleteSlide() throws Exception {
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
@@ -236,6 +236,6 @@ class SlideControllerTest {
             .andExpect(status().isNoContent())
             .andDo(print());
 
-        verify(slideService, times(1)).delete(eq(1L), anyLong());
+        verify(slideService, times(1)).softDelete(eq(1L), anyLong());
     }
 }

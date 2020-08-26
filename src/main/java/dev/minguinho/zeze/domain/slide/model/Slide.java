@@ -1,5 +1,7 @@
 package dev.minguinho.zeze.domain.slide.model;
 
+import java.time.ZonedDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,6 +28,7 @@ public class Slide extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AccessLevel accessLevel;
     private Long userId;
+    private ZonedDateTime deletedAt = null;
 
     public Slide(String title, String subtitle, String author, String presentedAt, String content,
         AccessLevel accessLevel) {
@@ -35,6 +38,31 @@ public class Slide extends BaseEntity {
         this.presentedAt = presentedAt;
         this.content = content;
         this.accessLevel = accessLevel;
+    }
+
+    public Slide(String title, String content, AccessLevel accessLevel, Long userId) {
+        this.title = title;
+        this.content = content;
+        this.accessLevel = accessLevel;
+        this.userId = userId;
+    }
+
+    public Slide(
+        String title,
+        String subtitle,
+        String author,
+        String presentedAt,
+        String content,
+        AccessLevel accessLevel,
+        Long userId
+    ) {
+        this.title = title;
+        this.subtitle = subtitle;
+        this.author = author;
+        this.presentedAt = presentedAt;
+        this.content = content;
+        this.accessLevel = accessLevel;
+        this.userId = userId;
     }
 
     public void update(Slide slide) {
@@ -52,6 +80,14 @@ public class Slide extends BaseEntity {
 
     public boolean isPublic() {
         return this.accessLevel.equals(AccessLevel.PUBLIC);
+    }
+
+    public void delete() {
+        this.deletedAt = ZonedDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
     }
 
     public enum AccessLevel {
