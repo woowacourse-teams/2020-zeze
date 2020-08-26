@@ -231,7 +231,7 @@ public class SlideAcceptanceTest {
 
                 assertAll(
                     () -> assertThat(newSlides.get(0).getId()).isNotEqualTo(recentId),
-                    () -> assertThat(newSlides.get(0).getTitle()).isEqualTo(title),
+                    () -> assertThat(newSlides.get(0).getTitle()).isEqualTo(title + " (clone)"),
                     () -> assertThat(newSlides.get(0).getSubtitle()).isEqualTo(subtitle),
                     () -> assertThat(newSlides.get(0).getAuthor()).isEqualTo(author)
                 );

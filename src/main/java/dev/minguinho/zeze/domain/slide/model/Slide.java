@@ -87,7 +87,7 @@ public class Slide extends BaseEntity {
     }
 
     public Slide clone(Long userId) {
-        return new Slide(this.title, this.subtitle, this.author, this.presentedAt, this.content, this.accessLevel,
+        return new Slide(this.title + " (clone)", this.subtitle, this.author, this.presentedAt, this.content, this.accessLevel,
             userId);
     }
 

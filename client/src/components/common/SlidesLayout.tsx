@@ -58,13 +58,18 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
   }, [deleteSlide, slides, selectedId]);
 
   const onCloneSlide = useCallback((id: number) => {
+    const slide = slides.find(slide => slide.id === id);
+    if (!slide) {
+      return;
+    }
     cloneSlide?.(id).then(({headers: {location}}) => {
       const slideId = parseInt(location.substring(location.lastIndexOf("/") + 1));
       setSlides([
         {
-          ...slides.find(slide => slide.id === id)!,
+          ...slide,
           id: slideId,
-          createdAt: new Date().toString()
+          title: `${slide.title} (clone)`,
+          createdAt: new Date().toString(),
         },
         ...slides,
       ]);
