@@ -8,7 +8,8 @@ interface IProps {
 }
 
 const Image: React.FC<IProps> = ({src, alt, height, width}) => (
-  <img src={src} alt={alt} height={height} width={width}/>
+  <span className="image" style={{backgroundImage: `url("${src}")`, height, width}}/>
+  // <img src={src} alt={alt} height={height} width={width}/>
 );
 
 export default Image;

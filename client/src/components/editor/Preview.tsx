@@ -15,6 +15,25 @@ const PreviewBlock = styled.div`
   overflow: scroll;
   max-height: 100vh;
   
+  p.images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    width: 100%;
+    height: 250px;
+    
+    .image {
+      display: block;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      height: 100%;
+      flex: 1;
+    }
+  }
+  
   @media (max-width: ${MOBILE_MAX_WIDTH}px) {
     display: none;
   }
