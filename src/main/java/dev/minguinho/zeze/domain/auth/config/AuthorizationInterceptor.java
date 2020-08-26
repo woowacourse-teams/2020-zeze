@@ -36,11 +36,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         if (roles.contains(secured.authority())) {
             return true;
         }
-        throw new NotAuthorizedException();
+        throw new NotAuthorizedException("not permitted");
     }
 
     private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
-        return Optional.ofNullable(handlerMethod.getMethodAnnotation(annotationType))
+        return Optional.ofNullable(handlerMethod.getMethod().getAnnotation(annotationType))
             .orElse(handlerMethod.getBeanType().getAnnotation(annotationType));
     }
 }

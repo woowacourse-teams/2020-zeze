@@ -1,7 +1,7 @@
 import {atom, selector} from "recoil";
 import {User} from "../pages/Me";
 import usersApi from "../api/user";
-import {Toast} from "../domains/constants";
+import {GITHUB_AUTH_URL, Toast} from "../domains/constants";
 
 export const userInfoTrigger = atom<number>({
   key: "userInfoTrigger",
@@ -12,7 +12,12 @@ export const userInfoQuery = selector<User | null>({
   key: "userInfoQuery",
   get: ({get}) => {
     get(userInfoTrigger);
-    return localStorage.getItem("accessToken") ? usersApi.get().then(response => response.data) : null;
+    if(!localStorage.getItem("accessToken")) {
+      return null;
+    }
+    return usersApi.get()
+      .then(response => response.data)
+      .catch(() => window.location.href = GITHUB_AUTH_URL);
   },
   set: ({set}) => {
     set(userInfoTrigger, v => v + 1);

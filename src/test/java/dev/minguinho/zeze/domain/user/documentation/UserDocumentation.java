@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.minguinho.zeze.domain.auth.api.dto.response.AuthenticationDto;
 import dev.minguinho.zeze.domain.auth.infra.AuthorizationTokenExtractor;
 import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
+import dev.minguinho.zeze.domain.auth.model.Authority;
 import dev.minguinho.zeze.domain.documentation.Documentation;
 import dev.minguinho.zeze.domain.user.api.LoginUserController;
 import dev.minguinho.zeze.domain.user.api.dto.UserResourceRequestDto;
@@ -65,6 +68,7 @@ public class UserDocumentation extends Documentation {
             .build();
         given(userService.retrieveUserResourceBy(anyLong())).willReturn(userResourceResponseDto);
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(jwtTokenProvider.getAuthorities(anyString())).willReturn(Collections.singleton(Authority.Role.ROLE_USER));
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
 
@@ -98,6 +102,7 @@ public class UserDocumentation extends Documentation {
         given(userService.updateUserResource(anyLong(), any(UserResourceRequestDto.class))).willReturn(
             userResourceResponseDto);
         given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(jwtTokenProvider.getAuthorities(anyString())).willReturn(Collections.singleton(Authority.Role.ROLE_USER));
         given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
         String content = objectMapper.writeValueAsString(userResourceResponseDto);
