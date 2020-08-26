@@ -107,7 +107,7 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, present
       <CardBlock>
         <header>
           {onClone && <img onClick={handleClickClone} src="/assets/icons/save.svg" alt="clone"/>}
-          {onDelete && <img onClick={handleClickDelete} src="/assets/icons/clear.svg" alt="delete"/>}
+          {onDelete ? <img onClick={handleClickDelete} src="/assets/icons/clear.svg" alt="delete"/> : <></>}
         </header>
         <main>
           <div className="title">{title || "Title"}</div>

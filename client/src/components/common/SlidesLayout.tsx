@@ -72,12 +72,15 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
 
   return (
     <SlidesBlock>
-      <Cards onClone={onCloneSlide} onDelete={confirmDelete} title={title} slides={slides}/>
+      <Cards onClone={onCloneSlide} onDelete={deleteSlide ? confirmDelete : undefined} title={title} slides={slides}/>
       <Pagination page={page}
                   totalPage={totalPage}
                   onClickPage={onClickPage}
                   onClickMove={onClickMove}/>
-      <ConfirmModal visibility={selectedId !== 0} onBackdropClick={() => setSelectedId(0)} onSubmit={onDeleteSlide} onCancel={() => setSelectedId(0)}>
+      <ConfirmModal visibility={selectedId !== 0}
+                    onBackdropClick={() => setSelectedId(0)}
+                    onSubmit={onDeleteSlide}
+                    onCancel={() => setSelectedId(0)}>
         Are you sure to delete?
       </ConfirmModal>
     </SlidesBlock>
