@@ -84,7 +84,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
       ]);
       toastFactory.createToast(`clone ${slide.title}!`, ToastType.SUCCESS);
     });
-  }, [cloneSlide, slides, toastFactory]);
+  }, [cloneSlide, slides, toastFactory, accessLevel]);
 
   useEffect(() => {
     googleAnalyticsPageView("Archive");
