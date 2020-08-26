@@ -35,7 +35,7 @@ const Callback: React.FC<props> = ({location, history}: props) => {
       .then(() => history.push("/me"))
       .catch(() => {
         googleAnalyticsException("로그인 실패");
-        toastFactory.createToast("login failure", ToastType.ERROR);
+        toastFactory.createToast("Fail to login", ToastType.ERROR);
         history.push("/");
       });
   }, [location, history, githubBaseUrl]);
