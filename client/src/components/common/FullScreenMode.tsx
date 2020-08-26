@@ -22,6 +22,7 @@ interface FullScreenProps {
   slideTheme: Theme;
   showCursor?: boolean;
   mobileVisible?: boolean;
+  isFirstPage?: boolean;
 }
 
 export const FullScreenBlock = styled.div<FullScreenProps>`
@@ -57,32 +58,6 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
     
     @media (max-width: ${MOBILE_MAX_WIDTH}px) {
       font-size: 1rem;
-    }
-    
-    div.first-page {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      height: 80%;
-      padding: 30px;
-      
-      h1, h2, h3, h4 {
-        border: none;
-        padding: 0;
-      }
-      
-      h1 {
-        font-size: 4em;
-      }
-      
-      h2.subtitle {
-        font-size: 2.5em;
-        color: #777; 
-      }
-      
-      h3.author {
-        margin-top: 1em !important; 
-      }
     }
     
     p.images {
@@ -138,6 +113,32 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
     }
     
     ${({slideTheme}) => applyTheme(slideTheme)}
+    
+    ${({isFirstPage}) => isFirstPage && css`
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 80%;
+      padding: 7%;
+      
+      h1, h2, h3, h4 {
+        border: none;
+        padding: 0;
+      }
+      
+      h1 {
+        font-size: 4em;
+      }
+      
+      h2 {
+        font-size: 2.5em;
+        color: #777; 
+      }
+      
+      h3 {
+        margin-top: 1em !important; 
+      }
+    `}
   }
 `;
 
@@ -227,6 +228,7 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         onKeyDown={handleKeyDown}
         onMouseMove={() => setShowCursor(true)}
         mobileVisible={mobileVisible}
+        isFirstPage={index === 0}
       ><Markdown value={contents[index]}/></FullScreenBlock>
       <FullScreenButton onClick={toggleFullScreen}/>
       <MobileSlidesButtons

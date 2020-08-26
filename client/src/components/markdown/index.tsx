@@ -31,7 +31,6 @@ const Markdown: React.FC<IProps> = ({value = ""}) => {
         <MemoReactMarkdown
           key={key}
           source={source}
-          escapeHtml={false}
           renderers={renderers}/>
       ))}
     </div>
