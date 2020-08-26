@@ -89,6 +89,21 @@ interface IProps {
   onDelete?: (id: number) => void,
 }
 
+const titleLimitLength = 12;
+const subTitleLimitLength = 20;
+const authorNameLimitLength = 15;
+const presentedAtLimitLength = 15;
+
+const createStringSummary = (originData: string | undefined, limitLength: number, defaultData: string) => {
+  if (!originData) {
+    return defaultData
+  }
+  if (originData.length > limitLength) {
+    return `${originData.substring(0, limitLength)}...`
+  }
+  return originData
+}
+
 const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, presentedAt, onClone, onDelete}) => {
   const parsedTime = moment(createdAt).format('YYYY-MM-DD HH:mm:ss');
 
@@ -110,10 +125,10 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, present
           {onDelete && <img onClick={handleClickDelete} title="delete" src="/assets/icons/clear.svg" alt="delete"/>}
         </header>
         <main>
-          <div className="title">{title || "Title"}</div>
-          <div className="subtitle">{subtitle || "Subtitle"}</div>
-          <div className="author">{author || "Author"}</div>
-          <div className="presented_at">{presentedAt || "Presentation Date"}</div>
+          <div className="title">{createStringSummary(title, titleLimitLength, "Title")}</div>
+          <div className="subtitle">{createStringSummary(subtitle, subTitleLimitLength, "Subtitle")}</div>
+          <div className="author">{createStringSummary(author, authorNameLimitLength, "Author")}</div>
+          <div className="presented_at">{createStringSummary(presentedAt, presentedAtLimitLength, "Presentation Date")}</div>
           <div className="created_at">{parsedTime}</div>
         </main>
       </CardBlock>
