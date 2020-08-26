@@ -19,7 +19,7 @@ const PublicSlides: React.FC = () => {
   return (
     <SidebarLayout>
       <Toast type="warn">Still in development. Please report bugs to our <a href="https://github.com/woowacourse-teams/2020-zeze/issues/new?assignees=&labels=🐞%20bug%20report&template=bug_report.md" target="_blank" rel="noopener noreferrer">Github Issues</a> !</Toast>
-      <SlidesLayout getAllSlides={slideApi.getPublic} slidesCnt={9} title="Public Slides"/>
+      <SlidesLayout cloneSlide={slideApi.clone} getAllSlides={slideApi.getPublic} slidesCnt={9} title="Public Slides"/>
     </SidebarLayout>
   );
 };

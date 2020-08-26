@@ -44,7 +44,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
 
   const onClickMove = useCallback((pageNum: number) => {
     setPage(pageNum);
-  },[]);
+  }, []);
 
   const confirmDelete = useCallback((id: number) => {
     setSelectedId(id);
@@ -58,10 +58,15 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
   }, [deleteSlide, slides, selectedId]);
 
   const onCloneSlide = useCallback((id: number) => {
-    cloneSlide?.(id).then(res => {
+    cloneSlide?.(id).then(({headers: {location}}) => {
+      const slideId = parseInt(location.substring(location.lastIndexOf("/") + 1));
       setSlides([
-        // ...slides,
-        // res.data
+        {
+          ...slides.find(slide => slide.id === id)!,
+          id: slideId,
+          createdAt: new Date().toString()
+        },
+        ...slides,
       ]);
     });
   }, [cloneSlide, slides]);
