@@ -104,7 +104,7 @@ const Editor: React.FC = () => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      save();
+      id && update("change access level");
     }
   }, [accessLevel]);
 
@@ -187,7 +187,7 @@ const Editor: React.FC = () => {
     }
   }, [history, parsed, accessLevel]);
 
-  const update = useCallback(async () => {
+  const update = useCallback(async (action: string) => {
     const data = {
       id,
       data: {
@@ -203,16 +203,16 @@ const Editor: React.FC = () => {
     try {
       await slideApi.update(data);
       googleAnalyticsEvent("슬라이드", `#${id} 수정 완료`);
-      toastFactory.createToast("save success", ToastType.SUCCESS);
+      toastFactory.createToast(`${action} success`, ToastType.SUCCESS);
       setUpdatedAt(moment().fromNow());
     } catch {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
-      toastFactory.createToast("save failure", ToastType.ERROR);
+      toastFactory.createToast(`${action} failure`, ToastType.ERROR);
     }
   }, [id, parsed.metadata, toastFactory, accessLevel]);
 
   const save = useCallback(() => {
-    id ? update() : create();
+    id ? update("save") : create();
   }, [id, update, create]);
 
   const changeAccessLevel = useCallback(() => {
