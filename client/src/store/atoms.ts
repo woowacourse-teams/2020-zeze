@@ -10,14 +10,14 @@ export const userInfoTrigger = atom<number>({
 
 export const userInfoQuery = selector<User | null>({
   key: "userInfoQuery",
-  get: async ({get}) => {
+  get: ({get}) => {
     get(userInfoTrigger);
-    try{
-      const response = await usersApi.get();
-      return response.data;
-    } catch (e) {
-      window.location.href = GITHUB_AUTH_URL;
+    if(!localStorage.getItem("accessToken")) {
+      return null;
     }
+    return usersApi.get()
+      .then(r => r.data)
+      .catch(() => window.location.href = GITHUB_AUTH_URL);
   },
   set: ({set}) => {
     set(userInfoTrigger, v => v + 1);
