@@ -128,7 +128,7 @@ class SlideServiceTest {
         String author = "작성자";
         String presentedAt = "2020-07-21";
         String content = "내용";
-        given(slideRepository.findById(1L)).willReturn(
+        given(slideRepository.findByIdAndDeletedAtIsNull(1L)).willReturn(
             Optional.of(new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC)));
 
         SlideResponseDto slideResponseDto = slideService.retrieve(1L, null);
@@ -148,7 +148,7 @@ class SlideServiceTest {
         String presentedAt = "2020-07-21";
         String content = "내용";
         Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
-        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
+        given(slideRepository.findByIdAndDeletedAtIsNull(1L)).willReturn(Optional.of(slide));
         String newTitle = "새 제목";
 
         SlideRequestDto slideRequestDto = new SlideRequestDto(newTitle, subtitle, author, presentedAt, content,
@@ -166,7 +166,7 @@ class SlideServiceTest {
     @Test
     @DisplayName("슬라이드가 존재하지 않을 경우")
     void updateWithInvalidSlide() {
-        given(slideRepository.findById(1L)).willThrow(new SlideNotFoundException(1L));
+        given(slideRepository.findByIdAndDeletedAtIsNull(1L)).willThrow(new SlideNotFoundException(1L));
 
         assertThatThrownBy(() -> slideService.update(1L, null, 1L))
             .isInstanceOf(SlideNotFoundException.class)
@@ -182,7 +182,7 @@ class SlideServiceTest {
         String presentedAt = "2020-07-21";
         String content = "내용";
         Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
-        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
+        given(slideRepository.findByIdAndDeletedAtIsNull(1L)).willReturn(Optional.of(slide));
 
         assertThatThrownBy(() -> slideService.update(1L, null, 2L))
             .isInstanceOf(SlideNotAuthorizedException.class)
@@ -198,7 +198,7 @@ class SlideServiceTest {
         String presentedAt = "2020-07-21";
         String content = "내용";
         Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
-        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
+        given(slideRepository.findByIdAndDeletedAtIsNull(1L)).willReturn(Optional.of(slide));
 
         slideService.softDelete(1L, 1L);
 
@@ -215,7 +215,7 @@ class SlideServiceTest {
         String presentedAt = "2020-07-21";
         String content = "내용";
         Slide slide = new Slide(title, subtitle, author, presentedAt, content, AccessLevel.PUBLIC, 1L);
-        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
+        given(slideRepository.findByIdAndDeletedAtIsNull(1L)).willReturn(Optional.of(slide));
 
         assertThatThrownBy(() -> slideService.softDelete(1L, 2L))
             .isInstanceOf(SlideNotAuthorizedException.class)

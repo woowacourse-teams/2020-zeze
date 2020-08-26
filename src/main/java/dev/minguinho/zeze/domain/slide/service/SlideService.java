@@ -67,9 +67,8 @@ public class SlideService {
     }
 
     private Slide getSlide(Long slideId, Long userId) {
-        Slide slide = slideRepository.findById(slideId)
+        Slide slide = slideRepository.findByIdAndDeletedAtIsNull(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
-        validateDeletedSlide(slide);
         if (Objects.isNull(userId) || !slide.isOwner(userId)) {
             validatePublic(slide);
         }
@@ -83,18 +82,11 @@ public class SlideService {
     }
 
     private Slide findSlideIfAuthorized(Long slideId, Long userId) {
-        Slide slide = slideRepository.findById(slideId)
+        Slide slide = slideRepository.findByIdAndDeletedAtIsNull(slideId)
             .orElseThrow(() -> new SlideNotFoundException(slideId));
-        validateDeletedSlide(slide);
         if (!slide.isOwner(userId)) {
             throw new SlideNotAuthorizedException();
         }
         return slide;
-    }
-
-    private void validateDeletedSlide(Slide slide) {
-        if (slide.isDeleted()) {
-            throw new SlideNotFoundException(slide.getId());
-        }
     }
 }
