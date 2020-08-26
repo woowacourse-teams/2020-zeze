@@ -36,7 +36,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         if (roles.contains(secured.authority())) {
             return true;
         }
-        throw new NotAuthorizedException("권한이 없습니다.");
+        throw new NotAuthorizedException("not permitted");
     }
 
     private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
