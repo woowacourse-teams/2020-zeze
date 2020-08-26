@@ -89,6 +89,21 @@ interface IProps {
   onDelete?: (id: number) => void,
 }
 
+const titleLimitLength = 12;
+const subTitleLimitLength = 20;
+const authorNameLimitLength = 15;
+const presentedAtLimitLength = 15;
+
+const createStringSummary = (originData: string | undefined, limitLength: number, defaultData: string) => {
+  if (!originData) {
+    return defaultData
+  }
+  if (originData.length > titleLimitLength) {
+    return `${originData.substring(0, titleLimitLength)}...`
+  }
+  return originData
+}
+
 const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, presentedAt, onClone, onDelete}) => {
   const parsedTime = moment(createdAt).format('YYYY-MM-DD HH:mm:ss');
 
@@ -101,21 +116,6 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, present
     e.preventDefault();
     onDelete?.(id);
   }, [onDelete, id]);
-
-  const titleLimitLength = 12;
-  const subTitleLimitLength = 20;
-  const authorNameLimitLength = 15;
-  const presentedAtLimitLength = 15;
-
-  const createStringSummary = (originData: string | undefined, limitLength: number, defaultData: string) => {
-    if (!originData) {
-      return defaultData
-    }
-    if (originData.length > titleLimitLength) {
-      return `${originData.substring(0, titleLimitLength)}...`
-    }
-    return originData
-  }
 
   return (
     <Link to={`/editor/${id}`}>
