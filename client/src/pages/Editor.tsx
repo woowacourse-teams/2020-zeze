@@ -204,7 +204,7 @@ const Editor: React.FC = () => {
     return prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC;
   };
 
-  const changeAccessLevel = useCallback(   async () => {
+  const changeAccessLevel = useCallback(async () => {
     id ? await update("change access level", toggleAccessLevel) : setAccessLevel(toggleAccessLevel(accessLevel));
   }, [id, update]);
 
