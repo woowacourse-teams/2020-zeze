@@ -82,4 +82,13 @@ public class SlideController {
         Boolean ownedBy = slideService.checkSlideOwnedBy(slideId, userId);
         return ResponseEntity.ok(ownedBy);
     }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<Void> cloneSlide(
+        @PathVariable("id") Long slideId,
+        @LoginUserId Long userId
+    ) {
+        Long newSlideId = slideService.clone(slideId, userId);
+        return ResponseEntity.created(URI.create("/api/slides/" + newSlideId)).build();
+    }
 }
