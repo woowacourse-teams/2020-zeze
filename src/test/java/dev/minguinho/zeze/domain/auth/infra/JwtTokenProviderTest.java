@@ -33,11 +33,4 @@ class JwtTokenProviderTest {
         assertThat(userId).isEqualTo(1L);
         assertThat(authorities).contains(Authority.Role.ROLE_ADMIN);
     }
-
-    @Test
-    void jwtTokenValidation_ValidInput_ValidOutput() {
-        Set<Authority> authorities = Collections.singleton(Authority.ADMIN);
-        String token = jwtTokenProvider.createToken(1L, authorities);
-        assertThat(jwtTokenProvider.validateToken(token)).isTrue();
-    }
 }

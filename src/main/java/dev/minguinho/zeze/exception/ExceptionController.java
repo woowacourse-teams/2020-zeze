@@ -1,5 +1,7 @@
 package dev.minguinho.zeze.exception;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -7,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import lombok.extern.slf4j.Slf4j;
 
+import dev.minguinho.zeze.domain.auth.exception.InvalidTokenException;
+import dev.minguinho.zeze.domain.auth.exception.NotAuthorizedException;
 import dev.minguinho.zeze.domain.file.exception.FileNotConvertedException;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotAuthorizedException;
 import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
@@ -24,6 +28,26 @@ public class ExceptionController {
             .message("서버 에러")
             .build();
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiError> handleUnAuthenticatedException(InvalidTokenException invalidTokenException) {
+        HttpStatus unauthorized = HttpStatus.UNAUTHORIZED;
+        ApiError apiError = ApiError.builder()
+            .httpStatus(unauthorized)
+            .message(invalidTokenException.getMessage())
+            .build();
+        return ResponseEntity.status(unauthorized).body(apiError);
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<ApiError> handleNotAuthorizedException(NotAuthorizedException notAuthorizedException) {
+        HttpStatus forbidden = HttpStatus.FORBIDDEN;
+        ApiError apiError = ApiError.builder()
+            .httpStatus(forbidden)
+            .message(notAuthorizedException.getMessage())
+            .build();
+        return ResponseEntity.status(forbidden).body(apiError);
     }
 
     @ExceptionHandler(FileNotConvertedException.class)
@@ -56,6 +80,6 @@ public class ExceptionController {
             .httpStatus(httpStatus)
             .message(runtimeException.getMessage())
             .build();
-        return new ResponseEntity<>(apiError, httpStatus);
+        return ResponseEntity.status(httpStatus).body(apiError);
     }
 }

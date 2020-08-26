@@ -10,10 +10,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 
 import dev.minguinho.zeze.domain.auth.exception.InvalidTokenException;
 import dev.minguinho.zeze.domain.auth.model.Authority;
@@ -54,38 +58,24 @@ public class JwtTokenProvider {
     }
 
     public Long getUserId(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            if (claims.getBody().getExpiration().before(new Date())) {
-                throw new InvalidTokenException();
-            }
-            return claims.getBody().get(USER_ID_KEY, Long.class);
-        } catch (JwtException | IllegalArgumentException e) {
-            throw e;
-        }
+        return getClaims(token).get(USER_ID_KEY, Long.class);
     }
 
     public Set<Authority.Role> getAuthorities(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            if (claims.getBody().getExpiration().before(new Date())) {
-                throw new InvalidTokenException();
-            }
-            String roles = claims.getBody().get(ROLES_KEY, String.class);
-            return Arrays.stream(roles.split(ROLE_DELIMITER))
-                .map(Authority.Role::valueOf)
-                .collect(Collectors.toSet());
-        } catch (JwtException | IllegalArgumentException e) {
-            throw e;
-        }
+        String roles = getClaims(token).get(ROLES_KEY, String.class);
+        return Arrays.stream(roles.split(ROLE_DELIMITER))
+            .map(Authority.Role::valueOf)
+            .collect(Collectors.toSet());
     }
 
-    public boolean validateToken(String token) {
+    public Claims getClaims(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return claims.getBody().getExpiration().after(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            return claims.getBody();
+        } catch (MalformedJwtException | SignatureException | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new InvalidTokenException("invalid token. please login again.");
+        } catch (ExpiredJwtException e) {
+            throw new InvalidTokenException("expired token. please login again.");
         }
     }
 }
