@@ -180,6 +180,7 @@ const Editor: React.FC = () => {
       toastFactory.createToast("create success", ToastType.SUCCESS);
       history.replace(`/editor/${slideId}`);
       setUpdatedAt(moment().fromNow());
+      setIsOwner(true);
     } catch (error) {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
       toastFactory.createToast("create failure", ToastType.ERROR);
