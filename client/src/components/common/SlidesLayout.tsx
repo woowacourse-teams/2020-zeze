@@ -4,11 +4,11 @@ import styled from "@emotion/styled";
 
 import Pagination from "./Pagination";
 import Cards from "./Cards";
-import {PageProps, MetaDataResponses, MetaDataResponse, SlideResponse} from "../../api/slide";
+import {MetaDataResponse, MetaDataResponses, PageProps, SlideResponse} from "../../api/slide";
 import {googleAnalyticsPageView} from "../../utils/googleAnalytics";
 import ConfirmModal from './ConfirmModal';
 import ToastFactory from '../../domains/ToastFactory';
-import {ToastType, AccessLevel} from '../../domains/constants';
+import {AccessLevel, ToastType} from '../../domains/constants';
 
 const SlidesBlock = styled.div`
   display: flex;
@@ -61,7 +61,9 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
     deleteSlide?.(selectedId).then(() => {
       setSlides(slides.filter(slide => slide !== selectedSlide));
       setSelectedId(0);
-      toastFactory.createToast(`delete ${selectedSlide.title}!`, ToastType.SUCCESS);
+      toastFactory.createToast(`Successfully delete ${selectedSlide.title}!`, ToastType.SUCCESS);
+    }).catch(() => {
+      toastFactory.createToast(`Fail to clone ${selectedSlide.title}`, ToastType.ERROR);
     });
   }, [deleteSlide, slides, selectedId, toastFactory]);
 
@@ -81,8 +83,10 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
         },
         ...slides,
       ]);
-      toastFactory.createToast(`clone ${slide.title}!`, ToastType.SUCCESS);
-    });
+      toastFactory.createToast(`Succeefully clone ${slide.title}!`, ToastType.SUCCESS);
+    }).catch(() => {
+      toastFactory.createToast(`Fail to clone ${slide.title}`, ToastType.ERROR);
+    })
   }, [cloneSlide, slides, toastFactory, accessLevel]);
 
   useEffect(() => {
