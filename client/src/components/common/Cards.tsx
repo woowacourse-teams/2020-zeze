@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 import Card from "./Card";
 import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 import {MetaDataResponse} from "../../api/slide";
+import {Link} from "react-router-dom";
+import Logo from "../../assets/logo192.png";
 
 export const CardsLayout = styled.div`
   padding-bottom: 2rem;
@@ -18,6 +20,28 @@ export const CardsLayout = styled.div`
     border-bottom: 1px solid #777;
     width: 7rem;
     margin: 1rem 0 2rem;
+  }
+  
+  a {
+    display: flex;
+    flex-direction: column;
+    text-decoration-line: none;
+    
+    &:hover {
+      opacity: 75%;
+    }
+  }
+  
+  span {
+    display: flex;
+    color: #fff;
+    margin: 10px auto auto;
+  }
+  
+  img {
+    display: flex;
+    width: 40px;
+    margin: auto;
   }
 `;
 
@@ -57,11 +81,14 @@ const Cards: React.FC<IProps> = ({title, slides, onClone, onDelete}) => (
   <CardsLayout>
     <h2>{title}</h2>
     <hr/>
-    <CardsBlock>
-      {slides.map(slide => (
-        <Card key={slide.id} id={slide.id} title={slide.title} subtitle={slide.subtitle} author={slide.author}
-              presentedAt={slide.presentedAt} createdAt={slide.createdAt} onClone={onClone} onDelete={onDelete}/>))}
-    </CardsBlock>
+    {slides.length === 0 ?
+      <Link to="/editor"><img src={Logo} alt={"NEW SLIDES"}/><span>CREATE NEW SLIDES!</span></Link> :
+      <CardsBlock>
+        {slides.map(slide => (
+          <Card key={slide.id} id={slide.id} title={slide.title} subtitle={slide.subtitle} author={slide.author}
+                presentedAt={slide.presentedAt} createdAt={slide.createdAt} onClone={onClone} onDelete={onDelete}/>))}
+      </CardsBlock>
+    }
   </CardsLayout>
 );
 
