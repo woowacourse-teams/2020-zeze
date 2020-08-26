@@ -16,7 +16,7 @@ export const userInfoQuery = selector<User | null>({
       return null;
     }
     return usersApi.get()
-      .then(r => r.data)
+      .then(response => response.data)
       .catch(() => window.location.href = GITHUB_AUTH_URL);
   },
   set: ({set}) => {
