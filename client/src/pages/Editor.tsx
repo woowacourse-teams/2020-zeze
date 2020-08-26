@@ -119,14 +119,13 @@ const Editor: React.FC = () => {
       .catch(() => {
         googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
         toastFactory.createToast("Fail to fetch data", ToastType.ERROR);
-      })
-    && slideApi.ownSlide(id)
+      }) && slideApi.ownSlide(id)
       .then(({data}) => {
         setIsOwner(data);
       })
       .catch(() => {
         toastFactory.createToast("Fail to fetch data", ToastType.ERROR);
-      })
+      });
   }, []);
 
   const uploadFile = useCallback((file: File) => new Promise<string>(resolve => {
