@@ -98,8 +98,8 @@ const createStringSummary = (originData: string | undefined, limitLength: number
   if (!originData) {
     return defaultData
   }
-  if (originData.length > titleLimitLength) {
-    return `${originData.substring(0, titleLimitLength)}...`
+  if (originData.length > limitLength) {
+    return `${originData.substring(0, limitLength)}...`
   }
   return originData
 }
