@@ -7,6 +7,8 @@ import Cards from "./Cards";
 import {PageProps, MetaDataResponses, MetaDataResponse, SlideResponse} from "../../api/slide";
 import {googleAnalyticsPageView} from "../../utils/googleAnalytics";
 import ConfirmModal from './ConfirmModal';
+import ToastFactory from '../../domains/ToastFactory';
+import {ToastType} from '../../domains/constants';
 
 const SlidesBlock = styled.div`
   display: flex;
@@ -28,6 +30,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
   const [selectedId, setSelectedId] = useState<number>(0);
+  const toastFactory = ToastFactory();
 
   useEffect(() => {
     getAllSlides({page, size: slidesCnt})
@@ -51,11 +54,16 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
   }, []);
 
   const onDeleteSlide = useCallback(() => {
+    const selectedSlide = slides.find(slide => slide.id === selectedId);
+    if (!selectedSlide) {
+      return;
+    }
     deleteSlide?.(selectedId).then(() => {
-      setSlides(slides.filter(slide => slide.id !== selectedId));
+      setSlides(slides.filter(slide => slide !== selectedSlide));
       setSelectedId(0);
+      toastFactory.createToast(`delete ${selectedSlide.title}!`, ToastType.SUCCESS);
     });
-  }, [deleteSlide, slides, selectedId]);
+  }, [deleteSlide, slides, selectedId, toastFactory]);
 
   const onCloneSlide = useCallback((id: number) => {
     const slide = slides.find(slide => slide.id === id);
@@ -73,8 +81,9 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
         },
         ...slides,
       ]);
+      toastFactory.createToast(`clone ${slide.title}!`, ToastType.SUCCESS);
     });
-  }, [cloneSlide, slides]);
+  }, [cloneSlide, slides, toastFactory]);
 
   useEffect(() => {
     googleAnalyticsPageView("Archive");
