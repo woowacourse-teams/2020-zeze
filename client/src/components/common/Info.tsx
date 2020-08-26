@@ -50,6 +50,7 @@ const Profile = styled.div`
   > label {
     cursor: pointer;
     color: #777;
+    font-size: 12px;
     
     &:hover {
       color: #fff;
