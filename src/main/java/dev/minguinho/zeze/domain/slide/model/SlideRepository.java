@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SlideRepository extends JpaRepository<Slide, Long> {
-    Page<Slide> findAllByAccessLevelAndDeletedAtIsNull(AccessLevel accessLevel, Pageable pageable);
+    Page<Slide> findAllByAccessLevelAndDeletedAtIsNullOrderByUpdatedAtDesc(AccessLevel accessLevel, Pageable pageable);
 
     Page<Slide> findAllByUserIdAndDeletedAtIsNullOrderByUpdatedAtDesc(Long userId, Pageable pageable);
 
