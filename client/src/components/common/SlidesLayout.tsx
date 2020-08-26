@@ -8,7 +8,7 @@ import {PageProps, MetaDataResponses, MetaDataResponse, SlideResponse} from "../
 import {googleAnalyticsPageView} from "../../utils/googleAnalytics";
 import ConfirmModal from './ConfirmModal';
 import ToastFactory from '../../domains/ToastFactory';
-import {ToastType} from '../../domains/constants';
+import {ToastType, AccessLevel} from '../../domains/constants';
 
 const SlidesBlock = styled.div`
   display: flex;
@@ -23,9 +23,10 @@ interface IProps {
   deleteSlide?: (id: number) => Promise<AxiosResponse<SlideResponse>>
   slidesCnt: number
   title: string
+  accessLevel?: AccessLevel
 }
 
-const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, slidesCnt, title}) => {
+const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, slidesCnt, title, accessLevel = AccessLevel.PUBLIC}) => {
   const [slides, setSlides] = useState<Array<MetaDataResponse>>([]);
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
@@ -72,7 +73,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
     }
     cloneSlide?.(id).then(({headers: {location}}) => {
       const slideId = parseInt(location.substring(location.lastIndexOf("/") + 1));
-      setSlides([
+       accessLevel === AccessLevel.PRIVATE && setSlides([
         {
           ...slide,
           id: slideId,
