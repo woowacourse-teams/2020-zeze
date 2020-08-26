@@ -103,15 +103,18 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, present
   }, [onDelete, id]);
 
   const titleLimitLength = 12;
+  const subTitleLimitLength = 20;
+  const authorNameLimitLength = 15;
+  const presentedAtLimitLength = 15;
 
-  const titleSummary = () => {
-    if (!title) {
-      return "Title"
+  const createStringSummary = (originData: string | undefined, limitLength: number, defaultData: string) => {
+    if (!originData) {
+      return defaultData
     }
-    if (title.length > titleLimitLength) {
-      return `${title.substring(0, titleLimitLength)}...`
+    if (originData.length > titleLimitLength) {
+      return `${originData.substring(0, titleLimitLength)}...`
     }
-    return title
+    return originData
   }
 
   return (
@@ -122,10 +125,10 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, present
           {onDelete && <img onClick={handleClickDelete} title="delete" src="/assets/icons/clear.svg" alt="delete"/>}
         </header>
         <main>
-          <div className="title">{titleSummary()}</div>
-          <div className="subtitle">{subtitle || "Subtitle"}</div>
-          <div className="author">{author || "Author"}</div>
-          <div className="presented_at">{presentedAt || "Presentation Date"}</div>
+          <div className="title">{createStringSummary(title, titleLimitLength, "Title")}</div>
+          <div className="subtitle">{createStringSummary(subtitle, subTitleLimitLength, "Subtitle")}</div>
+          <div className="author">{createStringSummary(author, authorNameLimitLength, "Author")}</div>
+          <div className="presented_at">{createStringSummary(presentedAt, presentedAtLimitLength, "Presentation Date")}</div>
           <div className="created_at">{parsedTime}</div>
         </main>
       </CardBlock>
