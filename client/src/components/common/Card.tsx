@@ -102,6 +102,18 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, present
     onDelete?.(id);
   }, [onDelete, id]);
 
+  const titleLimitLength = 12;
+
+  const titleSummary = () => {
+    if (!title) {
+      return "Title"
+    }
+    if (title.length > titleLimitLength) {
+      return `${title.substring(0, titleLimitLength)}...`
+    }
+    return title
+  }
+
   return (
     <Link to={`/editor/${id}`}>
       <CardBlock>
@@ -110,7 +122,7 @@ const Card: React.FC<IProps> = ({id, title, subtitle, author, createdAt, present
           {onDelete && <img onClick={handleClickDelete} title="delete" src="/assets/icons/clear.svg" alt="delete"/>}
         </header>
         <main>
-          <div className="title">{title || "Title"}</div>
+          <div className="title">{titleSummary()}</div>
           <div className="subtitle">{subtitle || "Subtitle"}</div>
           <div className="author">{author || "Author"}</div>
           <div className="presented_at">{presentedAt || "Presentation Date"}</div>
