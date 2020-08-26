@@ -7,6 +7,8 @@ import Cards from "./Cards";
 import {PageProps, MetaDataResponses, MetaDataResponse, SlideResponse} from "../../api/slide";
 import {googleAnalyticsPageView} from "../../utils/googleAnalytics";
 import ConfirmModal from './ConfirmModal';
+import {ToastType} from "../../domains/constants";
+import ToastFactory from "../../domains/ToastFactory";
 
 const SlidesBlock = styled.div`
   display: flex;
@@ -28,6 +30,7 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
   const [page, setPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(1);
   const [selectedId, setSelectedId] = useState<number>(0);
+  const toastFactory = ToastFactory();
 
   useEffect(() => {
     getAllSlides({page, size: slidesCnt})
@@ -54,7 +57,9 @@ const SlidesLayout: React.FC<IProps> = ({getAllSlides, cloneSlide, deleteSlide, 
     deleteSlide?.(selectedId).then(() => {
       setSlides(slides.filter(slide => slide.id !== selectedId));
       setSelectedId(0);
-    });
+    })
+      .then(() => toastFactory.createToast("delete success", ToastType.SUCCESS))
+      .catch(() => toastFactory.createToast("delete failure", ToastType.ERROR));
   }, [deleteSlide, slides, selectedId]);
 
   const onCloneSlide = useCallback((id: number) => {
