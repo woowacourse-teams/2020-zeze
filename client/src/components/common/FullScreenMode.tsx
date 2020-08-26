@@ -90,21 +90,34 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      min-height: 100%;
+      flex: 1;
       width: 100%;
       
-      img:only-child {
-        object-fit: contain;
+      .image {
+        display: block;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
         height: 100%;
+        flex: 1;
       }
       
-      img:not(:only-child) {
-        display: block;
-        object-fit: contain;
-        box-sizing: border-box;
-        flex: 1 0 25%;
-        padding: 10px; 
-      }
+      //img {
+      //  background-color: transparent;
+      //}
+      //
+      //img:only-child {
+      //  object-fit: contain;
+      //  height: 100%;
+      //}
+      //
+      //img:not(:only-child) {
+      //  display: block;
+      //  object-fit: contain;
+      //  box-sizing: border-box;
+      //  flex: 1 0 25%;
+      //  padding: 10px; 
+      //}
     }
     
     iframe.youtube {
