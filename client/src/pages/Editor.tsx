@@ -118,14 +118,14 @@ const Editor: React.FC = () => {
       })
       .catch(() => {
         googleAnalyticsException(`슬라이드 ${id} 불러오기 실패`);
-        toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
+        toastFactory.createToast("Fail to fetch data", ToastType.ERROR);
       })
     && slideApi.ownSlide(id)
       .then(({data}) => {
         setIsOwner(data);
       })
       .catch(() => {
-        toastFactory.createToast("couldn't fetch data", ToastType.ERROR);
+        toastFactory.createToast("Fail to fetch data", ToastType.ERROR);
       })
   }, []);
 
@@ -135,7 +135,7 @@ const Editor: React.FC = () => {
       .then(url => resolve(url))
       .catch(() => {
         googleAnalyticsException("파일 업로드 실패");
-        toastFactory.createToast("uploads failure", ToastType.ERROR);
+        toastFactory.createToast("Fail to upload", ToastType.ERROR);
       });
   }), []);
 
@@ -161,13 +161,13 @@ const Editor: React.FC = () => {
       const slideId = location.substring(location.lastIndexOf("/") + 1);
 
       googleAnalyticsEvent("슬라이드", `#${slideId} 저장 완료`);
-      toastFactory.createToast("create success", ToastType.SUCCESS);
+      toastFactory.createToast("Successfully create", ToastType.SUCCESS);
       history.replace(`/editor/${slideId}`);
       setUpdatedAt(moment().fromNow());
       setIsOwner(true);
     } catch (error) {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
-      toastFactory.createToast("create failure", ToastType.ERROR);
+      toastFactory.createToast("Fail to create", ToastType.ERROR);
     }
   }, [history, parsed, accessLevel]);
 
@@ -185,15 +185,14 @@ const Editor: React.FC = () => {
     };
 
     try {
-      console.log("여기 타 안타")
       await slideApi.update(data);
       googleAnalyticsEvent("슬라이드", `#${id} 수정 완료`);
-      toastFactory.createToast(`${action} success`, ToastType.SUCCESS);
+      toastFactory.createToast(`Successfully ${action}`, ToastType.SUCCESS);
       setUpdatedAt(moment().fromNow());
       accessLevelChanger && setAccessLevel(accessLevelChanger(accessLevel));
     } catch {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
-      toastFactory.createToast(`${action} failure`, ToastType.ERROR);
+      toastFactory.createToast(`Fail to ${action}`, ToastType.ERROR);
     }
   }, [id, parsed.metadata, toastFactory, accessLevel]);
 

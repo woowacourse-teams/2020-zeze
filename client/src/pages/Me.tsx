@@ -56,10 +56,10 @@ const Me: React.FC = () => {
     usersApi.update(userInfo)
       .then(() => {
         googleAnalyticsEvent("유저", "정보 업데이트 성공");
-        toastFactory.createToast("update success", ToastType.SUCCESS);
+        toastFactory.createToast("Successfully update", ToastType.SUCCESS);
       })
       .then(() => setUser())
-      .catch(() => toastFactory.createToast("update failure", ToastType.ERROR));
+      .catch(() => toastFactory.createToast("Fail to update", ToastType.ERROR));
   }, [toastFactory]);
 
   return (
