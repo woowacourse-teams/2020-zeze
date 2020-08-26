@@ -81,7 +81,6 @@ const Editor: React.FC = () => {
   const [updatedAt, setUpdatedAt] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [accessLevel, setAccessLevel] = useState<AccessLevel>(AccessLevel.PRIVATE);
-  const isInitialMount = useRef(true);
 
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
@@ -101,22 +100,10 @@ const Editor: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      save();
-    }
-  }, [accessLevel]);
-
-  useEffect(() => {
     if (id) {
       return;
     }
     setUpdatedAt("");
-    if (accessLevel === AccessLevel.PUBLIC) {
-      isInitialMount.current = true;
-      setAccessLevel(AccessLevel.PRIVATE);
-    }
     codemirrorRef.current?.setValue(createTemplate({
       author: user!.name,
     }));
@@ -125,11 +112,8 @@ const Editor: React.FC = () => {
   useEffect(() => {
     id && slideApi.get(id)
       .then(({data}) => {
-        if (data.accessLevel === AccessLevel.PUBLIC && !isInitialMount.current) {
-          isInitialMount.current = true;
-          setAccessLevel(AccessLevel.PUBLIC);
-        }
         setUpdatedAt(moment(data.updatedAt).fromNow());
+        setAccessLevel(data.accessLevel);
         codemirrorRef.current?.setValue(data.content);
       })
       .catch(() => {
@@ -180,13 +164,14 @@ const Editor: React.FC = () => {
       toastFactory.createToast("create success", ToastType.SUCCESS);
       history.replace(`/editor/${slideId}`);
       setUpdatedAt(moment().fromNow());
+      setIsOwner(true);
     } catch (error) {
       googleAnalyticsException("슬라이드 (신규) 저장 실패");
       toastFactory.createToast("create failure", ToastType.ERROR);
     }
   }, [history, parsed, accessLevel]);
 
-  const update = useCallback(async () => {
+  const update = useCallback(async (action: string, accessLevelChanger?: (prevAccessLevel: AccessLevel) => AccessLevel) => {
     const data = {
       id,
       data: {
@@ -195,28 +180,34 @@ const Editor: React.FC = () => {
         author: parsed.metadata?.author ?? "Anonymous",
         presentedAt: parsed.metadata?.presentedAt ?? moment().format("YYYY-MM-DD"),
         content: codemirrorRef.current!.getValue(),
-        accessLevel,
+        accessLevel: accessLevelChanger ? accessLevelChanger(accessLevel) : accessLevel,
       },
     };
 
     try {
+      console.log("여기 타 안타")
       await slideApi.update(data);
       googleAnalyticsEvent("슬라이드", `#${id} 수정 완료`);
-      toastFactory.createToast("save success", ToastType.SUCCESS);
+      toastFactory.createToast(`${action} success`, ToastType.SUCCESS);
       setUpdatedAt(moment().fromNow());
+      accessLevelChanger && setAccessLevel(accessLevelChanger(accessLevel));
     } catch {
       googleAnalyticsException(`슬라이드 #{id} 수정 실패`);
-      toastFactory.createToast("save failure", ToastType.ERROR);
+      toastFactory.createToast(`${action} failure`, ToastType.ERROR);
     }
   }, [id, parsed.metadata, toastFactory, accessLevel]);
 
   const save = useCallback(() => {
-    id ? update() : create();
+    id ? update("save") : create();
   }, [id, update, create]);
 
-  const changeAccessLevel = useCallback(() => {
-    setAccessLevel(accessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
-  }, [accessLevel]);
+  const toggleAccessLevel = (prevAccessLevel : AccessLevel) => {
+    return prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC;
+  };
+
+  const changeAccessLevel = useCallback(   async () => {
+    id ? await update("change access level", toggleAccessLevel) : setAccessLevel(toggleAccessLevel(accessLevel));
+  }, [id, update]);
 
   return (
     <SidebarLayout fluid toggleable>
