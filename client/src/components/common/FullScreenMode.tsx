@@ -188,9 +188,12 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
       return;
     }
     if (slideReference.current) {
-      fscreen.requestFullscreen(slideReference.current);
-      slideReference.current.focus();
-      setMobileVisible(true);
+      try {
+        fscreen.requestFullscreen(slideReference.current);
+      } finally {
+        slideReference.current.focus();
+        setMobileVisible(true);
+      }
     }
   };
 
