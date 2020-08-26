@@ -26,16 +26,23 @@ export const CardsLayout = styled.div`
     display: flex;
     flex-direction: column;
     text-decoration-line: none;
+    width: 300px;
+    border: 1px #777 dashed;
+    padding: 50px 0;
+    border-radius: 10px;
     
     &:hover {
       opacity: 75%;
+    }
+    @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+      margin: auto;
     }
   }
   
   span {
     display: flex;
     color: #fff;
-    margin: 10px auto auto;
+    margin: 10px auto;
   }
   
   img {
@@ -52,7 +59,15 @@ const CardsBlock = styled.div`
   
   a {
     text-decoration: none;
-    color: #000;  
+    color: #000;
+    width: auto;
+    border: none;
+    padding: 0;
+    margin: 0;
+    
+    &:hover {
+      opacity: 100%;
+    }
   }
   
   @media (max-width: 1440px) {
@@ -68,7 +83,6 @@ const CardsBlock = styled.div`
   }
 `;
 
-
 interface IProps {
   title: string,
   slides: MetaDataResponse[],
@@ -82,7 +96,9 @@ const Cards: React.FC<IProps> = ({title, slides, onClone, onDelete}) => (
     <h2>{title}</h2>
     <hr/>
     {slides.length === 0 ?
-      <Link to="/editor"><img src={Logo} alt={"NEW SLIDES"}/><span>CREATE NEW SLIDES!</span></Link> :
+      <Link to="/editor">
+        <img src={Logo} alt={"NEW SLIDES"}/><span>CREATE NEW SLIDES!</span>
+      </Link> :
       <CardsBlock>
         {slides.map(slide => (
           <Card key={slide.id} id={slide.id} title={slide.title} subtitle={slide.subtitle} author={slide.author}
