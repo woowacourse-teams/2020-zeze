@@ -64,6 +64,11 @@ operation::slides/update[snippets='http-request,http-response,request-headers,pa
 
 operation::slides/delete[snippets='http-request,http-response,request-headers,path-parameters']
 
+[[resources-slides-clone]]
+=== 슬라이드 복제
+
+operation::slides/clone[snippets='http-request,http-response,request-headers,path-parameters,response-headers']
+
 [[resources-files]]
 == File
 

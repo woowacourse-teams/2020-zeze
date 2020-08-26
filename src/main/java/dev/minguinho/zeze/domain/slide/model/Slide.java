@@ -86,8 +86,10 @@ public class Slide extends BaseEntity {
         this.deletedAt = ZonedDateTime.now();
     }
 
-    public boolean isDeleted() {
-        return this.deletedAt != null;
+    public Slide clone(Long userId) {
+        return new Slide(this.title + " (clone)", this.subtitle, this.author, this.presentedAt, this.content,
+            AccessLevel.PRIVATE,
+            userId);
     }
 
     public enum AccessLevel {

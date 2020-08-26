@@ -69,7 +69,7 @@ public class SlideAcceptanceTest {
     }
 
     @TestFactory
-    @DisplayName("슬라이드 추가 조회 업데이트 삭제")
+    @DisplayName("슬라이드 추가 조회 업데이트 삭제 복제")
     Stream<DynamicTest> slide() {
         return Stream.of(
             dynamicTest("추가", () -> {
@@ -203,6 +203,38 @@ public class SlideAcceptanceTest {
                     () -> assertThat(resultSlides.get(0).getSubtitle()).isEqualTo("부제목"),
                     () -> assertThat(resultSlides.get(0).getAuthor()).isEqualTo("작성자")
                 );
+            }),
+            dynamicTest("복제", () -> {
+                String title = "세번째 제목";
+                String subtitle = "세번째 부제목";
+                String author = "세번째 작성자";
+                String presentedAt = "2020-07-22";
+                String content = "세번째 내용";
+                String accessLevel = "PRIVATE";
+                SlideRequestDto slideRequestDto = new SlideRequestDto(title, subtitle, author, presentedAt, content,
+                    accessLevel);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+                BDDMockito.given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                    .willReturn(1L);
+
+                createSlide(slideRequestDto);
+
+                SlideMetadataDtos slideMetadataDtos = retrieveSlides();
+                List<SlideMetadataDto> slides = slideMetadataDtos.getSlides();
+
+                Long recentId = slides.get(0).getId();
+
+                cloneSlide(recentId);
+
+                SlideMetadataDtos newSlideMetadataDtos = retrieveSlides();
+                List<SlideMetadataDto> newSlides = newSlideMetadataDtos.getSlides();
+
+                assertAll(
+                    () -> assertThat(newSlides.get(0).getId()).isNotEqualTo(recentId),
+                    () -> assertThat(newSlides.get(0).getTitle()).isEqualTo(title + " (clone)"),
+                    () -> assertThat(newSlides.get(0).getSubtitle()).isEqualTo(subtitle),
+                    () -> assertThat(newSlides.get(0).getAuthor()).isEqualTo(author)
+                );
             })
         );
     }
@@ -259,5 +291,14 @@ public class SlideAcceptanceTest {
             .then()
             .log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void cloneSlide(Long slideId) {
+        given()
+            .when()
+            .post(BASE_URL + slideId)
+            .then()
+            .log().all()
+            .statusCode(HttpStatus.CREATED.value());
     }
 }

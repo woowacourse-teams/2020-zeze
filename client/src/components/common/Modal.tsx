@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, {useCallback} from "react";
 import styled from "@emotion/styled";
 import {css, Global} from "@emotion/core";
 
@@ -7,7 +7,7 @@ interface FullScreenProps {
 }
 
 const FullScreen = styled.div<FullScreenProps>`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 99999999;

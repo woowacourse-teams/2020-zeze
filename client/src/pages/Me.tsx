@@ -8,7 +8,7 @@ import usersApi from "../api/user";
 
 import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import filesApi from "../api/file";
-import {ToastType} from "../domains/constants";
+import {ToastType, AccessLevel} from "../domains/constants";
 import ToastFactory from "../domains/ToastFactory";
 import {googleAnalyticsEvent, googleAnalyticsPageView} from "../utils/googleAnalytics";
 import SlidesLayout from "../components/common/SlidesLayout";
@@ -71,7 +71,7 @@ const Me: React.FC = () => {
           updateInfo={updateInfo}
           changeInput={changeInput}
           changeProfileImage={changeProfileImage}/>
-        <SlidesLayout deleteSlide={slideApi.delete} getAllSlides={slideApi.getAll} slidesCnt={6} title="My Drafts"/>
+        <SlidesLayout accessLevel={AccessLevel.PRIVATE} cloneSlide={slideApi.clone} deleteSlide={slideApi.delete} getAllSlides={slideApi.getAll} slidesCnt={6} title="My Drafts"/>
       </MeBlock>
     </SidebarLayout>
   );
