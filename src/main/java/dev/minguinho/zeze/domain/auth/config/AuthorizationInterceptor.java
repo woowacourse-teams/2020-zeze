@@ -40,7 +40,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     }
 
     private <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
-        return Optional.ofNullable(handlerMethod.getMethodAnnotation(annotationType))
+        return Optional.ofNullable(handlerMethod.getMethod().getAnnotation(annotationType))
             .orElse(handlerMethod.getBeanType().getAnnotation(annotationType));
     }
 }
