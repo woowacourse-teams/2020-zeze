@@ -34,7 +34,7 @@ const Buttons = styled.div<ButtonsProps>`
       }
       
       > img {
-        opacity: 30%;
+        opacity: 0.3;
         width: 30px;
         height: 30px;
       }
