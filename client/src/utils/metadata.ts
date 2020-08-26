@@ -25,7 +25,7 @@ export const createTemplate = ({title, subtitle, author}: MetaProps) =>
 title: ${title ?? "Untitled"}
 subtitle: ${subtitle ?? "Untitled"}
 author: ${author ?? "Anonymous"}
-presentedAt: ${moment().format('YYYY-MM-DD')}
+presentedAt: ${moment().format("YYYY-MM-DD")}
 ---
 `;
 
@@ -48,12 +48,10 @@ export const parse = (text: string): ParsedData => {
     const {author, title, subtitle, presentedAt} = metadata;
 
     firstPage = firstPage
-      .concat(`<div class="first-page">`)
-      .concat(title ? `<h1 class="title">${title}</h1>` : "")
-      .concat(subtitle ? `<h2 class="subtitle">${subtitle}</h2>` : "")
-      .concat(author ? `<h3 class="author">${author}</h3>` : "")
-      .concat(presentedAt ? `<h4 class=presented-at">${presentedAt}</h4>` : "")
-      .concat("</div>")
+      .concat(title ? `# ${title}\n` : "")
+      .concat(subtitle ? `## ${subtitle}\n` : "")
+      .concat(author ? `### ${author}\n` : "")
+      .concat(presentedAt ? `#### ${presentedAt}\n` : "")
       .concat("\n\n---\n\n");
   }
 
