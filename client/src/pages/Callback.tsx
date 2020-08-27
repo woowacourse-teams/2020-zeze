@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect} from "react";
+import {useLocation, useHistory} from "react-router-dom";
 import axios from "axios";
 import GlobalLayout from "../components/common/GlobalLayout";
 import Spinner from "../components/common/Spinner";
@@ -12,7 +13,9 @@ interface props {
   history: string[]
 }
 
-const Callback: React.FC<props> = ({location, history}: props) => {
+const Callback: React.FC<props> = () => {
+  const location = useLocation();
+  const history = useHistory();
   const githubBaseUrl = `/api/signin/github`;
   const toastFactory = ToastFactory();
 
@@ -32,11 +35,11 @@ const Callback: React.FC<props> = ({location, history}: props) => {
     };
 
     getToken()
-      .then(() => history.push("/me"))
+      .then(() => history.replace("/me"))
       .catch(() => {
         googleAnalyticsException("로그인 실패");
         toastFactory.createToast("Fail to login", ToastType.ERROR);
-        history.push("/");
+        history.replace("/");
       });
   }, [location, history, githubBaseUrl]);
 
