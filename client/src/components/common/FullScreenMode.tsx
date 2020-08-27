@@ -25,12 +25,14 @@ interface FullScreenProps {
   showCursor?: boolean;
   mobileVisible?: boolean;
   isFirstPage?: boolean;
+  isFullscreen?: boolean;
 }
 
 export const FullScreenBlock = styled.div<FullScreenProps>`
   position: absolute;
-  top: -9999px;
-  left: -9999px;
+  z-index: -1;
+  top: ${({isFullscreen}) => (isFullscreen ? 0 : "-9999px")};
+  left: ${({isFullscreen}) => (isFullscreen ? 0 : "-9999px")};
   font-size: 100%;
   cursor: ${({showCursor}) => (showCursor ? "default" : "none")};
   
@@ -169,8 +171,18 @@ interface IProps {
 
 const FullScreenMode: React.FC<IProps> = ({contents}) => {
   const [index, setIndex] = useState<number>(0);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [showCursor, setShowCursor] = useState<boolean>(false);
   const [mobileVisible, setMobileVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fullscreenHandler = () => !fscreen.fullscreenElement && setIsFullscreen(false);
+
+    fscreen.addEventListener("fullscreenchange", fullscreenHandler);
+    return () => {
+      fscreen.removeEventListener("fullscreenchange", fullscreenHandler);
+    };
+  }, []);
 
   useEffect(() => {
     if (showCursor) {
@@ -194,8 +206,10 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         setMobileVisible(true);
         return;
       }
+
       fscreen.requestFullscreen(slideReference.current);
       slideReference.current.focus();
+      setIsFullscreen(true);
     }
   };
 
@@ -204,9 +218,11 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
     case Keys.ARROW_RIGHT:
     case Keys.SPACE_BAR:
     case Keys.ENTER:
+      event.preventDefault();
       next();
       break;
     case Keys.ARROW_LEFT:
+      event.preventDefault();
       prev();
       break;
     default:
@@ -234,6 +250,7 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         onMouseMove={() => setShowCursor(true)}
         mobileVisible={mobileVisible}
         isFirstPage={index === 0}
+        isFullscreen={isFullscreen}
       ><Markdown value={contents[index]}/></FullScreenBlock>
       <FullScreenButton onClick={toggleFullScreen}/>
       <MobileSlidesButtons
