@@ -121,7 +121,7 @@ const Home: React.FC = () => {
               title: Hello Slide.md! <br/>
               subtitle: Introducing markdown slides <br/>
               author: Hodol <br/>
-              createdAt: 2020-07-12 <br/>
+              presentedAt: 2020-07-12 <br/>
               --- <br/> <br/>
               ## Works like charm <br/>
               ### with minimal effort <br/> <br/>

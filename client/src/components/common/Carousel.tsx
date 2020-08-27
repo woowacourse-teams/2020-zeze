@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useMemo, useEffect} from "react";
 import styled from "@emotion/styled";
+import {MOBILE_MAX_WIDTH} from "../../domains/constants";
 
 const CarouselBlock = styled.div`
   position: relative;
@@ -29,11 +30,15 @@ const CarouselWarpper = styled.div<IProps>`
 
 const Button = styled.button`
   position: absolute;
-  top: 50%;
+  top: 48%;
   width: 32px;
   height: 32px;
   border: 0;
   outline: none;
+  
+  @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+    top: 44%;
+  }
 `;
 
 const LeftButton = styled(Button)`
