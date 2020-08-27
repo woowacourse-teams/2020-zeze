@@ -1,0 +1,56 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    open-in-view: false
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    hikari:
+      jdbc-url: "jdbc:h2:mem:testdb"
+      username: "sa"
+      driver-class-name: "org.h2.Driver"
+
+  flyway:
+    enabled: false
+
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+# github
+github:
+  client:
+    id: a1319dd9d8a69631db4e
+    secret: 2150137f1a290c73c4e30078bf8dc49189c2f25b
+
+# aws
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: YOUR_ACCESS_KEY
+      secretKey: YOUR_SECRET_KEY
+    s3:
+      bucket: markdown-ppt-test
+      directory: static
+    stack:
+      auto: false
+
+# jwt
+security:
+  jwt:
+    token:
+      secret-key: zezesecretkey
+      expire-length: 86400000 # 60 * 60 * 1000 * 24

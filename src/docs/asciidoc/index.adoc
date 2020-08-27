@@ -1,0 +1,83 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+[[resources]]
+= Resources
+
+[[resources-users]]
+== User
+
+[[resources-users-get]]
+=== User 정보 조회
+
+operation::users/get[snippets='http-request,http-response,request-headers,response-fields']
+
+[[resources-users-update]]
+=== User 정보 업데이트
+
+operation::users/update[snippets='http-request,http-response,request-headers,request-fields,response-fields']
+
+[[resources-slides]]
+== Slide
+
+[[resources-slides-create]]
+=== 슬라이드 추가
+
+operation::slides/create[snippets='http-request,http-response,request-headers,request-fields,response-headers']
+
+[[resources-slides-retrieveAll-Public]]
+=== Public 슬라이드 list 조회
+
+operation::slides/retrieveAllPublic[snippets='http-request,http-response,request-parameters,response-fields']
+
+[[resources-slides-retrieveAll-User]]
+=== User 슬라이드 list 조회
+
+operation::slides/retrieveAll[snippets='http-request,http-response,request-headers,request-parameters,response-fields']
+
+[[resources-slides-retrieve-Public]]
+=== Public 슬라이드 조회
+
+operation::slides/retrievePublic[snippets='http-request,http-response,path-parameters,response-fields']
+
+[[resources-slides-retrieve-User]]
+=== User 슬라이드 조회
+
+operation::slides/retrieve[snippets='http-request,http-response,request-headers,path-parameters,response-fields']
+
+[[resources-slides-update]]
+=== 슬라이드 업데이트
+
+operation::slides/update[snippets='http-request,http-response,request-headers,path-parameters']
+
+[[resources-slides-delete]]
+=== 슬라이드 삭제
+
+operation::slides/delete[snippets='http-request,http-response,request-headers,path-parameters']
+
+[[resources-slides-clone]]
+=== 슬라이드 복제
+
+operation::slides/clone[snippets='http-request,http-response,request-headers,path-parameters,response-headers']
+
+[[resources-files]]
+== File
+
+[[resources-files-upload]]
+=== 파일 업로드
+
+operation::files/upload[snippets='http-request,http-response,request-parts,response-fields']
+
+[[resources-files-upload-external]]
+=== 외부 파일 업로드
+
+operation::files/upload-external[snippets='http-request,http-response,request-fields,response-fields']

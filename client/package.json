@@ -3,20 +3,44 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/chart.js": "^2.9.23",
+    "@types/codemirror": "0.0.97",
+    "@types/dotenv": "^8.2.0",
+    "@types/fscreen": "^1.0.1",
     "@types/jest": "^24.0.0",
+    "@types/moment": "^2.13.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/react-syntax-highlighter": "^11.0.4",
+    "@types/recoil": "^0.0.1",
+    "axios": "^0.19.2",
+    "chart.js": "^2.9.3",
+    "codemirror": "^5.56.0",
+    "dotenv": "^8.2.0",
+    "env-cmd": "^10.1.0",
+    "fscreen": "^1.0.2",
+    "moment": "^2.27.0",
     "react": "^16.13.1",
+    "react-device-detect": "^1.13.1",
     "react-dom": "^16.13.1",
+    "react-ga": "^3.1.2",
+    "react-markdown": "^4.3.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-syntax-highlighter": "^13.0.0",
+    "recoil": "^0.0.10",
     "typescript": "~3.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
+    "build:dev": "env-cmd -f .env.staging react-scripts build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -44,9 +68,14 @@
       "sourceType": "module",
       "project": "./tsconfig.json"
     },
-    "ignorePatterns": ["serviceWorker.ts"],
+    "ignorePatterns": [
+      "serviceWorker.ts"
+    ],
     "rules": {
-      "indent": ["error", 2]
+      "indent": [
+        "error",
+        2
+      ]
     }
   },
   "browserslist": {
@@ -67,5 +96,6 @@
     "eslint-config-naver": "^2.1.0",
     "eslint-config-react-app": "^5.2.1",
     "eslint-plugin-jest": "^23.18.0"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }

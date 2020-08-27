@@ -27,3 +27,8 @@ trim_trailing_whitespace = true
 
 # [line-length-120]
 max_line_length = 120
+
+[{*.tsx,*.ts}]
+indent_style = space
+indent_size = 2
+tab_width = 2

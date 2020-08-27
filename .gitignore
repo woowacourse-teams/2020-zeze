@@ -1,9 +1,20 @@
 HELP.md
 .gradle
 build/
+logs/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+**/src/main/resources/static
+**/src/main/resources/application-aws.yml
+**/src/main/resources/application-github.yml
+**/src/main/resources/application-github-local.yml
+**/src/main/resources/application-jwt.yml
+**/src/main/resources/application-log.yml
+**/src/main/resources/logback-spring.xml
+**/src/main/resources/logback-access.xml
+**/src/main/resources/logback-db.xml
+*.DS_Store
 
 ### STS ###
 .apt_generated

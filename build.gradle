@@ -1,9 +1,11 @@
 plugins {
+    id "com.github.node-gradle.node" version '2.2.4'
     id 'checkstyle'
     id 'org.ec4j.editorconfig' version '0.0.3'
     id 'org.springframework.boot' version '2.3.1.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'org.asciidoctor.convert' version '1.5.10'
+    id 'org.flywaydb.flyway' version '6.0.1'
     id 'java'
 }
 
@@ -25,20 +27,40 @@ repositories {
 }
 
 ext {
+    okHttpVersion = '4.4.0'
     set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.flywaydb:flyway-core'
     compileOnly 'org.projectlombok:lombok'
+    runtime 'org.mariadb.jdbc:mariadb-java-client'
     runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation 'ch.qos.logback:logback-access:1.2.3'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${okHttpVersion}"
+
+    // rest docs
+    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+
+    // rest assured
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+    // AWS
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.820'
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testCompile group: 'io.findify', name: 's3mock_2.12', version: '0.2.5'
 }
 
 test {
@@ -51,15 +73,19 @@ asciidoctor {
     dependsOn test
 }
 
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}/html5") {
+        into 'templates'
+    }
+}
+
 editorconfig {
-    excludes = ['build', 'client', '.zeze-checkstyle.xml']
+    excludes = ['logs', 'out', 'build', 'client', '.zeze-checkstyle.xml', 'src/main/resources/static/']
 }
 
 checkstyle {
     maxWarnings = 0 // 규칙이 어긋나는 코드가 하나라도 있을 경우 빌드 fail을 내고 싶다면 이 선언을 추가한다.
-    configFile = file("${rootDir}/.zeze-checkstyle.xml")
-    toolVersion ="8.34"  // checkstyle 버전 8.24 이상 선언
+    configFile = file("${rootDir}/config/.zeze-checkstyle.xml")
+    toolVersion = "8.34"  // checkstyle 버전 8.24 이상 선언
 }
-
-check.dependsOn editorconfigCheck
-

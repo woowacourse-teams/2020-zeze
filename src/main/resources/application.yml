@@ -1,1 +1,6 @@
+spring:
+  profiles:
+    active: 'local'
 
+  flyway:
+    enabled: false

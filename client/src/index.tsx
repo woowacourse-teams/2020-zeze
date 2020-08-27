@@ -1,12 +1,40 @@
-import React from "react";
+import React, {Suspense} from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import {RecoilRoot} from "recoil";
+import {css, Global} from "@emotion/core";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import Spinner from "./components/common/Spinner";
+
+const globalStyle = css`
+  body {
+    background-color: #222;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+  }
+  
+  div#root {
+    position: relative;
+  }
+`;
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <RecoilRoot>
+      <Suspense fallback={<Spinner/>}>
+        <App/>
+      </Suspense>
+    </RecoilRoot>
+    <Global styles={globalStyle}/>
   </React.StrictMode>,
   document.getElementById("root"),
 );
