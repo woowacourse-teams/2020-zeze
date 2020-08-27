@@ -57,6 +57,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Create back up build
         if: steps.check_S3.outputs.exists == 'true'
-        run: aws s3 mv s3://${BUCKET}/front/${LATEST}.zip s3://${BUCKET}/front/${BACKUP}.zip
+        run: aws s3 mv s3://${BUCKET}/dev/front/${LATEST}.zip s3://${BUCKET}/dev/front/${BACKUP}.zip
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./client/build/${LATEST}.zip s3://${BUCKET}/front/${LATEST}.zip --acl public-read-write
+        run: aws s3 cp --region ap-northeast-2 ./client/build/${LATEST}.zip s3://${BUCKET}/dev/front/${LATEST}.zip --acl public-read-write
