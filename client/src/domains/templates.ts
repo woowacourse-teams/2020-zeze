@@ -41,7 +41,7 @@ export default [
     src: list,
     template: `
 1. this
-  1. example
+   1. example
 1. acts like
 1. a ordered list 
 `,
