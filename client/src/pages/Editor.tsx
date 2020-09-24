@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import styled from "@emotion/styled";
 import moment from "moment";
+import {isMobile} from "react-device-detect";
 
 import Preview from "../components/editor/Preview";
 import MarkdownEditor from "../components/editor/MarkdownEditor";
 import FullScreenMode from "../components/common/FullScreenMode";
-import SidebarLayout from "../components/common/SidebarLayout";
 
+import SidebarLayout from "../components/common/SidebarLayout";
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
@@ -18,6 +19,7 @@ import ToastFactory from "../domains/ToastFactory";
 import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 import EditorButtons from "../components/common/EditorButtons";
+import Tutorial from "../components/common/Tutorial";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -70,6 +72,10 @@ interface Params {
 }
 
 const Editor: React.FC = () => {
+  const editorRef = useRef<any>(Edit);
+  const [editorWidth, setEditorWidth] = useState<number>(0);
+  const [tutorial, setTutorial] = useState<boolean>(!localStorage.getItem('tutorialEnd'));
+
   const user = useRecoilValue(userInfoQuery);
   const setVisibility = useSetRecoilState(sidebarVisibility);
   const params = useParams<Params>();
@@ -90,6 +96,15 @@ const Editor: React.FC = () => {
     parsed.content.split(/^---$/m)
       .filter((slideContent: string) => slideContent.trim())
   ), [parsed]);
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      setEditorWidth(editorRef.current.offsetWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, [editorRef, setEditorWidth]);
 
   useEffect(() => {
     googleAnalyticsPageView("Editor");
@@ -199,7 +214,7 @@ const Editor: React.FC = () => {
     id ? update("save") : create();
   }, [id, update, create]);
 
-  const toggleAccessLevel = (prevAccessLevel : AccessLevel) => {
+  const toggleAccessLevel = (prevAccessLevel: AccessLevel) => {
     return prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC;
   };
 
@@ -207,10 +222,16 @@ const Editor: React.FC = () => {
     id ? await update("change access level", toggleAccessLevel) : setAccessLevel(toggleAccessLevel(accessLevel));
   }, [id, update]);
 
+  const endTutorial = useCallback(() => {
+    localStorage.setItem('tutorialEnd', 'true');
+    setTutorial(false);
+  }, [tutorial]);
+
   return (
     <SidebarLayout fluid toggleable>
+      {!isMobile || tutorial ? <Tutorial editorWidth={editorWidth} endTutorial={endTutorial}/> : <></>}
       <EditorBlock>
-        <Edit>
+        <Edit ref={editorRef}>
           <EditorButtons inputRef={codemirrorRef} updatedAt={updatedAt}/>
           <MarkdownEditor
             inputRef={codemirrorRef}
@@ -220,12 +241,13 @@ const Editor: React.FC = () => {
             onExternalDrop={uploadExternalFile}
           />
           {(!id || isOwner) &&
-            <>
-              <AccessLevelButton onClick={changeAccessLevel}>
-                <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"} alt="access level"/>
-              </AccessLevelButton>
-              <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
-            </>
+          <>
+            <AccessLevelButton onClick={changeAccessLevel}>
+              <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"}
+                   alt="access level"/>
+            </AccessLevelButton>
+            <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save"/></SaveButton>
+          </>
           }
           <FullScreenMode contents={slides}/>
         </Edit>
