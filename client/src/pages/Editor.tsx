@@ -229,7 +229,7 @@ const Editor: React.FC = () => {
 
   return (
     <SidebarLayout fluid toggleable>
-      {!isMobile || tutorial ? <Tutorial editorWidth={editorWidth} endTutorial={endTutorial}/> : <></>}
+      {tutorial && !isMobile ? <Tutorial editorWidth={editorWidth} endTutorial={endTutorial}/> : <></>}
       <EditorBlock>
         <Edit ref={editorRef}>
           <EditorButtons inputRef={codemirrorRef} updatedAt={updatedAt}/>
