@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import styled from "@emotion/styled";
 
-import {MENU_HEIGHT} from "../../domains/constants";
+import {MENU_HEIGHT, TUTORIAL} from "../../domains/constants";
 
 const TutorialLayout = styled.div`
   > div.dropback {
@@ -83,6 +83,7 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
 
   const [explanationLeft, setExplanationLeft] = useState<number>(editorWidth);
   const [explanationTop, setExplanationTop] = useState<number>(MENU_HEIGHT * 2);
+  const [explanation, setExplanation] = useState<string>(TUTORIAL.EDITOR);
 
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
@@ -111,6 +112,7 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
         setLeftWidth(0);
         setExplanationLeft(editorWidth * 0.7);
         setExplanationTop(MENU_HEIGHT * 2);
+        setExplanation(TUTORIAL.EDITOR);
         return;
       case 1:
         setTopWidth(editorWidth);
@@ -118,6 +120,7 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
         setLeftWidth(editorWidth);
         setExplanationLeft(editorWidth - 300);
         setExplanationTop(leftHeight * 0.2);
+        setExplanation(TUTORIAL.PREVIEW);
         return;
       case 2:
         setTopWidth(0);
@@ -125,6 +128,7 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
         setLeftWidth(editorWidth);
         setExplanationLeft(editorWidth * 0.7);
         setExplanationTop(MENU_HEIGHT);
+        setExplanation(TUTORIAL.MENU);
         return;
       default:
         return;
@@ -150,7 +154,7 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
           {count > 0 && <LeftButton onClick={prev}/>}
           {count < 2 && <RightButton onClick={next}/>}
         </Title>
-        <div>이건 에디터고 여기서 편집을 할 수 있으며 기본으로 제공되는 양식은 발표의 첫 페이지이며 없애면 이상해져요. 내용 생각해야하는데 생각하기 싫다.</div>
+        <div>{explanation}</div>
         <CloseButton onClick={endTutorial}>close</CloseButton>
       </ExplanationBox>
     </TutorialLayout>
