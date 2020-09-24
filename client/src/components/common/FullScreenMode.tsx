@@ -60,6 +60,15 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
     display: flex;
     flex-direction: column;
     
+    div.index {
+      display: flex;
+      font-size: 24px;
+      position: absolute; 
+      transform:translate(-50%, -50%);
+      bottom: 15px;
+      left: 50%;
+    }
+    
     @media (max-width: ${MOBILE_MAX_WIDTH}px) {
       font-size: 1rem;
     }
@@ -215,18 +224,18 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     switch (event.key) {
-    case Keys.ARROW_RIGHT:
-    case Keys.SPACE_BAR:
-    case Keys.ENTER:
-      event.preventDefault();
-      next();
-      break;
-    case Keys.ARROW_LEFT:
-      event.preventDefault();
-      prev();
-      break;
-    default:
-      break;
+      case Keys.ARROW_RIGHT:
+      case Keys.SPACE_BAR:
+      case Keys.ENTER:
+        event.preventDefault();
+        next();
+        break;
+      case Keys.ARROW_LEFT:
+        event.preventDefault();
+        prev();
+        break;
+      default:
+        break;
     }
   };
 
@@ -251,7 +260,9 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         mobileVisible={mobileVisible}
         isFirstPage={index === 0}
         isFullscreen={isFullscreen}
-      ><Markdown value={contents[index]}/></FullScreenBlock>
+      >
+        <Markdown value={contents[index]} index={index}/>
+      </FullScreenBlock>
       <FullScreenButton onClick={toggleFullScreen}/>
       <MobileSlidesButtons
         visible={mobileVisible}
