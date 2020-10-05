@@ -176,9 +176,10 @@ export const FullScreenButton = styled.button`
 
 interface IProps {
   contents: string[]
+  pageNumberVisible?: boolean
 }
 
-const FullScreenMode: React.FC<IProps> = ({contents}) => {
+const FullScreenMode: React.FC<IProps> = ({contents, pageNumberVisible}) => {
   const [index, setIndex] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [showCursor, setShowCursor] = useState<boolean>(false);
@@ -261,7 +262,7 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         isFirstPage={index === 0}
         isFullscreen={isFullscreen}
       >
-        <Markdown value={contents[index]} index={index}/>
+        <Markdown value={contents[index]} index={index} pageNumberVisible={pageNumberVisible}/>
       </FullScreenBlock>
       <FullScreenButton onClick={toggleFullScreen}/>
       <MobileSlidesButtons

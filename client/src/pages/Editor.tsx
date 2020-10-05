@@ -86,6 +86,8 @@ const Editor: React.FC = () => {
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
 
+  const pageNumberVisible = useMemo<boolean>(() => parsed.metadata?.pageNumber === "true", [parsed]);
+
   const slides = useMemo<string[]>(() => (
     parsed.content.split(/^---$/m)
       .filter((slideContent: string) => slideContent.trim())
@@ -227,7 +229,7 @@ const Editor: React.FC = () => {
               <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
             </>
           }
-          <FullScreenMode contents={slides}/>
+          <FullScreenMode contents={slides} pageNumberVisible={pageNumberVisible}/>
         </Edit>
         <Preview content={content}/>
       </EditorBlock>

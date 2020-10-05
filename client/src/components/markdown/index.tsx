@@ -5,7 +5,8 @@ import {parse} from "../../utils/metadata";
 
 interface IProps {
   value: string,
-  index: number
+  index?: number,
+  pageNumberVisible?: boolean
 }
 
 const MemoReactMarkdown = React.memo(ReactMarkdown);
@@ -16,7 +17,7 @@ const renderers = {
   link: Link,
 };
 
-const Markdown: React.FC<IProps> = ({value = "", index}) => {
+const Markdown: React.FC<IProps> = ({value = "", index, pageNumberVisible}) => {
   const {content} = parse(value);
 
   const blocks = content?.split(/(^---$)/m)
@@ -34,7 +35,7 @@ const Markdown: React.FC<IProps> = ({value = "", index}) => {
           source={source}
           renderers={renderers}/>
       ))}
-      {index === 0 ? <></> : <div className="index">{index}</div>}
+      {pageNumberVisible && index !== 0 ? <div className="index">{index}</div> : <></>}
     </div>
   );
 };
