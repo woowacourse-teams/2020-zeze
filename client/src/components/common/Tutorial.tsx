@@ -21,6 +21,7 @@ const TutorialLayout = styled.div`
   > div.left {
     top: ${MENU_HEIGHT}px;
     left: 0;
+    height: 100%;
   }
   
   > div.right {
@@ -30,7 +31,6 @@ const TutorialLayout = styled.div`
 `;
 
 const ExplanationBox = styled.div`
-  display: block;
   white-space: pre-line;
   position: absolute;
   z-index: 5;
@@ -95,7 +95,6 @@ interface DropbackSize {
   topWidth: number,
   rightWidth: number,
   leftWidth: number,
-  leftHeight: number
 }
 
 const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
@@ -117,29 +116,26 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
     topWidth: editorWidth,
     rightWidth: windowSize.windowWidth - editorWidth,
     leftWidth: 0,
-    leftHeight: windowSize.windowHeight - MENU_HEIGHT
   });
 
   useEffect(() => {
     setDropback();
-  }, [count, windowSize, editorWidth]);
+  }, [count, windowSize]);
 
   useEffect(() => {
     setWindowSize({
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight
     });
-    setDropbackSize({...dropbackSize, leftHeight: windowSize.windowHeight - MENU_HEIGHT});
-    setDropback();
-  }, [editorWidth]);
+  }, [window.innerWidth, window.innerHeight]);
 
   const setDropback = useCallback(() => {
     switch (count) {
       case 0:
         setDropbackSize({
-          ...dropbackSize,
+          topWidth: editorWidth,
           rightWidth: windowSize.windowWidth - editorWidth,
-          leftWidth: 0
+          leftWidth: 0,
         });
         setExplanation({
           ...explanation,
@@ -151,24 +147,23 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
         return;
       case 1:
         setDropbackSize({
-          ...dropbackSize,
           topWidth: editorWidth,
           rightWidth: 0,
-          leftWidth: editorWidth
+          leftWidth: editorWidth,
         });
         setExplanation({
           ...explanation,
           title: TUTORIAL_TITLE.PREVIEW,
           explanationLeft: editorWidth - 300,
-          explanationTop: dropbackSize.leftHeight * 0.2,
+          explanationTop: windowSize.windowHeight * 0.2,
           explanation: TUTORIAL_CONTENTS.PREVIEW
         });
         return;
       case 2:
         setDropbackSize({
-          ...dropbackSize,
           topWidth: 0,
           rightWidth: windowSize.windowWidth - editorWidth,
+          leftWidth: editorWidth,
         });
         setExplanation({
           ...explanation,
@@ -183,24 +178,16 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
     }
   }, [count, editorWidth, dropbackSize, windowSize]);
 
-  const prev = useCallback(() => {
-    setCount(count - 1);
-  }, [count]);
-
-  const next = useCallback(() => {
-    setCount(count + 1);
-  }, [count]);
-
   return (
     <TutorialLayout>
       <div className="dropback top" style={{width: dropbackSize.topWidth}}/>
       <div className="dropback right" style={{width: dropbackSize.rightWidth}}/>
-      <div className="dropback left" style={{width: dropbackSize.leftWidth, height: dropbackSize.leftHeight}}/>
+      <div className="dropback left" style={{width: dropbackSize.leftWidth}}/>
       <ExplanationBox style={{left: explanation.explanationLeft, top: explanation.explanationTop}}>
         <Title>
           <div>{explanation.title}</div>
-          {count > 0 && <LeftButton onClick={prev}/>}
-          {count < 2 && <RightButton onClick={next}/>}
+          {count > 0 && <LeftButton onClick={() => setCount(count - 1)}/>}
+          {count < 2 && <RightButton onClick={() => setCount(count + 1)}/>}
         </Title>
         <div>{explanation.explanation}</div>
         <CloseButton onClick={endTutorial}>close</CloseButton>

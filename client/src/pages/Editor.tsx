@@ -72,9 +72,9 @@ interface Params {
 }
 
 const Editor: React.FC = () => {
-  const editorRef = useRef<any>(Edit);
+  const editorRef = useRef<any>(null);
   const [editorWidth, setEditorWidth] = useState<number>(0);
-  const [tutorial, setTutorial] = useState<boolean>(!localStorage.getItem('tutorialEnd'));
+  const [tutorial, setTutorial] = useState<boolean>(!localStorage.getItem("tutorialEnd"));
 
   const user = useRecoilValue(userInfoQuery);
   const setVisibility = useSetRecoilState(sidebarVisibility);
@@ -214,16 +214,14 @@ const Editor: React.FC = () => {
     id ? update("save") : create();
   }, [id, update, create]);
 
-  const toggleAccessLevel = (prevAccessLevel: AccessLevel) => {
-    return prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC;
-  };
+  const toggleAccessLevel = (prevAccessLevel: AccessLevel) => (prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
 
   const changeAccessLevel = useCallback(async () => {
     id ? await update("change access level", toggleAccessLevel) : setAccessLevel(toggleAccessLevel(accessLevel));
   }, [id, update]);
 
   const endTutorial = useCallback(() => {
-    localStorage.setItem('tutorialEnd', 'true');
+    localStorage.setItem("tutorialEnd", "true");
     setTutorial(false);
   }, [tutorial]);
 
@@ -244,7 +242,7 @@ const Editor: React.FC = () => {
           <>
             <AccessLevelButton onClick={changeAccessLevel}>
               <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"}
-                   alt="access level"/>
+                alt="access level"/>
             </AccessLevelButton>
             <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save"/></SaveButton>
           </>
