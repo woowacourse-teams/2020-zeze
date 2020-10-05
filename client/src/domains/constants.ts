@@ -8,11 +8,20 @@ export const MOBILE_MAX_WIDTH = 575.98;
 export const PAGE_CNT = 5;
 
 export const MENU_HEIGHT = 50;
+
 export const TUTORIAL_CONTENTS = {
-  EDITOR: "1. 에디터고 여기서 편집을 할 수 있으며 기본으로 제공되는 양식은 발표의 첫 페이지이며 없애면 이상해져요.",
-  PREVIEW: "2. 마크다운 적용 결과고요 미리 볼 수 있어요.",
-  MENU: "3. 각종 기능들인데요, 기존 마크다운 문법과 동일해요. 근데 사진은 드래그 앤 드롭이 가능하구요! 유튭이랑 차트는 설명이 좀 필요할 것 같아요.",
+  EDITOR: "This is the editor. You can write freely with Markdown syntax.\n" +
+    "You can set the privacy by clicking the lock button.\n" +
+    "You can save the content you are creating by clicking Cmd/Ctrl + s or a button.\n" +
+    "Press the start slideshow button to start the presentation.\n" +
+    "You can add images by dragging them into the editor.",
+  PREVIEW: "You can check the rendered content entered in the editor on the preview screen in real time.\n" +
+    "Keep in mind that the pages are divided with a thick line(<hr>).",
+  MENU: "Try out example buttons at the top to check supported features.\n" +
+    "You can use all the GFM style syntax, and additional support such as Youtube and Chart are currently available.\n" +
+    "We will support more features in the future, so stay tuned!",
 };
+
 export const TUTORIAL_TITLE = {
   EDITOR: "Editor",
   PREVIEW: "Preview",

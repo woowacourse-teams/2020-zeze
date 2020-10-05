@@ -31,6 +31,7 @@ const TutorialLayout = styled.div`
 
 const ExplanationBox = styled.div`
   display: block;
+  white-space: pre-line;
   position: absolute;
   z-index: 5;
   width: 300px;
