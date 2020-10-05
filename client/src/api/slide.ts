@@ -92,7 +92,7 @@ const slideApi = {
       headers: {
         authorization: localStorage.getItem("accessToken"),
       },
-    })
+    });
   },
   clone(id: number): Promise<AxiosResponse<SlideResponse>> {
     return slideInstance.post(`${id}`, null, {
