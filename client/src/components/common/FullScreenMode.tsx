@@ -50,6 +50,15 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
     display: ${({mobileVisible}) => (mobileVisible ? "block" : "none")};
   }
   
+  > div.index {
+    display: flex;
+    font-size: 24px;
+    position: absolute; 
+    transform:translate(-50%, -50%);
+    bottom: 15px;
+    left: 50%;
+  }
+  
   > div#themed {
     position: relative;
     height: 100%;
@@ -59,15 +68,6 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
     font-size: 1.75rem;
     display: flex;
     flex-direction: column;
-    
-    div.index {
-      display: flex;
-      font-size: 24px;
-      position: absolute; 
-      transform:translate(-50%, -50%);
-      bottom: 15px;
-      left: 50%;
-    }
     
     @media (max-width: ${MOBILE_MAX_WIDTH}px) {
       font-size: 1rem;
@@ -262,7 +262,8 @@ const FullScreenMode: React.FC<IProps> = ({contents, pageNumberVisible}) => {
         isFirstPage={index === 0}
         isFullscreen={isFullscreen}
       >
-        <Markdown value={contents[index]} index={index} pageNumberVisible={pageNumberVisible}/>
+        <Markdown value={contents[index]}/>
+        {pageNumberVisible && index !== 0 ? <div className="index">{index}</div> : <></>}
       </FullScreenBlock>
       <FullScreenButton onClick={toggleFullScreen}/>
       <MobileSlidesButtons
