@@ -5,6 +5,7 @@ export interface MetaProps {
   subtitle?: string;
   author?: string;
   presentedAt?: string;
+  pageNumber?: string;
 }
 
 export interface ParsedData {
@@ -20,12 +21,13 @@ const DEFAULT_PROPS: MetaProps = {
   title: "Untitled",
 };
 
-export const createTemplate = ({title, subtitle, author}: MetaProps) =>
+export const createTemplate = ({title, subtitle, author, pageNumber}: MetaProps) =>
   `---
 title: ${title ?? "Untitled"}
 subtitle: ${subtitle ?? "Untitled"}
 author: ${author ?? "Anonymous"}
 presentedAt: ${moment().format("YYYY-MM-DD")}
+pageNumber: ${pageNumber ?? "true"}
 ---
 `;
 
@@ -45,7 +47,7 @@ export const parse = (text: string): ParsedData => {
   let firstPage = "";
 
   if (metadata) {
-    const {author, title, subtitle, presentedAt} = metadata;
+    const {author, title, subtitle, presentedAt, pageNumber} = metadata;
 
     firstPage = firstPage
       .concat(title ? `# ${title}\n` : "")
@@ -54,7 +56,6 @@ export const parse = (text: string): ParsedData => {
       .concat(presentedAt ? `#### ${presentedAt}\n` : "")
       .concat("\n\n---\n\n");
   }
-
   return {
     metadata,
     content: text.replace(matches?.[0] ?? "", firstPage),

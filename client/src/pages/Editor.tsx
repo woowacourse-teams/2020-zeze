@@ -86,6 +86,8 @@ const Editor: React.FC = () => {
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
 
+  const pageNumberVisible = useMemo<boolean>(() => parsed.metadata?.pageNumber === "true", [parsed]);
+
   const slides = useMemo<string[]>(() => (
     parsed.content.split(/^---$/m)
       .filter((slideContent: string) => slideContent.trim())
@@ -199,9 +201,7 @@ const Editor: React.FC = () => {
     id ? update("save") : create();
   }, [id, update, create]);
 
-  const toggleAccessLevel = (prevAccessLevel : AccessLevel) => {
-    return prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC;
-  };
+  const toggleAccessLevel = (prevAccessLevel : AccessLevel) => (prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
 
   const changeAccessLevel = useCallback(async () => {
     id ? await update("change access level", toggleAccessLevel) : setAccessLevel(toggleAccessLevel(accessLevel));
@@ -227,7 +227,7 @@ const Editor: React.FC = () => {
               <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
             </>
           }
-          <FullScreenMode contents={slides}/>
+          <FullScreenMode contents={slides} pageNumberVisible={pageNumberVisible}/>
         </Edit>
         <Preview content={content}/>
       </EditorBlock>

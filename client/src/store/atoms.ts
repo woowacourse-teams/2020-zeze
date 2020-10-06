@@ -12,7 +12,7 @@ export const userInfoQuery = selector<User | null>({
   key: "userInfoQuery",
   get: ({get}) => {
     get(userInfoTrigger);
-    if(!localStorage.getItem("accessToken")) {
+    if (!localStorage.getItem("accessToken")) {
       return null;
     }
     return usersApi.get()

@@ -4,7 +4,7 @@ import {Code, Image, Link, Paragraph} from "./renderers";
 import {parse} from "../../utils/metadata";
 
 interface IProps {
-  value: string
+  value: string,
 }
 
 const MemoReactMarkdown = React.memo(ReactMarkdown);

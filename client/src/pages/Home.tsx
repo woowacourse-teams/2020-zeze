@@ -122,6 +122,7 @@ const Home: React.FC = () => {
               subtitle: Introducing markdown slides <br/>
               author: Hodol <br/>
               presentedAt: 2020-07-12 <br/>
+              pageNumber: false<br/>
               --- <br/> <br/>
               ## Works like charm <br/>
               ### with minimal effort <br/> <br/>
