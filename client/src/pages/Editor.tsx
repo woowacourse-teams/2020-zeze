@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import styled from "@emotion/styled";
 import moment from "moment";
+import {isMobile} from "react-device-detect";
 
 import Preview from "../components/editor/Preview";
 import MarkdownEditor from "../components/editor/MarkdownEditor";
@@ -18,6 +19,7 @@ import ToastFactory from "../domains/ToastFactory";
 import {sidebarVisibility, userInfoQuery} from "../store/atoms";
 import {googleAnalyticsEvent, googleAnalyticsException, googleAnalyticsPageView} from "../utils/googleAnalytics";
 import EditorButtons from "../components/common/EditorButtons";
+import Tutorial from "../components/common/Tutorial";
 
 const EditorBlock = styled.main`
   display: flex;
@@ -70,6 +72,10 @@ interface Params {
 }
 
 const Editor: React.FC = () => {
+  const editorRef = useRef<any>(null);
+  const [editorWidth, setEditorWidth] = useState<number>(0);
+  const [tutorial, setTutorial] = useState<boolean>(!localStorage.getItem("tutorialEnd"));
+
   const user = useRecoilValue(userInfoQuery);
   const setVisibility = useSetRecoilState(sidebarVisibility);
   const params = useParams<Params>();
@@ -92,6 +98,15 @@ const Editor: React.FC = () => {
     parsed.content.split(/^---$/m)
       .filter((slideContent: string) => slideContent.trim())
   ), [parsed]);
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      setEditorWidth(editorRef.current.offsetWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, [editorRef, setEditorWidth]);
 
   useEffect(() => {
     googleAnalyticsPageView("Editor");
@@ -201,16 +216,22 @@ const Editor: React.FC = () => {
     id ? update("save") : create();
   }, [id, update, create]);
 
-  const toggleAccessLevel = (prevAccessLevel : AccessLevel) => (prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
+  const toggleAccessLevel = (prevAccessLevel: AccessLevel) => (prevAccessLevel === AccessLevel.PUBLIC ? AccessLevel.PRIVATE : AccessLevel.PUBLIC);
 
   const changeAccessLevel = useCallback(async () => {
     id ? await update("change access level", toggleAccessLevel) : setAccessLevel(toggleAccessLevel(accessLevel));
   }, [id, update]);
 
+  const endTutorial = useCallback(() => {
+    localStorage.setItem("tutorialEnd", "true");
+    setTutorial(false);
+  }, [tutorial]);
+
   return (
     <SidebarLayout fluid toggleable>
+      {tutorial && !isMobile ? <Tutorial editorWidth={editorWidth} endTutorial={endTutorial}/> : <></>}
       <EditorBlock>
-        <Edit>
+        <Edit ref={editorRef}>
           <EditorButtons inputRef={codemirrorRef} updatedAt={updatedAt}/>
           <MarkdownEditor
             inputRef={codemirrorRef}
