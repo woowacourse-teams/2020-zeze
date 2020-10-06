@@ -3,30 +3,32 @@ import styled from "@emotion/styled";
 
 import {MENU_HEIGHT, TUTORIAL_CONTENTS, TUTORIAL_TITLE} from "../../domains/constants";
 
-const TutorialLayout = styled.div`
+const TutorialLayout = styled.div<{dropbackWidth: DropbackSize}>`
   > div.dropback {
     display: block;
     position: absolute;
-    z-index: 4;
+    z-index: 5;
     opacity: 0.8;
     background-color: rgba(0,0,0,0.6);
-  }
- 
-  > div.top {
-    top: 0;
-    height: ${MENU_HEIGHT}px;
-    width: 100%;
-  }
   
-  > div.left {
-    top: ${MENU_HEIGHT}px;
-    left: 0;
-    height: 100%;
-  }
-  
-  > div.right {
-    right: 0;
-    height: 100%;
+    &.top {
+      top: 0;
+      height: ${MENU_HEIGHT}px;
+      width: ${props => `${props.dropbackWidth.topWidth}px` || "100%"};
+    }
+    
+    &.left {
+      top: ${MENU_HEIGHT}px;
+      left: 0;
+      height: 100%;
+      width: ${props => `${props.dropbackWidth.leftWidth}px` || "unset"};
+    }
+    
+    &.right {
+      right: 0;
+      height: 100%;
+      width: ${props => `${props.dropbackWidth.rightWidth}px` || "unset"};
+    }
   }
 `;
 
@@ -42,7 +44,6 @@ const ExplanationBox = styled.div`
 
 const Title = styled.div`
   display: flex;
-  flex-direction: row;
   height: 36px;
   
   > div {
@@ -179,10 +180,10 @@ const Tutorial: React.FC<IProps> = ({editorWidth, endTutorial}) => {
   }, [count, editorWidth, dropbackSize, windowSize]);
 
   return (
-    <TutorialLayout>
-      <div className="dropback top" style={{width: dropbackSize.topWidth}}/>
-      <div className="dropback right" style={{width: dropbackSize.rightWidth}}/>
-      <div className="dropback left" style={{width: dropbackSize.leftWidth}}/>
+    <TutorialLayout dropbackWidth={dropbackSize}>
+      <div className="dropback top"/>
+      <div className="dropback right"/>
+      <div className="dropback left"/>
       <ExplanationBox style={{left: explanation.explanationLeft, top: explanation.explanationTop}}>
         <Title>
           <div>{explanation.title}</div>
