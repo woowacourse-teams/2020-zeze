@@ -9,8 +9,8 @@ import {isMobile} from "react-device-detect";
 import Preview from "../components/editor/Preview";
 import MarkdownEditor from "../components/editor/MarkdownEditor";
 import FullScreenMode from "../components/common/FullScreenMode";
-
 import SidebarLayout from "../components/common/SidebarLayout";
+
 import slideApi from "../api/slide";
 import filesApi from "../api/file";
 import {AccessLevel, MOBILE_MAX_WIDTH, ToastType} from "../domains/constants";
@@ -91,6 +91,8 @@ const Editor: React.FC = () => {
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
   const parsed = useMemo<ParsedData>(() => parse(content), [content]);
+
+  const pageNumberVisible = useMemo<boolean>(() => parsed.metadata?.pageNumber === "true", [parsed]);
 
   const slides = useMemo<string[]>(() => (
     parsed.content.split(/^---$/m)
@@ -239,15 +241,14 @@ const Editor: React.FC = () => {
             onExternalDrop={uploadExternalFile}
           />
           {(!id || isOwner) &&
-          <>
-            <AccessLevelButton onClick={changeAccessLevel}>
-              <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"}
-                alt="access level"/>
-            </AccessLevelButton>
-            <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save"/></SaveButton>
-          </>
+            <>
+              <AccessLevelButton onClick={changeAccessLevel}>
+                <img src={accessLevel === AccessLevel.PUBLIC ? "/assets/icons/public.svg" : "/assets/icons/private.svg"} alt="access level"/>
+              </AccessLevelButton>
+              <SaveButton onClick={save}><img src="/assets/icons/save.svg" alt="save" /></SaveButton>
+            </>
           }
-          <FullScreenMode contents={slides}/>
+          <FullScreenMode contents={slides} pageNumberVisible={pageNumberVisible}/>
         </Edit>
         <Preview content={content}/>
       </EditorBlock>

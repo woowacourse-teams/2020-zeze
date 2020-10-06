@@ -50,6 +50,15 @@ export const FullScreenBlock = styled.div<FullScreenProps>`
     display: ${({mobileVisible}) => (mobileVisible ? "block" : "none")};
   }
   
+  > div.index {
+    display: flex;
+    font-size: 24px;
+    position: absolute; 
+    transform:translate(-50%, -50%);
+    bottom: 15px;
+    left: 50%;
+  }
+  
   > div#themed {
     position: relative;
     height: 100%;
@@ -167,9 +176,10 @@ export const FullScreenButton = styled.button`
 
 interface IProps {
   contents: string[]
+  pageNumberVisible?: boolean
 }
 
-const FullScreenMode: React.FC<IProps> = ({contents}) => {
+const FullScreenMode: React.FC<IProps> = ({contents, pageNumberVisible}) => {
   const [index, setIndex] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [showCursor, setShowCursor] = useState<boolean>(false);
@@ -215,18 +225,18 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     switch (event.key) {
-    case Keys.ARROW_RIGHT:
-    case Keys.SPACE_BAR:
-    case Keys.ENTER:
-      event.preventDefault();
-      next();
-      break;
-    case Keys.ARROW_LEFT:
-      event.preventDefault();
-      prev();
-      break;
-    default:
-      break;
+      case Keys.ARROW_RIGHT:
+      case Keys.SPACE_BAR:
+      case Keys.ENTER:
+        event.preventDefault();
+        next();
+        break;
+      case Keys.ARROW_LEFT:
+        event.preventDefault();
+        prev();
+        break;
+      default:
+        break;
     }
   };
 
@@ -251,7 +261,10 @@ const FullScreenMode: React.FC<IProps> = ({contents}) => {
         mobileVisible={mobileVisible}
         isFirstPage={index === 0}
         isFullscreen={isFullscreen}
-      ><Markdown value={contents[index]}/></FullScreenBlock>
+      >
+        <Markdown value={contents[index]}/>
+        {pageNumberVisible && index !== 0 ? <div className="index">{index}</div> : <></>}
+      </FullScreenBlock>
       <FullScreenButton onClick={toggleFullScreen}/>
       <MobileSlidesButtons
         visible={mobileVisible}
