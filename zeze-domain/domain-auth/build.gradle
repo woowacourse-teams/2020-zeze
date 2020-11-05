@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(':zeze-domain:domain-common')
+    implementation project(':zeze-domain:domain-user-resource')
+    implementation project(':zeze-core:core-auth')
+
+    implementation "javax.validation:validation-api:${javaxValidationApiVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    testRuntime 'com.h2database:h2'
+}

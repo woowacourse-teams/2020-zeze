@@ -1,1 +1,20 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
 rootProject.name = 'zeze'
+include 'zeze-app:zeze-external-api'
+
+include 'zeze-domain:domain-slide'
+include 'zeze-domain:domain-auth'
+include 'zeze-domain:domain-user-resource'
+include 'zeze-domain:domain-common'
+
+include 'zeze-core:core-slide'
+include 'zeze-core:core-auth'
+include 'zeze-core:core-user-resource'
+include 'zeze-core:core-file'
+include 'zeze-core:core-common'
+

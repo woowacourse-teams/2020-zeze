@@ -1,0 +1,28 @@
+package dev.minguinho.zeze.auth.service.socialfetcher.resourcefetcher;
+
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
+
+import dev.minguinho.zeze.auth.service.socialfetcher.resourcefetcher.dto.request.SocialResourceRequestDto;
+import dev.minguinho.zeze.auth.service.socialfetcher.resourcefetcher.dto.response.SocialResourceResponse;
+
+@RequiredArgsConstructor
+@Primary
+@Service
+public class SocialResourceFetcherImpl implements SocialResourceFetcher {
+    private final SocialResourceFetcher githubResourceFetcher;
+
+    @Override
+    public Mono<SocialResourceResponse> fetch(
+        SocialResourceRequestDto socialResourceRequestDto) {
+        switch (socialResourceRequestDto.getProvider()) {
+            case GITHUB:
+                return githubResourceFetcher.fetch(socialResourceRequestDto);
+            default:
+                throw new IllegalStateException("잘못된 형식의 로그인 방법입니다.");
+        }
+    }
+}

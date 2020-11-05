@@ -1,0 +1,33 @@
+dependencies {
+    implementation project(':zeze-domain:domain-slide')
+    implementation project(':zeze-core:core-slide')
+
+    implementation project(':zeze-domain:domain-auth')
+    implementation project(':zeze-core:core-auth')
+
+    implementation project(':zeze-domain:domain-user-resource')
+    implementation project(':zeze-core:core-user-resource')
+
+    implementation project(':zeze-domain:domain-common')
+
+    implementation project(':zeze-core:core-file')
+    implementation project(':zeze-core:core-common')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    testImplementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${okHttpVersion}"
+
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+    implementation("com.amazonaws:aws-java-sdk-s3:${amazonS3Version}")
+    testCompile 'io.findify:s3mock_2.12:0.2.5'
+
+    runtimeOnly 'com.h2database:h2'
+}

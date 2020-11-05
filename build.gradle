@@ -1,3 +1,27 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    ext {
+        springBootVersion = '2.3.1.RELEASE'
+        springRestDocsVersion = '2.0.4.RELEASE'
+        okHttpVersion = '4.4.0'
+        javaxValidationApiVersion = "2.0.1.Final"
+        h2DatabaseVersion = "1.4.199"
+        springTestVersion = "5.2.7.RELEASE"
+        hibernateValidatorVersion = "6.1.5.Final"
+        mariaDB4jVersion = "2.4.0"
+        amazonS3Version = '1.11.820'
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
+    }
+}
+
 plugins {
     id "com.github.node-gradle.node" version '2.2.4'
     id 'checkstyle'
@@ -9,83 +33,140 @@ plugins {
     id 'java'
 }
 
-group = 'dev.minguinho'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+allprojects {
+    group = 'dev.minguinho'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
 
-compileJava.options.encoding = 'UTF-8'
-compileTestJava.options.encoding = 'UTF-8'
+    compileJava.options.encoding = 'UTF-8'
+    compileTestJava.options.encoding = 'UTF-8'
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+//    configurations {
+//        compileOnly {
+//            extendsFrom annotationProcessor
+//        }
+//    }
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 
-repositories {
-    mavenCentral()
+// 프로젝트 공통
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'checkstyle'
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        testImplementation ('org.springframework.boot:spring-boot-starter-test')
+        testImplementation('org.junit.jupiter:junit-jupiter-api')
+        testImplementation('org.mockito:mockito-junit-jupiter')
+        testImplementation('org.junit.jupiter:junit-jupiter-params')
+        testRuntime('org.junit.jupiter:junit-jupiter-engine')
+
+        testImplementation("org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}")
+    }
+
+    jar {
+        enabled = true
+    }
+
+    checkstyle {
+        maxWarnings = 0 // 규칙이 어긋나는 코드가 하나라도 있을 경우 빌드 fail을 내고 싶다면 이 선언을 추가한다.
+        configFile = file("${rootDir}/config/.zeze-checkstyle.xml")
+        toolVersion = "8.34"  // checkstyle 버전 8.24 이상 선언
+    }
+
+    task checkstyleAll(type: Test) {
+        group = 'verification'
+    }
+
+    checkstyleAll.dependsOn clean, checkstyleMain, checkstyleTest
+//    checkstyleTestFixtures
+
+    checkstyleMain.mustRunAfter(clean)
+    checkstyleTest.mustRunAfter(clean)
+//    checkstyleTestFixtures.mustRunAfter(clean)
 }
 
-ext {
-    okHttpVersion = '4.4.0'
-    set('snippetsDir', file("build/generated-snippets"))
+def asciidoctorConfigure = [project(':zeze-app')]
+configure(asciidoctorConfigure) {
+    apply plugin: "org.asciidoctor.convert"
+
+    dependencies {
+        asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
+        testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+    }
+
+    ext {
+        snippetsDir = file('build/generated-snippets')
+    }
+
+    test {
+        useJUnitPlatform()
+        outputs.dir snippetsDir
+    }
+
+    asciidoctor {
+        inputs.dir snippetsDir
+        dependsOn test
+    }
+
+    bootJar {
+        dependsOn asciidoctor
+        from("${asciidoctor.outputDir}/html5") {
+            into 'templates'
+        }
+    }
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.flywaydb:flyway-core'
-    compileOnly 'org.projectlombok:lombok'
-    runtime 'org.mariadb.jdbc:mariadb-java-client'
-    runtimeOnly 'com.h2database:h2'
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'ch.qos.logback:logback-access:1.2.3'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-    testImplementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
-    testImplementation "com.squareup.okhttp3:mockwebserver:${okHttpVersion}"
-
-    // rest docs
-    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
-
-    // rest assured
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-
-    // AWS
-    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.820'
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testCompile group: 'io.findify', name: 's3mock_2.12', version: '0.2.5'
-}
-
-test {
-    outputs.dir snippetsDir
-    useJUnitPlatform()
-}
-
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
-bootJar {
-    dependsOn asciidoctor
-    from("${asciidoctor.outputDir}/html5") {
-        into 'templates'
-    }
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
 }
 
 editorconfig {
     excludes = ['logs', 'out', 'build', 'client', '.zeze-checkstyle.xml', 'src/main/resources/static/']
 }
 
-checkstyle {
-    maxWarnings = 0 // 규칙이 어긋나는 코드가 하나라도 있을 경우 빌드 fail을 내고 싶다면 이 선언을 추가한다.
-    configFile = file("${rootDir}/config/.zeze-checkstyle.xml")
-    toolVersion = "8.34"  // checkstyle 버전 8.24 이상 선언
-}
+//dependencies {
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+//    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+//    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//    implementation 'org.flywaydb:flyway-core'
+//    compileOnly 'org.projectlombok:lombok'
+//    runtime 'org.mariadb.jdbc:mariadb-java-client'
+//    runtimeOnly 'com.h2database:h2'
+//    annotationProcessor 'org.projectlombok:lombok'
+//    implementation 'ch.qos.logback:logback-access:1.2.3'
+//    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+//    }
+//    testImplementation "com.squareup.okhttp3:okhttp:${okHttpVersion}"
+//    testImplementation "com.squareup.okhttp3:mockwebserver:${okHttpVersion}"
+//
+//    // rest docs
+//    asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.4.RELEASE'
+//    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE'
+//
+//    // rest assured
+//    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+//
+//    // AWS
+//    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.820'
+//    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+//    testCompile group: 'io.findify', name: 's3mock_2.12', version: '0.2.5'
+//}
