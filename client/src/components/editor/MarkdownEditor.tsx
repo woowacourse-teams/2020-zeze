@@ -7,7 +7,10 @@ import "codemirror/addon/search/search";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/darcula.css";
 import "codemirror/mode/markdown/markdown";
+import "codemirror/keymap/vim";
 import {css, Global} from "@emotion/core";
+import {useRecoilValue} from "recoil";
+import {vimMode} from "../../store/atoms";
 
 const codeMirrorStyle = css`
   .cm-s-darcula.CodeMirror {
@@ -40,6 +43,7 @@ const dataUrlToFile = (dataUrl: string, filename: string): File => {
 const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExternalDrop, onSaveKeyDown}) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [codemirror, setCodeMirror] = useState<CodeMirror.Editor | null>(null);
+  const vim = useRecoilValue(vimMode);
 
   useEffect(() => {
     codemirror?.removeKeyMap(navigator.platform.match("Mac") ? "Cmd-S" : "Ctrl-S");
@@ -55,6 +59,7 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
       lineNumbers: true,
       mode: "text/markdown",
       theme: "darcula",
+      keyMap: vim ? "vim" : "default",
     });
 
     codemirror.on("change", editor => {
@@ -105,7 +110,7 @@ const MarkdownEditor: React.FC<IProps> = ({inputRef, onChange, onDrop, onExterna
       codemirror.toTextArea();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onChange, onDrop]);
+  }, [onChange, onDrop, vim]);
 
   return (
     <>
