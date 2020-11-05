@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import dev.minguinho.zeze.domain.auth.exception.NotAuthorizedException;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
@@ -58,6 +59,21 @@ class SlideServiceTest {
         slideService.create(slideRequestDto, 1L);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
+    }
+
+    @Test
+    @DisplayName("권한이 없는 사용자의 생성인 경우")
+    void notAuthorized() {
+        String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
+        String content = "내용";
+        String accessLevel = "PUBLIC";
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, subtitle, author, presentedAt, content,
+            accessLevel);
+        assertThatThrownBy(() -> slideService.create(slideRequestDto, null))
+            .isInstanceOf(NotAuthorizedException.class);
     }
 
     @Test
@@ -141,6 +157,15 @@ class SlideServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 슬라이드인 경우")
+    void slideNotFound() {
+        given(slideRepository.findByIdAndDeletedAtIsNull(1L)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> slideService.retrieve(1L, null))
+            .isInstanceOf(SlideNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("슬라이드 업데이트")
     void updateSlide() {
         String title = "제목";
@@ -191,6 +216,27 @@ class SlideServiceTest {
     }
 
     @Test
+    @DisplayName("슬라이드 소유자")
+    void checkSlideOwnedBy() {
+        String title = "제목";
+        String content = "내용";
+        Slide slide = new Slide(title, content, AccessLevel.PUBLIC, 1L);
+
+        given(slideRepository.findById(1L)).willReturn(Optional.of(slide));
+
+        assertThat(slideService.checkSlideOwnedBy(1L, 1L)).isTrue();
+    }
+
+    @Test
+    @DisplayName("슬라이드 소유자를 찾는데 슬라이드가 존재하지 않는 경우")
+    void checkSlideNotFound() {
+        given(slideRepository.findById(1L)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> slideService.checkSlideOwnedBy(1L, 1L))
+            .isInstanceOf(SlideNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("슬라이드 소프트 삭제")
     void softDeleteSlide() {
         String title = "제목";
@@ -209,6 +255,7 @@ class SlideServiceTest {
     }
 
     @Test
+    @DisplayName("인증되지 않은 사용자의 삭제 요청일 경우")
     void deleteSlideWithUnauthorized() {
         String title = "제목";
         String subtitle = "부제목";
@@ -238,5 +285,12 @@ class SlideServiceTest {
         slideService.clone(1L, 1L);
 
         verify(slideRepository, times(1)).save(any(Slide.class));
+    }
+
+    @Test
+    @DisplayName("슬라이드 복제 시 유저가 존재하지 않는 경우")
+    void nullUser() {
+        assertThatThrownBy(() -> slideService.clone(1L, null))
+            .isInstanceOf(NotAuthorizedException.class);
     }
 }

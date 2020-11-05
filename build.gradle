@@ -7,6 +7,7 @@ plugins {
     id 'org.asciidoctor.convert' version '1.5.10'
     id 'org.flywaydb.flyway' version '6.0.1'
     id 'java'
+    id 'jacoco'
 }
 
 group = 'dev.minguinho'
@@ -66,6 +67,39 @@ dependencies {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
+}
+
+jacoco {
+    // JaCoCo 버전
+    toolVersion = '0.8.5'
+
+//  테스트결과 리포트를 저장할 경로 변경
+//  default는 "${project.reporting.baseDir}/jacoco"
+//  reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        csv.enabled false
+        xml.enabled false
+    }
+}
+
+jacocoTestCoverageVerification {
+    // 이 커버리지 기준은 이 글의 맨 아래에서 다시 설명하겠습니다.
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'CLASS'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
+        }
+    }
 }
 
 asciidoctor {

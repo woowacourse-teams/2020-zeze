@@ -25,6 +25,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.minguinho.zeze.domain.auth.exception.NotAuthorizedException;
 import dev.minguinho.zeze.domain.auth.infra.AuthorizationTokenExtractor;
 import dev.minguinho.zeze.domain.auth.infra.JwtTokenProvider;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDto;
@@ -32,6 +33,8 @@ import dev.minguinho.zeze.domain.slide.api.dto.SlideMetadataDtos;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideRequestDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlideResponseDto;
 import dev.minguinho.zeze.domain.slide.api.dto.SlidesRequestDto;
+import dev.minguinho.zeze.domain.slide.exception.SlideNotAuthorizedException;
+import dev.minguinho.zeze.domain.slide.exception.SlideNotFoundException;
 import dev.minguinho.zeze.domain.slide.model.Slide;
 import dev.minguinho.zeze.domain.slide.service.SlideService;
 import dev.minguinho.zeze.domain.user.config.LoginUserIdMethodArgumentResolver;
@@ -89,6 +92,32 @@ class SlideControllerTest {
             .andDo(print());
 
         verify(slideService, times(1)).create(any(SlideRequestDto.class), eq(1L));
+    }
+
+    @Test
+    @DisplayName("권한이 없는 사용자의 생성 요청인 경우")
+    void notAuthorized() throws Exception {
+        String title = "제목";
+        String subtitle = "부제목";
+        String author = "작성자";
+        String presentedAt = "2020-07-21";
+        String content = "내용";
+        String accessLevel = "PUBLIC";
+        SlideRequestDto slideRequestDto = new SlideRequestDto(title, subtitle, author, presentedAt, content,
+            accessLevel);
+        String body = objectMapper.writeValueAsString(slideRequestDto);
+        given(slideService.create(any(SlideRequestDto.class), eq(1L))).willThrow(new NotAuthorizedException());
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
+        mvc.perform(post(BASE_URL)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .content(body)
+        )
+            .andExpect(status().isForbidden())
+            .andDo(print());
     }
 
     @Test
@@ -200,6 +229,19 @@ class SlideControllerTest {
     }
 
     @Test
+    @DisplayName("슬라이드가 존재하지 않는 경우")
+    void slideNotFound() throws Exception {
+        given(slideService.retrieve(1L, 1L)).willThrow(new SlideNotFoundException(1L));
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+
+        mvc.perform(get(BASE_URL + "1"))
+            .andExpect(status().isBadRequest())
+            .andDo(print());
+    }
+
+    @Test
     @DisplayName("슬라이드 업데이트 요청")
     void updateSlide() throws Exception {
         String title = "제목";
@@ -237,6 +279,19 @@ class SlideControllerTest {
             .andDo(print());
 
         verify(slideService, times(1)).softDelete(eq(1L), anyLong());
+    }
+
+    @Test
+    @DisplayName("자신의 슬라이드가 아닌 경우")
+    void slideUnauthorized() throws Exception {
+        given(authorizationTokenExtractor.extract(any(), any())).willReturn("");
+        given(loginUserIdMethodArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginUserIdMethodArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(1L);
+        doThrow(new SlideNotAuthorizedException()).when(slideService).softDelete(1L, 1L);
+
+        mvc.perform(delete(BASE_URL + "1"))
+            .andExpect(status().isBadRequest())
+            .andDo(print());
     }
 
     @Test
