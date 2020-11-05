@@ -9,6 +9,7 @@ import youtube from "../assets/icons/editor/youtube.svg";
 import chart from "../assets/icons/editor/chart.svg";
 import code from "../assets/icons/editor/code.svg";
 import page from "../assets/icons/editor/page.svg";
+import vim from "../assets/icons/editor/vim.svg";
 
 export default [
   {
@@ -100,5 +101,9 @@ function greetings(name: string) {
 }
 \`\`\`
 `,
+  }, {
+    title: "Vim",
+    src: vim,
+    template: `vim`,
   },
 ];

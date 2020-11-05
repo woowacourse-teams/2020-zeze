@@ -6,6 +6,7 @@ interface IProps {
   title: string;
   src: string;
   template: string;
+  className?: string;
 }
 
 const EditorButtonBlock = styled.button`
@@ -36,10 +37,14 @@ const EditorButtonBlock = styled.button`
   &:hover {
     opacity: 1;
   }
+  
+  &.active {
+    opacity: 1;
+   }
 `;
 
-const EditorButton: React.FC<IProps> = ({title, src, template, handleClick}) => (
-  <EditorButtonBlock onClick={() => handleClick(template)}>
+const EditorButton: React.FC<IProps> = ({title, src, template, handleClick, className}) => (
+  <EditorButtonBlock onClick={() => handleClick(template)} className={className}>
     <img src={src} alt={src}/>
     <span>{title}</span>
   </EditorButtonBlock>

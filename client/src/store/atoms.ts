@@ -33,3 +33,8 @@ export const sidebarVisibility = atom<boolean>({
   key: "sidebarVisibility",
   default: false,
 });
+
+export const vimMode = atom<boolean>({
+  key: "vimMode",
+  default: false,
+});
